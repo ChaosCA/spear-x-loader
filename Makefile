@@ -199,6 +199,9 @@ unconfig:
 		$(obj)plat/*/config.tmp $(obj)plat/*/*/config.tmp \
 		$(obj)include/autoconf.mk $(obj)include/autoconf.mk.dep
 
+spear300_config \
+spear310_config \
+spear320_config \
 spear600_config :
 	@$(MKCONFIG) $(@:_config=) arm arm926ejs $(@:_config=) NULL spear
 
