@@ -23,6 +23,8 @@
 /xloader.hex
 /xloader.map
 /xloader.bin
+/xloader.img
+/xloader.code
 /xloader.srec
 /xloader.ldr
 /xloader.ldr.hex
