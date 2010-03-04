@@ -24,17 +24,34 @@
 #ifndef __SPEAR_BOOT_H
 #define __SPEAR_BOOT_H
 
+#if defined(CONFIG_SPEAR3XX) || defined(CONFIG_SPEAR600)
 /* U-Boot placement */
 #define CONFIG_SNOR_BOOT_ADDR		(0xF8010000)
 #define CONFIG_PNOR_BOOT_ADDR		(0x50020000)
-
-#define CONFIG_NAND_BOOT_BLK		(1)
-#define CONFIG_NAND_BOOT_BLKCNT		(10)
 
 /* OS placement definitions */
 #if defined(CONFIG_OS_BOOT)
 #define CONFIG_SNOR_OSBOOT_ADDR		(0xF8050000)
 #define CONFIG_PNOR_OSBOOT_ADDR		(0x50080000)
+#endif
+
+#elif defined(CONFIG_SPEAR1300)
+/* U-Boot placement */
+#define CONFIG_SNOR_BOOT_ADDR		(0xF8010000)
+#define CONFIG_PNOR_BOOT_ADDR		(0x50020000)
+
+/* OS placement definitions */
+#if defined(CONFIG_OS_BOOT)
+#define CONFIG_SNOR_OSBOOT_ADDR		(0xF8050000)
+#define CONFIG_PNOR_OSBOOT_ADDR		(0x50080000)
+#endif
+
+#endif /* CONFIG_SPEAR3XX || CONFIG_SPEAR600 */
+
+#define CONFIG_NAND_BOOT_BLK		(1)
+#define CONFIG_NAND_BOOT_BLKCNT		(10)
+
+#if defined(CONFIG_OS_BOOT)
 #define CONFIG_NAND_OSBOOT_BLK		(25)
 #define CONFIG_NAND_OSBOOT_BLKCNT	(10)
 #endif

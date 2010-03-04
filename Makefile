@@ -61,7 +61,9 @@ include $(obj)include/config.mk
 export	ARCH CPU PLAT VENDOR SOC
 
 ifndef CROSS_COMPILE
-ifeq ($(ARCH),arm)
+ifeq ($(CPU),arm_cortexa8)
+CROSS_COMPILE = arm-ca9-linux-
+else
 CROSS_COMPILE = arm-linux-
 endif
 endif	# CROSS_COMPILE
@@ -204,6 +206,9 @@ spear310_config \
 spear320_config \
 spear600_config :
 	@$(MKCONFIG) $(@:_config=) arm arm926ejs $(@:_config=) NULL spear
+
+spear1300_config :
+	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 $(@:_config=) NULL spear13xx
 
 #########################################################################
 #########################################################################
