@@ -1,5 +1,5 @@
 #
-# (C) Copyright 2002-2006
+# (C) Copyright 2000-2006
 # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
 #
 # See file CREDITS for list of people who contributed to this
@@ -23,34 +23,15 @@
 
 include $(TOPDIR)/config.mk
 
-LIB	= $(obj)lib$(ARCH).a
+LIB	= $(obj)lib$(SOC).a
 
-SOBJS-y	+= _ashldi3.o
-SOBJS-y	+= _ashrdi3.o
-SOBJS-y	+= _divsi3.o
-SOBJS-y	+= _lshrdi3.o
-SOBJS-y	+= _modsi3.o
-SOBJS-y	+= _udivsi3.o
-SOBJS-y	+= _umodsi3.o
+COBJS-y = 
 
-COBJS-y	+= board.o
-COBJS-y	+= div0.o
-COBJS-y	+= interrupts.o
-COBJS-y	+= cache-cp15.o
-COBJS-$(CONFIG_OS_BOOT)	+= armlinux.o
+COBJS	:= $(COBJS-y)
+SRCS	:= $(COBJS:.o=.c)
+OBJS	:= $(addprefix $(obj),$(COBJS))
 
-SRCS	:= $(SOBJS-y:.o=.S) $(COBJS-y:.o=.c)
-OBJS	:= $(addprefix $(obj),$(SOBJS-y) $(COBJS-y))
-
-# Always build libarm.a
-TARGETS	:= $(LIB)
-
-# For EABI conformant tool chains, provide eabi_compat()
-ifneq (,$(findstring -mabi=aapcs-linux,$(PLATFORM_CPPFLAGS)))
-TARGETS	+= $(obj)eabi_compat.o
-endif
-
-all:	$(TARGETS)
+all:	$(LIB)
 
 $(LIB):	$(obj).depend $(OBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)

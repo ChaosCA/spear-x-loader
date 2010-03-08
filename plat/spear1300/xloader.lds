@@ -1,6 +1,9 @@
 /*
- * (C) Copyright 2009
- * Vipin Kumar, ST Micoelectronics, vipin.kumar@st.com.
+ * January 2004 - Changed to support H4 device
+ * Copyright (c) 2004-2008 Texas Instruments
+ *
+ * (C) Copyright 2002
+ * Gary Jennejohn, DENX Software Engineering, <garyj@denx.de>
  *
  * See file CREDITS for list of people who contributed to this
  * project.
@@ -12,7 +15,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -21,16 +24,35 @@
  * MA 02111-1307 USA
  */
 
-#include <common.h>
-#include <asm/io.h>
-#include "spr_snor.h"
-
-void snor_init(void)
+OUTPUT_FORMAT("elf32-littlearm", "elf32-littlearm", "elf32-littlearm")
+OUTPUT_ARCH(arm)
+ENTRY(_start)
+SECTIONS
 {
-	struct smi_regs *const smicntl =
-		(struct smi_regs * const)CONFIG_SPEAR_SMIBASE;
+	. = 0xB3802000;
 
-	/* Setting the fast mode values. SMI working at 166/4 = 41.5 MHz */
-	writel(HOLD1 | FAST_MODE | BANK_EN | DSEL_TIME | PRESCAL4,
-	       &smicntl->smi_cr1);
+	. = ALIGN(4);
+	.text :
+	{
+		cpu/arm_cortexa8/start.o	(.text)
+		*(.text)
+	}
+
+	. = ALIGN(4);
+	.rodata . : 
+	{ *(.rodata*) }
+
+	. = ALIGN(4);
+	.data . :
+	{ *(.data) }
+
+	. = 0xB3803FF0;
+	. = ALIGN(4);
+	.table . : 
+	{}
+
+	. = 0xB3804000;
+	. = ALIGN(4);
+	.bss . :
+	{ *(.bss) }
 }

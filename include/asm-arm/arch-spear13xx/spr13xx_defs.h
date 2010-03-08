@@ -21,16 +21,13 @@
  * MA 02111-1307 USA
  */
 
-#include <common.h>
-#include <asm/io.h>
-#include "spr_snor.h"
+#ifndef SPR13XX_DEFS_H
+#define SPR13XX_DEFS_H
 
-void snor_init(void)
-{
-	struct smi_regs *const smicntl =
-		(struct smi_regs * const)CONFIG_SPEAR_SMIBASE;
+void plat_ddr_init(void);
+void soc_init(void);
+void spear_late_init(void);
 
-	/* Setting the fast mode values. SMI working at 166/4 = 41.5 MHz */
-	writel(HOLD1 | FAST_MODE | BANK_EN | DSEL_TIME | PRESCAL4,
-	       &smicntl->smi_cr1);
-}
+extern u32 mpmc_conf_vals[];
+
+#endif

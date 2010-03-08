@@ -24,8 +24,6 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
-#include <configs/spear-common.h>
-
 /*
  * High Level Configuration Options
  * (easy to change)
@@ -91,6 +89,7 @@
 #define spi_boot_supported()		0
 #define i2c_boot_supported()		0
 
+#include <configs/spear-common.h>
 #include <configs/spear-boot.h>
 
 #endif /* __CONFIG_H */

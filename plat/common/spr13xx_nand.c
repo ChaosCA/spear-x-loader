@@ -22,15 +22,34 @@
  */
 
 #include <common.h>
+#include <table.h>
+#include <nand.h>
 #include <asm/io.h>
-#include "spr_snor.h"
+#include <asm/arch/spr13xx_nand.h>
 
-void snor_init(void)
+/**
+ * nand_init:
+ */
+void nand_init(void)
 {
-	struct smi_regs *const smicntl =
-		(struct smi_regs * const)CONFIG_SPEAR_SMIBASE;
+}
 
-	/* Setting the fast mode values. SMI working at 166/4 = 41.5 MHz */
-	writel(HOLD1 | FAST_MODE | BANK_EN | DSEL_TIME | PRESCAL4,
-	       &smicntl->smi_cr1);
+/**
+ * nand_read_skip_bad:
+ *
+ * Read image from NAND flash.
+ * Blocks that are marked bad are skipped and the next block is readen
+ * instead as long as the image is short enough to fit even after skipping the
+ * bad blocks.
+ *
+ * @param block block number to start the read
+ * @param offset offset in the block number
+ * @param length buffer length, on return holds remaining bytes to read
+ * @param buffer buffer to write to
+ * @return 0 in case of success
+ */
+int nand_read_skip_bad(u32 block, size_t offset, size_t *length,
+		       u_char *buffer)
+{
+	return 0;
 }

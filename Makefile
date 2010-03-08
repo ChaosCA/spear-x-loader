@@ -62,7 +62,8 @@ export	ARCH CPU PLAT VENDOR SOC
 
 ifndef CROSS_COMPILE
 ifeq ($(CPU),arm_cortexa8)
-CROSS_COMPILE = arm-ca9-linux-
+#CROSS_COMPILE = arm-ca9-linux-
+CROSS_COMPILE = arm-linux-
 else
 CROSS_COMPILE = arm-linux-
 endif

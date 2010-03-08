@@ -25,12 +25,26 @@
 #include <asm/io.h>
 
 /**
+ * plat_ddr_init:
+ */
+void plat_ddr_init(void)
+{
+}
+
+/**
+ * soc_init:
+ */
+void soc_init(void)
+{
+}
+
+/**
  * xxx_boot_selected:
  *
  * return TRUE if the particular booting option is selected
  * return FALSE otherwise
  */
-static int read_bootstrap(void)
+static u32 read_bootstrap(void)
 {
 	return ((readl(CONFIG_SPEAR_BOOTSTRAPCFG) >> CONFIG_SPEAR_BOOTSTRAPSHFT)
 			& CONFIG_SPEAR_BOOTSTRAPMASK);

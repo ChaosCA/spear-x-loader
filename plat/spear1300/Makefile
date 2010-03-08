@@ -1,6 +1,7 @@
 #
-# (C) Copyright 2006
-# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
+# (C) Copyright 2009
+# Vipin Kumar, ST Microelectronics, vipin.kumar@st.com
+# Viresh Kumar, ST Microelectronics, viresh.kumar@st.com
 #
 # See file CREDITS for list of people who contributed to this
 # project.
@@ -23,27 +24,9 @@
 
 include $(TOPDIR)/config.mk
 
-ifneq ($(OBJTREE),$(SRCTREE))
-$(shell mkdir -p $(obj)plat/common)
-endif
+LIB	= $(obj)lib$(PLAT).a
 
-LIB	= $(obj)libcommon.a
-
-COBJS-$(CONFIG_SPEAR600) += spr_lowlevelinit.o
-COBJS-$(CONFIG_SPEAR3XX) += spr_lowlevelinit.o
-COBJS-$(CONFIG_SPEAR600) += spr_nand.o
-COBJS-$(CONFIG_SPEAR3XX) += spr_nand.o
-COBJS-$(CONFIG_SPEAR600) += spr600_mt47h64m16_3_333_cl5_psync.o
-COBJS-$(CONFIG_SPEAR600) += spr600_mt47h32m16_333_cl5_psync.o
-COBJS-$(CONFIG_SPEAR600) += spr600_mt47h32m16_37e_166_cl4_sync.o
-COBJS-$(CONFIG_SPEAR600) += spr600_mt47h128m8_3_266_cl5_async.o
-COBJS-$(CONFIG_SPEAR3XX) += spr3xx_mt47h64m16_3_333_cl5_async.o
-COBJS-$(CONFIG_SPEAR3XX) += spr3xx_mt47h64m16_3_266_cl5_async.o
-COBJS-$(CONFIG_SPEAR3XX) += spr3xx_mt47h64m16_3_166_cl4_async.o
-
-COBJS-$(CONFIG_SPEAR13XX) += spr13xx_lowlevelinit.o
-COBJS-$(CONFIG_SPEAR13XX) += spr13xx_nand.o
-COBJS-$(CONFIG_SPEAR13XX) += spr13xx_ddrchip.o
+COBJS-y += spear1300.o
 
 SOBJS	:=
 COBJS	:= $(COBJS-y)
@@ -62,7 +45,8 @@ distclean:	clean
 	rm -f $(LIB) core *.bak $(obj).depend
 
 #########################################################################
-# This is for $(obj).depend target
+
+# defines $(obj).depend target
 include $(TOPDIR)/rules.mk
 
 sinclude $(obj).depend

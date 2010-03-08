@@ -67,7 +67,7 @@ RANLIB	= $(CROSS_COMPILE)RANLIB
 sinclude $(TOPDIR)/include/autoconf.mk
 
 ifdef	ARCH
-sinclude $(TOPDIR)/$(ARCH)_config.mk	# include architecture dependend rules
+sinclude $(TOPDIR)/lib_$(ARCH)/config.mk	# include architecture dependend rules
 endif
 ifdef	CPU
 sinclude $(TOPDIR)/cpu/$(CPU)/config.mk	# include  CPU	specific rules

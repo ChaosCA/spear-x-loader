@@ -29,6 +29,7 @@
  * (easy to change)
  */
 #define CONFIG_SPEAR1300		1
+#define CONFIG_SPEAR13XX		1
 
 /*
  * Please select/define only one of the following
@@ -50,7 +51,7 @@
  * Strictly SPEAr300 specific. Do not modify any of the below definitins. All
  * these definitions are derived from SPEAr300 hardware support
  */
-#define CONFIG_SPEAR_MPMCREGS		(109)
+#define CONFIG_SPEAR_MPMCREGS		(201)
 
 #define CONFIG_SPEAR_BOOTSTRAPCFG	(0xE0700004)
 #define CONFIG_SPEAR_BOOTSTRAPSHFT	(0)
@@ -81,6 +82,7 @@
 #define spi_boot_supported()		0
 #define i2c_boot_supported()		0
 
+#include <configs/spear-common.h>
 #include <configs/spear-boot.h>
 
 #endif
