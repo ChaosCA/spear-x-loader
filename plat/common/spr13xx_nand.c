@@ -22,16 +22,36 @@
  */
 
 #include <common.h>
-#include <table.h>
 #include <nand.h>
+#include <table.h>
 #include <asm/io.h>
+#include <asm/errno.h>
 #include <asm/arch/spr13xx_nand.h>
+
+static func_getsoctype boot_getsoctype;
+static func_getboottype boot_getboottype;
+static func_nandread boot_nandread;
+static nand_info_t *boot_nandinfo;
 
 /**
  * nand_init:
  */
 void nand_init(void)
 {
+	struct bootrom_table *romtb_p =
+		(struct bootrom_table *)BOOTROM_TABLE_ADDRESS;
+
+	if (BOOTROM_TABLE_VERSION_2_0 == romtb_p->table_version) {
+		boot_getsoctype = romtb_p->table.table_2_0.get_soc_type;
+		boot_getboottype = romtb_p->table.table_2_0.get_boot_type;
+		boot_nandinfo = romtb_p->table.table_2_0.nand_info;
+		boot_nandread = romtb_p->table.table_2_0.nand_read;
+	} else {
+		boot_getsoctype = NULL;
+		boot_getboottype = NULL;
+		boot_nandinfo = NULL;
+		boot_nandread = NULL;
+	}
 }
 
 /**
@@ -51,5 +71,11 @@ void nand_init(void)
 int nand_read_skip_bad(u32 block, size_t offset, size_t *length,
 		       u_char *buffer)
 {
-	return 0;
+	nand_info_t *nand = boot_nandinfo;
+	ulong chip_off = (nand->erasesize * block) + offset;
+	
+	if (boot_nandread)
+		return (*boot_nandread)(nand, chip_off, length, (void *)buffer);
+	
+	return -EFAULT;
 }

@@ -24,9 +24,7 @@
 #ifndef __TABLE_H__
 #define __TABLE_H__
 
-#include <table.h>
-
-/* 
+/*
  * Xloader Table Structures
  */
 #define XLOADER_TABLE_VERSION_1_1	2
@@ -67,8 +65,10 @@ struct xloader_table {
 /*
  * BootROM Table Structures
  */
+#define BOOTROM_TABLE_ADDRESS		0xFFFF7F00
 
 #define BOOTROM_TABLE_VERSION_1_0	1
+#define BOOTROM_TABLE_VERSION_2_0	2
 
 struct bootrom_table_1_0 {
 	const void *boot_flashdetectandinit_ptr;
@@ -77,9 +77,31 @@ struct bootrom_table_1_0 {
 	const void *boot_nandreadpage_ptr;
 };
 
+/* BootROM version 2 tables */
+struct soc_type_s {
+	u8	soc;
+	u8	revision;
+};
+
+#define SOC_SPEAR1300 3
+#define SOC_1300REVAA 1
+
+struct bootrom_table_2_0 {
+	struct soc_type_s * (*get_soc_type)(void);
+	u8	(*get_boot_type)(void);
+	nand_info_t *nand_info;
+	int 	(*nand_read)(nand_info_t *nand, size_t offset, 
+			size_t *length, u_char *buffer);
+}__attribute__ ((packed));
+
+union bootrom_ver_table {
+	struct bootrom_table_1_0 table_1_0;
+	struct bootrom_table_2_0 table_2_0;
+};
+
 struct bootrom_table {
 	const unsigned int table_version;
-	struct bootrom_table_1_0 table;
+	union bootrom_ver_table table;
 };
 
 #endif

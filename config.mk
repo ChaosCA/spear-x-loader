@@ -108,7 +108,7 @@ CPPFLAGS += -DTEXT_BASE=$(TEXT_BASE)
 endif
 
 CPPFLAGS += -I$(TOPDIR)/include
-CPPFLAGS += -fno-builtin -ffreestanding -nostdinc -fshort-enums	\
+CPPFLAGS += -fno-builtin -ffreestanding -nostdinc \
 	-isystem $(gccincdir) -pipe $(PLATFORM_CPPFLAGS)
 
 ifdef BUILD_TAG

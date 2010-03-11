@@ -22,4 +22,6 @@
 # MA 02111-1307 USA
 #
 
+PLATFORM_CPPFLAGS += -fshort-enums
+
 TEXT_BASE = 0xD2800B00

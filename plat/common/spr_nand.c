@@ -22,9 +22,10 @@
  */
 
 #include <common.h>
-#include <table.h>
 #include <nand.h>
+#include <table.h>
 #include <asm/io.h>
+#include <asm/errno.h>
 #include <asm/arch/spr_nand.h>
 #include <asm/arch/spr_socrev.h>
 
@@ -39,7 +40,8 @@ static struct boot_nand_page *tmp_page_p;
  */
 void nand_init(void)
 {
-	struct bootrom_table *romtb_p = (struct bootrom_table *)0xFFFF7F00;
+	struct bootrom_table *romtb_p =
+		(struct bootrom_table *)BOOTROM_TABLE_ADDRESS;
 
 	/* Global function pointers */
 	switch (get_socrev()) {
@@ -66,10 +68,10 @@ void nand_init(void)
 	case SOC_SPEAR320:
 	case SOC_SPEAR600_BD:
 		boot_flashdetectandinit =
-			(romtb_p->table.boot_flashdetectandinit_ptr);
-		boot_flashread = (romtb_p->table.boot_flashread_ptr);
+			(romtb_p->table.table_1_0.boot_flashdetectandinit_ptr);
+		boot_flashread = (romtb_p->table.table_1_0.boot_flashread_ptr);
 		boot_nandsanitycheck =
-			(romtb_p->table.boot_nandsanitycheck_ptr);
+			(romtb_p->table.table_1_0.boot_nandsanitycheck_ptr);
 		tmp_page_p = (struct boot_nand_page *)0xd280084C;
 		break;
 	default:
@@ -105,11 +107,14 @@ int nand_read_skip_bad(u32 block, size_t offset, size_t *length,
 			chip_off = command->block_size * block + offset;
 			readlen = min(command->block_size - offset, *length);
 
-			(*boot_flashread) (&flashtype, chip_off, buffer,
-					   readlen, tmp_page_p);
-			offset = 0;
-			*length -= readlen;
-			buffer += readlen;
+			if (BOOT_OK == (*boot_flashread) (&flashtype, chip_off,
+					       buffer, readlen, tmp_page_p)) {
+				offset = 0;
+				*length -= readlen;
+				buffer += readlen;
+			} else {
+				return -EINVAL;
+			}
 		}
 		/* Block is bad */
 		block++;

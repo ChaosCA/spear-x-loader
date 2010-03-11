@@ -24,4 +24,9 @@
 #ifndef SPR13XX_NAND_H
 #define SPR13XX_NAND_H
 
+typedef struct soc_type_s * (*func_getsoctype)(void);
+typedef u8	(*func_getboottype)(void);
+typedef	int (*func_nandread)(nand_info_t *, size_t,
+		size_t *, u_char *);
+
 #endif
