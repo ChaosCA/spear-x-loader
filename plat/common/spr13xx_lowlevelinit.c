@@ -69,6 +69,9 @@ static void mpmc_init_values(void)
 	 */
 	writel(0x03030305, &mpmc_reg_p[25]);
 	writel(0x01000101, &mpmc_reg_p[11]);
+
+	while (!(readl(&mpmc_reg_p[105]) & 0x100))
+		;
 }
 
 static void mpmc_init(void)
@@ -89,12 +92,13 @@ static void mpmc_init(void)
 static void pll_init(void)
 {
 	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
+	u32 usbphycfg;
 
 	/* Initialize PLLs */
 	writel(FREQ_1000, &misc_p->pll1_frq);
 	writel(readl(&misc_p->pll1_ctr) | PLLENABLE, &misc_p->pll1_ctr);
 
-	writel(FREQ_332, &misc_p->pll2_frq);
+	writel(FREQ_125, &misc_p->pll2_frq);
 	writel(readl(&misc_p->pll2_ctr) | PLLENABLE, &misc_p->pll2_ctr);
 
 	writel(FREQ_332, &misc_p->pll3_frq);
@@ -103,11 +107,30 @@ static void pll_init(void)
 	writel(FREQ_332, &misc_p->pll4_frq);
 	writel(readl(&misc_p->pll4_ctr) | PLLENABLE, &misc_p->pll4_ctr);
 
+	usbphycfg = readl(misc_p->usbphy_gen_cfg);
+
+	/* strobing required for pll4 */
+	writel(0x60A, &misc_p->pll4_ctr);
+	writel(0x60E, &misc_p->pll4_ctr);
+	writel(0x606, &misc_p->pll4_ctr);
+	writel(0x60E, &misc_p->pll4_ctr);
+
+	usbphycfg &= ~(COMMON_PWDN | USBPHY_POR);
+	usbphycfg |= USBPHY_RST;
+
+	writel(usbphycfg, &misc_p->usbphy_gen_cfg);
+	while (!(readl(&misc_p->usbphy_gen_cfg) & USB_PLL_LOCK))
+		;
+
 	/* wait for pll locks */
-	while (!(readl(&misc_p->pll1_ctr) & PLLLOCK));
-	while (!(readl(&misc_p->pll2_ctr) & PLLLOCK));
-	while (!(readl(&misc_p->pll3_ctr) & PLLLOCK));
-	while (!(readl(&misc_p->pll4_ctr) & PLLLOCK));
+	while (!(readl(&misc_p->pll1_ctr) & PLLLOCK))
+		;
+	while (!(readl(&misc_p->pll2_ctr) & PLLLOCK))
+		;
+	while (!(readl(&misc_p->pll3_ctr) & PLLLOCK))
+		;
+	while (!(readl(&misc_p->pll4_ctr) & PLLLOCK))
+		;
 }
 
 static void mac_init(void)
@@ -154,8 +177,11 @@ void lowlevel_init(void)
 	sys_init();
 
 	/* Enable IPs (enable clock, release reset) */
+	/*
 	writel(PERIPH1_CLK_ALL, &misc_p->perip1_clk_enb);
 	writel(PERIPH2_CLK_ALL, &misc_p->perip2_clk_enb);
+	*/
+
 	writel(PERIPH1_RST_ALL, &misc_p->perip1_sw_rst);
 	writel(PERIPH2_RST_ALL, &misc_p->perip2_sw_rst);
 

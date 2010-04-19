@@ -46,13 +46,12 @@ SECTIONS
 	.data . :
 	{ *(.data) }
 
-	. = 0xB3803FF0;
-	. = ALIGN(4);
-	.table . : 
-	{}
-
-	. = 0xB3804000;
 	. = ALIGN(4);
 	.bss . :
 	{ *(.bss) }
+
+	. = 0xB3807FF0;
+	. = ALIGN(4);
+	.table . :
+	{*(.table); . = ALIGN(4);}
 }

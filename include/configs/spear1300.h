@@ -39,6 +39,15 @@
 #define CONFIG_DDR_MT47H64M16		1
 
 /*
+ * DDR frequency selection
+ *
+ * Select CONFIG_DDR_PLL1 for synchronous operation
+ * Select CONFIG_DDR_PLL4 for asynchronous operation
+ */
+#define CONFIG_DDR_PLL1			0
+#define CONFIG_DDR_PLL4			1
+
+/*
  * Machine type for SPEAr1300
  */
 #define CONFIG_MACH_TYPE		(2237)
@@ -51,6 +60,7 @@
  * Strictly SPEAr300 specific. Do not modify any of the below definitins. All
  * these definitions are derived from SPEAr300 hardware support
  */
+#define CONFIG_SPEAR_MPMCBASE		(0xEC000000)
 #define CONFIG_SPEAR_MPMCREGS		(201)
 
 #define CONFIG_SPEAR_BOOTSTRAPCFG	(0xE0700004)

@@ -225,7 +225,12 @@ struct misc_regs {
 /* pll_freq definitions in MHz */
 #define FREQ_1000				(0xFA000106)
 #define FREQ_996				(0x53000004)
+#define FREQ_533				(0x6F000105)
+#define FREQ_500				(0x7D000203)
+#define FREQ_400				(0x64000203)
 #define FREQ_332				(0x53000203)
+#define FREQ_250				(0x7D000303)
+#define FREQ_125				(0x7D000403)
 
 /* pll_ctr definitions */
 #define PLLLOCK					(1 << 0)
@@ -238,9 +243,30 @@ struct misc_regs {
 #define DDR_CTRL_CLKEN				(1 << 0)
 #define DDR_CORE_CLKEN				(1 << 1)
 
-#define PERIPH1_CLK_ALL				(0x00000000)
-#define PERIPH2_CLK_ALL				(0x00000000)
-#define PERIPH1_RST_ALL				(0xFFFFFFFF)
-#define PERIPH2_RST_ALL				(0xFFFFFFFF)
+#define PERIPH1_CLK_ALL				(0xFFFFFFFF)
+#define PERIPH2_CLK_ALL				(0xFFFFFFFF)
+#define PERIPH1_RST_ALL				(0x00000000)
+#define PERIPH2_RST_ALL				(0x00000000)
+
+/* ddr_pad_cfg definitions */
+#define DDR3_SW_SEL				(1 << 0)
+#define DDR3_PAD_SEL				(1 << 1)
+#define DDR3_PAD_SW_SEL				(1 << 2)
+#define CTRL_PROGA				(1 << 3)
+#define CTRL_PROGB				(1 << 4)
+#define CLK_PROGA				(1 << 5)
+#define CLK_PROGB				(1 << 6)
+#define DATA_PROGA				(1 << 7)
+#define DATA_PROGB				(1 << 8)
+#define PAD_VREF				(1 << 9)
+
+/* usbphy_gen_cfg definitions */
+#define COMMON_PWDN				(1 << 0)
+#define USBPHY_POR				(1 << 12)
+#define USBPHY_RST				(1 << 13)
+#define UTMI_XFER_RST0				(1 << 14)
+#define UTMI_XFER_RST1				(1 << 15)
+#define UTMI_XFER_RST2				(1 << 16)
+#define USB_PLL_LOCK				(1 << 27)
 
 #endif
