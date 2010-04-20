@@ -26,7 +26,10 @@ include $(TOPDIR)/config.mk
 
 LIB	= $(obj)lib$(PLAT).a
 
-COBJS-y += spear1300.o
+COBJS-y += spear1300.o \
+	   lvl_read.o \
+	   lvl_gtrn.o \
+	   lvl_code.o
 
 SOBJS	:=
 COBJS	:= $(COBJS-y)

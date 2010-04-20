@@ -26,6 +26,9 @@
 #include <asm/arch/spr13xx_misc.h>
 
 extern void snor_init(void);
+extern void doLeveling(void);
+extern void doGateTrainingLeveling(void);
+extern void doReadLeveling8Phase(void);
 
 /**
  * plat_ddr_init:
@@ -33,9 +36,25 @@ extern void snor_init(void);
 void plat_ddr_init(void)
 {
 	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
+	u32 *mpmc_reg_p = (u32 *)CONFIG_SPEAR_MPMCBASE;
 
+	/* Writing ddr pad register */
 	writel(DATA_PROGB | DATA_PROGA | CLK_PROGB | CLK_PROGA |
 		CTRL_PROGB | CTRL_PROGA, &misc_p->ddr_pad_cfg);
+
+	/* mpmc leveling code for ddr3 */
+	doLeveling();
+	doGateTrainingLeveling();
+	doReadLeveling8Phase();
+
+	writel(readl(&mpmc_reg_p[124]) | 3<<20, &mpmc_reg_p[124]);
+	writel(readl(&mpmc_reg_p[125]) | 3<<20, &mpmc_reg_p[125]);
+	writel(readl(&mpmc_reg_p[126]) | 3<<20, &mpmc_reg_p[126]);
+	writel(readl(&mpmc_reg_p[127]) | 3<<20, &mpmc_reg_p[127]);
+/*	writel(readl(&mpmc_reg_p[128]) | 3<<20, &mpmc_reg_p[128]);*/
+
+	writel(0x00060006, &mpmc_reg_p[72]);
+	writel(readl(&mpmc_reg_p[14]) | 0x00010000, &mpmc_reg_p[14]);
 }
 
 /**
