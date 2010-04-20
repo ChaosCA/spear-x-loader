@@ -70,6 +70,24 @@ size_t strlen(const char * s)
 }
 #endif
 
+#ifndef __HAVE_ARCH_MEMCPY
+/**
+ * memcopy - Copy one area of memory to another
+ * @src: Where to copy from
+ * @dest: Where to copy to
+ * @count: The size of the area.
+ */
+char * memcpy(char * dest, const char * src, int count)
+{
+	char *tmp = dest;
+
+	while (count--)
+		*tmp++ = *src++;
+
+	return dest;
+}
+#endif
+
 #ifndef __HAVE_ARCH_WCOPY
 /**
  * wcopy - Copy one area of memory to another(short by short)

@@ -22,7 +22,9 @@ extern int strncmp(const char *,const char *,__kernel_size_t);
 #ifndef __HAVE_ARCH_STRLEN
 extern __kernel_size_t strlen(const char *);
 #endif
-
+#ifndef __HAVE_ARCH_MEMCPY
+char * memcpy(char *, const char *, int);
+#endif
 #ifndef __HAVE_ARCH_BCOPY
 char * bcopy(const char *, char *, int);
 #endif

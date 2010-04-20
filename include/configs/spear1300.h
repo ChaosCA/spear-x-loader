@@ -36,7 +36,7 @@
  * Each definition corresponds to a supported DDR chip.
  * DDR configuration is based on the following selection
  */
-#define CONFIG_DDR_MT47H64M16		1
+#define CONFIG_DDR_MT41J64M16		1
 
 /*
  * DDR frequency selection

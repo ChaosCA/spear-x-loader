@@ -43,7 +43,7 @@ COBJS-$(CONFIG_SPEAR3XX) += spr3xx_mt47h64m16_3_166_cl4_async.o
 
 COBJS-$(CONFIG_SPEAR13XX) += spr13xx_lowlevelinit.o
 COBJS-$(CONFIG_SPEAR13XX) += spr13xx_nand.o
-COBJS-$(CONFIG_SPEAR13XX) += spr13xx_ddrchip.o
+COBJS-$(CONFIG_SPEAR13XX) += spr13xx_mt41j64m16la187e_400_cl6_dqs_dq_term_en.o
 
 SOBJS	:=
 COBJS	:= $(COBJS-y)

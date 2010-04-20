@@ -79,14 +79,15 @@ static void mpmc_init(void)
 	/* Clock related settings for DDR */
 	ddr_clock_init();
 
+	/* Initialize mpmc register values */
+	mpmc_init_values();
+
 	/*
 	 * DDR pad register bits are different for different SoCs
 	 * Compensation values are also handled separately
 	 */
 	plat_ddr_init();
 
-	/* Initialize mpmc register values */
-	mpmc_init_values();
 }
 
 static void pll_init(void)
@@ -104,17 +105,14 @@ static void pll_init(void)
 	writel(FREQ_332, &misc_p->pll3_frq);
 	writel(readl(&misc_p->pll3_ctr) | PLLENABLE, &misc_p->pll3_ctr);
 
-	writel(FREQ_332, &misc_p->pll4_frq);
-	writel(readl(&misc_p->pll4_ctr) | PLLENABLE, &misc_p->pll4_ctr);
-
-	usbphycfg = readl(misc_p->usbphy_gen_cfg);
-
+	writel(FREQ_400, &misc_p->pll4_frq);
 	/* strobing required for pll4 */
 	writel(0x60A, &misc_p->pll4_ctr);
 	writel(0x60E, &misc_p->pll4_ctr);
 	writel(0x606, &misc_p->pll4_ctr);
 	writel(0x60E, &misc_p->pll4_ctr);
 
+	usbphycfg = readl(&misc_p->usbphy_gen_cfg);
 	usbphycfg &= ~(COMMON_PWDN | USBPHY_POR);
 	usbphycfg |= USBPHY_RST;
 
