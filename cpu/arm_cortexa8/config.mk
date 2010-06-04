@@ -22,7 +22,7 @@
 #
 PLATFORM_RELFLAGS += -fno-common -msoft-float
 
-# Make ARMv5 to allow more compilers to work, even though its v7a.
+# Make ARMv7a.
 PLATFORM_CPPFLAGS += -march=armv7a
 # =========================================================================
 #

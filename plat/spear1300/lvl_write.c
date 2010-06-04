@@ -1,0 +1,402 @@
+/*
+ * (C) Copyright 2000-2009
+ * Vipin Kumar, ST Microelectronics, vipin.kumar@st.com
+ *
+ * See file CREDITS for list of people who contributed to this
+ * project.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ * MA 02111-1307 USA
+ */
+
+#include <common.h>
+#include <asm/io.h>
+#include <asm/arch/spr13xx_mpmc.h>
+
+static struct mpmc_regs *mpmc_p = (struct mpmc_regs *)CONFIG_SPEAR_MPMCBASE;
+
+static u32 source_sel_cal(u32 pattern)
+{
+	if ((pattern & 0xE1) == 0x60)
+		return 1;
+	else if ((pattern & 0xF0) == 0x30)
+		return 2;
+	else if ((pattern & 0x78) == 0x18)
+		return 3;
+	else if ((pattern & 0x3C) == 0x0C)
+		return 4;
+	else if ((pattern & 0x1E) == 0x06)
+		return 5;
+	else if ((pattern & 0x0F) == 0x03)
+		return 6;
+	else if ((pattern & 0x87) == 0x81)
+		return 7;
+	else
+		return 0;
+}
+
+static void reset_phy_ctrl_reg(u32 *reg)
+{
+	int i;
+
+	writel(readl(reg) | 0x1, reg);
+	for (i = 0; i < PHY_CTRL_DELAY; i++)
+		;
+	writel(readl(reg) & ~0x1, reg);
+}
+
+static void prog_wrlvl_delay(u32 slice, u32 wrlvl_delay)
+{
+	u32 *wrlvl_delay_reg = &mpmc_p->reg100;
+	u32 shift;
+
+	wrlvl_delay_reg += slice >> 1;
+	shift = (slice & 0x1) ? 16 : 0;
+	writel_field(wrlvl_delay << shift, 0xFFFF << shift, wrlvl_delay_reg);
+}
+
+u32 get_wrlvl_start(u32 wrlvl_base_off)
+{
+	u32 cal_clk_byte_patt, cal_ref_byte_patt;
+	u32 clk_source_sel_cal_pre, ref_source_sel_cal_pre;
+	int wrlvl_base, wrlvl_start;
+
+	writel_field(wrlvl_base_off << 20, 7 << 20, &mpmc_p->reg129);
+	cal_clk_byte_patt = readl_field(0, 0xFF, &mpmc_p->reg181);
+	cal_ref_byte_patt = readl_field(8, 0xFF << 8, &mpmc_p->reg181);
+
+	clk_source_sel_cal_pre = source_sel_cal(cal_clk_byte_patt);
+	ref_source_sel_cal_pre = source_sel_cal(cal_ref_byte_patt);
+
+	wrlvl_base = ref_source_sel_cal_pre - clk_source_sel_cal_pre;
+	wrlvl_base &= 7;
+	wrlvl_start = wrlvl_base - wrlvl_base_off;
+	wrlvl_start &= 7;
+
+	return wrlvl_start;
+}
+
+void set_wrlvldelay(u32 wrlvl_start, u32 *final_wrlvl_delay)
+{
+	u32 *phy_ctrl_reg1 = &mpmc_p->reg130;
+	u32 *phy_ctrl_reg0 = &mpmc_p->reg124;
+	u32 wrlvl_delay, slice, start_search;
+	u32 start_wrlvl_delay_mod, i;
+	u32 phy_ctrl_reg1_dqsgate_assertval[] = {
+		(0 << 0) | (1 << 3),
+		(0 << 0) | (2 << 3),
+		(0 << 0) | (1 << 3),
+		(0 << 0) | (2 << 3)
+	};
+	u32 phy_ctrl_reg1_dqsgate_deassertval[] = {
+		(0 << 5) | (2 << 8),
+		(0 << 5) | (1 << 8),
+		(0 << 5) | (2 << 8),
+		(0 << 5) | (1 << 8)
+	};
+	u8 resp_total[DATA_SLICE_MAX][WRLVL_DELAY_MAX];
+
+	/*
+	 * Start write leveling operation to find the wrlvldelay parameters for
+	 * each data slice
+	 */
+	for (slice = 0; slice < DATA_SLICE_MAX; slice++) {
+		swlvl_start();
+		wait_op_done();
+
+		for (wrlvl_delay = 0; wrlvl_delay < WRLVL_DELAY_MAX; wrlvl_delay++) {
+			start_wrlvl_delay_mod = wrlvl_start + wrlvl_delay;
+			reset_phy_ctrl_reg(phy_ctrl_reg0 + slice);
+			prog_wrlvl_delay(slice, wrlvl_delay);
+
+			writel_field(phy_ctrl_reg1_dqsgate_assertval[start_wrlvl_delay_mod/4],
+					DQSGATE_ASSERT_MSK, phy_ctrl_reg1 + slice);
+			writel_field(phy_ctrl_reg1_dqsgate_deassertval[start_wrlvl_delay_mod/4],
+					DQSGATE_DEASSERT_MSK, phy_ctrl_reg1 + slice);
+
+			resp_total[slice][wrlvl_delay] = 0;
+
+			for (i = 0; i < 4; i++) {
+				swlvl_load();
+				wait_op_done();
+
+				resp_total[slice][wrlvl_delay] += read_resp(slice);
+			}
+		}
+
+		start_search = 0;
+		for (wrlvl_delay = 0; wrlvl_delay < WRLVL_DELAY_MAX; wrlvl_delay++) {
+			if ((resp_total[slice][wrlvl_delay] < 4) && !start_search)
+				start_search = 1;
+			if ((resp_total[slice][wrlvl_delay] == 4) && start_search)
+				break;
+		}
+
+		final_wrlvl_delay[slice] = wrlvl_delay - 1;
+
+		prog_wrlvl_delay(slice, final_wrlvl_delay[slice]);
+		start_wrlvl_delay_mod = wrlvl_start + final_wrlvl_delay[slice];
+
+		writel_field(phy_ctrl_reg1_dqsgate_assertval[start_wrlvl_delay_mod/4],
+				DQSGATE_ASSERT_MSK, phy_ctrl_reg1 + slice);
+		writel_field(phy_ctrl_reg1_dqsgate_deassertval[start_wrlvl_delay_mod/4],
+				DQSGATE_DEASSERT_MSK, phy_ctrl_reg1 + slice);
+
+		swlvl_load();
+		wait_op_done();
+
+		swlvl_exit();
+		wait_op_done();
+	}
+}
+
+static u32 get_match_pre(u32 slice)
+{
+	u32 *obs_reg = &mpmc_p->reg175;
+	u32 dqs_byte_patt_mux_dqs = (readl(obs_reg + slice) >> 8) & 0xFF;
+
+	if ((dqs_byte_patt_mux_dqs & 0xE1) == 0x60)
+		return 1;
+	else if ((dqs_byte_patt_mux_dqs & 0xF0) == 0x30)
+		return 2;
+	else if ((dqs_byte_patt_mux_dqs & 0x78) == 0x18)
+		return 3;
+	else if ((dqs_byte_patt_mux_dqs & 0x3C) == 0x0C)
+		return 4;
+	else if ((dqs_byte_patt_mux_dqs & 0x1E) == 0x06)
+		return 5;
+	else if ((dqs_byte_patt_mux_dqs & 0x0F) == 0x03)
+		return 6;
+	else if ((dqs_byte_patt_mux_dqs & 0x87) == 0x81)
+		return 7;
+	else
+		return 0;
+}
+
+static u32 get_match0_pre(u32 slice)
+{
+	u32 *obs_reg = &mpmc_p->reg175;
+	u32 dqs_byte_patt_mux_data = (readl(obs_reg + slice) >> 16) & 0xFF;
+
+	if ((dqs_byte_patt_mux_data & 0x1F) == 0x00)
+		return 8;
+	else if ((dqs_byte_patt_mux_data & 0xF8) == 0xF8)
+		return 9;
+	else if ((dqs_byte_patt_mux_data & 0xF8) == 0x78)
+		return 1;
+	else if ((dqs_byte_patt_mux_data & 0xFC) == 0x3C)
+		return 2;
+	else if ((dqs_byte_patt_mux_data & 0xFE) == 0x1E)
+		return 3;
+	else if ((dqs_byte_patt_mux_data & 0xFF) == 0x0F)
+		return 4;
+	else if ((dqs_byte_patt_mux_data & 0x7F) == 0x07)
+		return 5;
+	else if ((dqs_byte_patt_mux_data & 0x3F) == 0x03)
+		return 6;
+	else if ((dqs_byte_patt_mux_data & 0x1F) == 0x01)
+		return 7;
+	else
+		return 0xF;
+}
+
+static u32 get_match1_pre(u32 slice)
+{
+	u32 *obs_reg = &mpmc_p->reg170;
+	u32 dqs_byte_patt_mux_data1 = (readl(obs_reg + slice) >> 23) & 0xFF;
+
+	if ((dqs_byte_patt_mux_data1 & 0x1F) == 0x00)
+		return 8;
+	else if ((dqs_byte_patt_mux_data1 & 0xF8) == 0xF8)
+		return 9;
+	else if ((dqs_byte_patt_mux_data1 & 0xF8) == 0x78)
+		return 1;
+	else if ((dqs_byte_patt_mux_data1 & 0xFC) == 0x3C)
+		return 2;
+	else if ((dqs_byte_patt_mux_data1 & 0xFE) == 0x1E)
+		return 3;
+	else if ((dqs_byte_patt_mux_data1 & 0xFF) == 0x0F)
+		return 4;
+	else if ((dqs_byte_patt_mux_data1 & 0x7F) == 0x07)
+		return 5;
+	else if ((dqs_byte_patt_mux_data1 & 0x3F) == 0x03)
+		return 6;
+	else if ((dqs_byte_patt_mux_data1 & 0x1F) == 0x01)
+		return 7;
+	else
+		return 0xF;
+}
+
+void set_dqs_parms(u32 wrlvl_start, u32 *final_wrlvl_delay)
+{
+	u32 *phy_ctrl_reg1 = &mpmc_p->reg130;
+	u32 *phy_ctrl_reg4 = &mpmc_p->reg145;
+	u32 *phy_ctrl_reg5 = &mpmc_p->reg150;
+	u32 *phy_ctrl_reg6 = &mpmc_p->reg155;
+	u32 *phy_ctrl_reg7 = &mpmc_p->reg160;
+
+	u32 wr_dq_a_timing_reg, start_wrlvl_delay_mod, slice, dqtim;
+	u32 phy_clk_phase_match_pre, dq_clk_phase_match0_pre, dq_clk_phase_match1_pre;
+	u32 dq_clk_phase_match_pre, dqs_dq_clk_phase_match_delta;
+
+	u32 phy_ctrl_reg1_dqsgate_assertval[] = {
+		(0 << 0) | (1 << 3),
+		(0 << 0) | (2 << 3),
+		(1 << 0) | (1 << 3),
+		(1 << 0) | (2 << 3)
+	};
+	u32 phy_ctrl_reg1_dqsgate_deassertval[] = {
+		(0 << 5) | (1 << 8),
+		(0 << 5) | (2 << 8),
+		(1 << 5) | (1 << 8),
+		(1 << 5) | (2 << 8)
+	};
+	u32 phy_ctrl_reg1_dqsoe_assertval[] = {
+		(0 << 10) | (1 << 13),
+		(0 << 10) | (2 << 13),
+		(1 << 10) | (1 << 13),
+		(1 << 10) | (2 << 13)
+	};
+	u32 phy_ctrl_reg1_dqsoe_deassertval[] = {
+		(1 << 15) | (2 << 18),
+		(2 << 15) | (1 << 18),
+		(2 << 15) | (2 << 18),
+		(3 << 15) | (1 << 18)
+	};
+	u32 phy_ctrl_reg6_dqs_assertval[] = {
+		(0 << 10) | (1 << 13),
+		(0 << 10) | (2 << 13),
+		(1 << 10) | (1 << 13),
+		(1 << 10) | (2 << 13)
+	};
+	u32 phy_ctrl_reg6_dqs_deassertval[] = {
+		(1 << 15) | (2 << 18),
+		(2 << 15) | (1 << 18),
+		(2 << 15) | (2 << 18),
+		(3 << 15) | (1 << 18)
+	};
+	u16 phy_ctrl_reg5_assertval[3][15] = {
+		{0, 0, 0x08, 0x08, 0x08, 0x08, 0x10, 0x10, 0x10, 0x10, 0x09, 0x09, 0x09, 0x09, 0x17},
+		{0, 0, 0x00, 0x08, 0x08, 0x08, 0x08, 0x10, 0x10, 0x10, 0x10, 0x09, 0x09, 0x09, 0x09},
+		{0, 0, 0x00, 0x00, 0x08, 0x08, 0x08, 0x08, 0x10, 0x10, 0x10, 0x10, 0x09, 0x09, 0x09}
+	};
+	u16 phy_ctrl_reg5_deassertval[3][15] = {
+		{0, 0, 0x100, 0x100, 0x100, 0x100, 0x200, 0x200, 0x200, 0x200, 0x120, 0x120, 0x120, 0x120, 0x220},
+		{0, 0, 0x000, 0x100, 0x100, 0x100, 0x100, 0x200, 0x200, 0x200, 0x200, 0x120, 0x120, 0x120, 0x120},
+		{0, 0, 0x000, 0x000, 0x100, 0x100, 0x100, 0x100, 0x200, 0x200, 0x200, 0x220, 0x120, 0x120, 0x120}
+	};
+	u32 phy_ctrl_reg1_assertval[] = {
+		(0 << 20) | (1 << 23),
+		(0 << 20) | (2 << 23),
+		(1 << 20) | (1 << 23),
+		(1 << 20) | (2 << 23)
+	};
+	u32 phy_ctrl_reg1_deassertval[] = {
+		(1 << 25) | (2 << 28),
+		(2 << 25) | (1 << 28),
+		(2 << 25) | (2 << 28),
+		(3 << 25) | (1 << 28)
+	};
+	u32 phy_ctrl_reg7_assertval[] = {
+		(0 << 18) | (1 << 21),
+		(0 << 18) | (2 << 21),
+		(1 << 18) | (1 << 21),
+		(1 << 18) | (2 << 21)
+	};
+	u32 phy_ctrl_reg7_deassertval[] = {
+		(1 << 23) | (2 << 26),
+		(2 << 23) | (1 << 26),
+		(2 << 23) | (2 << 26),
+		(3 << 23) | (1 << 26)
+	};
+
+	/* */
+	for (slice = 0; slice < DATA_SLICE_MAX; slice++) {
+
+		start_wrlvl_delay_mod = wrlvl_start + final_wrlvl_delay[slice];
+
+		writel_field(phy_ctrl_reg1_dqsgate_assertval[start_wrlvl_delay_mod/4],
+				DQSGATE_ASSERT_MSK, phy_ctrl_reg1 + slice);
+		writel_field(phy_ctrl_reg1_dqsgate_deassertval[start_wrlvl_delay_mod/4],
+				DQSGATE_DEASSERT_MSK, phy_ctrl_reg1 + slice);
+
+		writel_field(phy_ctrl_reg1_dqsoe_assertval[start_wrlvl_delay_mod/4],
+				DQSOE_ASSERT_MSK, phy_ctrl_reg1 + slice);
+		writel_field(phy_ctrl_reg1_dqsoe_deassertval[start_wrlvl_delay_mod/4],
+				DQSOE_DEASSERT_MSK, phy_ctrl_reg1 + slice);
+
+		writel_field(phy_ctrl_reg6_dqs_assertval[start_wrlvl_delay_mod/4],
+				REG6_DQS_ASSERT_MSK, phy_ctrl_reg6 + slice);
+		writel_field(phy_ctrl_reg6_dqs_deassertval[start_wrlvl_delay_mod/4],
+				REG6_DQS_DEASSERT_MSK, phy_ctrl_reg6 + slice);
+
+		phy_clk_phase_match_pre = get_match_pre(slice);
+		dq_clk_phase_match0_pre = get_match0_pre(slice);
+		dq_clk_phase_match1_pre = get_match1_pre(slice);
+
+		if (((dq_clk_phase_match0_pre == 8) && (dq_clk_phase_match1_pre == 9)) ||
+				((dq_clk_phase_match1_pre == 8) && (dq_clk_phase_match0_pre == 9)))
+			dq_clk_phase_match_pre = 0;
+		/* else if ((dq_clk_phase_match0_pre & 0x1) == 0) */
+		else if ((dq_clk_phase_match0_pre & 0x8) == 0)
+			dq_clk_phase_match_pre = dq_clk_phase_match0_pre & 7;
+		else
+			dq_clk_phase_match_pre = dq_clk_phase_match1_pre & 7;
+
+		dqs_dq_clk_phase_match_delta = dq_clk_phase_match_pre - phy_clk_phase_match_pre;
+		dqs_dq_clk_phase_match_delta &= 0xF;
+
+		dqtim = (start_wrlvl_delay_mod - 2) & 0x7;
+		wr_dq_a_timing_reg = (dqtim << 0) | (dqtim << 3) | (dqtim << 6) | (dqtim << 9) |
+			(dqtim << 12) | (dqtim << 15) | (dqtim << 18) | (dqtim << 21) | (dqtim << 24);
+
+		writel(wr_dq_a_timing_reg, phy_ctrl_reg4 + slice);
+
+		writel_field(phy_ctrl_reg5_assertval[dqs_dq_clk_phase_match_delta][start_wrlvl_delay_mod],
+				REG5_ASSERT_MSK, phy_ctrl_reg5 + slice);
+		writel_field(phy_ctrl_reg5_deassertval[dqs_dq_clk_phase_match_delta][start_wrlvl_delay_mod],
+				REG5_DEASSERT_MSK, phy_ctrl_reg5 + slice);
+
+		writel_field(phy_ctrl_reg1_assertval[start_wrlvl_delay_mod/4],
+				REG1_ASSERT_MSK, phy_ctrl_reg1 + slice);
+		writel_field(phy_ctrl_reg1_deassertval[start_wrlvl_delay_mod/4],
+				REG1_DEASSERT_MSK, phy_ctrl_reg1 + slice);
+		writel_field(phy_ctrl_reg7_assertval[start_wrlvl_delay_mod/4],
+				REG7_ASSERT_MSK, phy_ctrl_reg7 + slice);
+		writel_field(phy_ctrl_reg7_deassertval[start_wrlvl_delay_mod/4],
+				REG7_DEASSERT_MSK, phy_ctrl_reg7 + slice);
+	}
+
+}
+
+void lvl_write(void)
+{
+	int wrlvl_start;
+	u32 wrlvl_base_offset_reg = 2;
+	u32 final_wrlvl_delay[DATA_SLICE_MAX];
+
+	set_swlvl_mode(WRITE_LVL);
+	swlvl_start();
+	wait_op_done();
+
+	wrlvl_start = get_wrlvl_start(wrlvl_base_offset_reg);
+	swlvl_exit();
+	wait_op_done();
+
+	/* Set wrlvl_delay parameters through write leveling */
+	set_wrlvldelay(wrlvl_start, final_wrlvl_delay);
+
+	set_dqs_parms(wrlvl_start, final_wrlvl_delay);
+}

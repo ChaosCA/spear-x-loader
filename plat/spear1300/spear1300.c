@@ -24,6 +24,7 @@
 #include <common.h>
 #include <asm/io.h>
 #include <asm/arch/spr13xx_misc.h>
+#include <asm/arch/spr13xx_mpmc.h>
 
 extern void snor_init(void);
 
@@ -36,6 +37,10 @@ void plat_ddr_init(void)
 
 	writel(DATA_PROGB | DATA_PROGA | CLK_PROGB | CLK_PROGA |
 		CTRL_PROGB | CTRL_PROGA, &misc_p->ddr_pad_cfg);
+
+	lvl_write();
+	lvl_gatetrn();
+	lvl_read();
 }
 
 /**
