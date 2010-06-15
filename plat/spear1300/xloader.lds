@@ -50,7 +50,7 @@ SECTIONS
 	.bss . :
 	{ *(.bss) }
 
-	. = 0xB3807FF0;
+	. = 0xB3804FF0;
 	. = ALIGN(4);
 	.table . :
 	{*(.table); . = ALIGN(4);}
