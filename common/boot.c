@@ -54,6 +54,11 @@ void boot(void)
 {
 	funcp image;
 
+#ifdef CONFIG_SPEAR_USBTTY
+	plat_late_init();
+	return;
+#endif
+
 	/*
 	 * All the supported booting devices are listed here. Each of
 	 * the booting type supported by the platform would define the
