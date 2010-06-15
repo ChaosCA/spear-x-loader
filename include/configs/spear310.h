@@ -52,9 +52,10 @@
 /*
  * Machine type for SPEAr310
  */
-#define CONFIG_MACH_TYPE		(2237)
+#define CONFIG_MACH_TYPE		(2660)
 #define CONFIG_BOOTARGS			\
-		"console=ttyS0 mem=128M root=/dev/mtdblock12 rootfstype=jffs2"
+		"console=ttyAMA0,115200 mem=128M root=/dev/mtdblock3 " \
+		"rootfstype=jffs2"
 
 /*
  * Platform specific defines (SPEAr)

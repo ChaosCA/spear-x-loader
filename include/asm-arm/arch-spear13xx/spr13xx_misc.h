@@ -242,6 +242,7 @@ struct misc_regs {
 /* perip*_[clk_enb/sw_rst] definitions */
 #define DDR_CTRL_CLKEN				(1 << 0)
 #define DDR_CORE_CLKEN				(1 << 1)
+#define UART_CLKEN				(1 << 15)
 
 #define PERIPH1_CLK_ALL				(0xFFFFFFFF)
 #define PERIPH2_CLK_ALL				(0xFFFFFFFF)

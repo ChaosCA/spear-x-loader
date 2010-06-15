@@ -174,12 +174,12 @@ void lowlevel_init(void)
 	/* Initialize PLLs */
 	sys_init();
 
-	/* Enable IPs (enable clock, release reset) */
-	/*
-	writel(PERIPH1_CLK_ALL, &misc_p->perip1_clk_enb);
-	writel(PERIPH2_CLK_ALL, &misc_p->perip2_clk_enb);
-	*/
+#if defined(CONFIG_OS_BOOT)
+	writel(readl(&misc_p->perip1_clk_enb) | UART_CLKEN,
+			&misc_p->perip1_clk_enb);
+#endif
 
+	/* Enable IPs (release reset) */
 	writel(PERIPH1_RST_ALL, &misc_p->perip1_sw_rst);
 	writel(PERIPH2_RST_ALL, &misc_p->perip2_sw_rst);
 
@@ -188,8 +188,4 @@ void lowlevel_init(void)
 
 	/* SoC specific initialization */
 	soc_init();
-}
-
-void spear_late_init(void)
-{
 }
