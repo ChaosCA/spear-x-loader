@@ -1,6 +1,8 @@
 /*
- * (C) Copyright 2009
+ * (C) Copyright 2010
  * Vipin Kumar, ST Micoelectronics, vipin.kumar@st.com.
+ *
+ * Based on arch/arm/cpu/arm_cortexa8/s5pc1xx/cache.S
  *
  * See file CREDITS for list of people who contributed to this
  * project.
@@ -21,14 +23,27 @@
  * MA 02111-1307 USA
  */
 
-#ifndef SPR13XX_DEFS_H
-#define SPR13XX_DEFS_H
+.global cpu2_wake
+cpu2_wake:
+	stmfd	r13!, {r0 - r1}
+	ldr	r0,=0xb3800600
+	adr	r1,cpu2_start
+	str	r1,[r0]
+	dmb
+	dsb
+	ldmfd	r13!, {r0 - r1}
+	bx	r14
 
-void plat_ddr_init(void);
-void soc_init(void);
-void cpu2_wake(void);
-void spear_late_init(void);
-
-extern u32 mpmc_conf_vals[];
-
-#endif
+/* CPU2 starts running from here */
+cpu2_start:
+	ldr	r0,=0xb3800600
+	ldr	r1,=0xdeadbeef
+	str	r1,[r0]
+	dmb
+	dsb
+1:
+	wfe
+	ldr	r1,[r0]
+	tst	r1,#0x3
+	bne	1b
+	bx	r1

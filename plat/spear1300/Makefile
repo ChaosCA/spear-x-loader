@@ -32,7 +32,9 @@ COBJS-y += lvl_gatetrn.o
 COBJS-y += lvl_read.o
 COBJS-y += swlvl.o
 
-SOBJS	:=
+SOBJS-y += wakeup.o
+
+SOBJS	:= $(SOBJS-y)
 COBJS	:= $(COBJS-y)
 
 SRCS	:= $(SOBJS:.o=.S) $(COBJS:.o=.c)

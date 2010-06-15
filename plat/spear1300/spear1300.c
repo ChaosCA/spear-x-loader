@@ -23,6 +23,7 @@
 
 #include <common.h>
 #include <asm/io.h>
+#include <asm/arch/spr13xx_defs.h>
 #include <asm/arch/spr13xx_misc.h>
 #include <asm/arch/spr13xx_mpmc.h>
 
@@ -48,6 +49,8 @@ void plat_ddr_init(void)
  */
 void soc_init(void)
 {
+	/* Bringing ARM2 out of the PHolding loop */
+	cpu2_wake();
 }
 
 /**
