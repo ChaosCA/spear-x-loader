@@ -2,8 +2,6 @@
  * (C) Copyright 2010
  * Vipin Kumar, ST Micoelectronics, vipin.kumar@st.com.
  *
- * Based on arch/arm/cpu/arm_cortexa8/s5pc1xx/cache.S
- *
  * See file CREDITS for list of people who contributed to this
  * project.
  *
@@ -23,6 +21,8 @@
  * MA 02111-1307 USA
  */
 
+.global cleanup_before_linux
+
 .global cpu2_wake
 cpu2_wake:
 	stmfd	r13!, {r0 - r1}
@@ -36,6 +36,10 @@ cpu2_wake:
 
 /* CPU2 starts running from here */
 cpu2_start:
+	/* stack init, needed for calling C routine */
+	ldr	r13,=0xb3800100
+	bl	cleanup_before_linux
+
 	ldr	r0,=0xb3800600
 	ldr	r1,=0xdeadbeef
 	str	r1,[r0]
