@@ -185,5 +185,4 @@ u32 get_pnor_width(void)
 
 void plat_late_init(void)
 {
-	snor_init();
 }
