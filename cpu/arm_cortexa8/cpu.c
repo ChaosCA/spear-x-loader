@@ -33,6 +33,7 @@
 
 #include <common.h>
 #include <asm/system.h>
+#include <asm/arch/sys_proto.h>
 
 static void cache_flush(void);
 
@@ -54,6 +55,9 @@ int cleanup_before_linux(void)
 
 	/* invalidate I-cache */
 	cache_flush();
+
+	/* invalidate D-cache also */
+	invalidate_dcache();
 
 	i = 0;
 	/* mem barrier to sync up things */

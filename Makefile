@@ -78,6 +78,9 @@ OBJS := $(addprefix $(obj),$(OBJS))
 
 LIBS  = 
 LIBS += cpu/$(CPU)/lib$(CPU).a
+ifdef SOC
+LIBS += cpu/$(CPU)/$(SOC)/lib$(SOC).a
+endif
 LIBS += lib_generic/libgeneric.a
 LIBS += plat/common/libcommon.a
 LIBS += lib_$(ARCH)/lib$(ARCH).a
