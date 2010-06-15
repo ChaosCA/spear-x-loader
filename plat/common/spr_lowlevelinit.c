@@ -182,7 +182,7 @@ void lowlevel_init(void)
 	sys_init();
 
 	/* Enable IPs (enable clock, release reset) */
-	writel(PERIPH_CLK_ALL, &misc_p->periph1_clken);
+	/* writel(PERIPH_CLK_ALL, &misc_p->periph1_clken); */
 	writel(PERIPH_RST_ALL, &misc_p->periph1_rst);
 
 	/* Initialize MPMC */
