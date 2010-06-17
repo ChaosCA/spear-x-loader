@@ -21,12 +21,14 @@
  * MA 02111-1307 USA
  */
 
+#include <config.h>
+
 .global cleanup_before_linux
 
 .global cpu2_wake
 cpu2_wake:
 	stmfd	r13!, {r0 - r1}
-	ldr	r0,=0xb3800600
+	ldr	r0,=CONFIG_SPEAR_ARM2PHOLD
 	adr	r1,cpu2_start
 	str	r1,[r0]
 	dmb
@@ -37,10 +39,10 @@ cpu2_wake:
 /* CPU2 starts running from here */
 cpu2_start:
 	/* stack init, needed for calling C routine */
-	ldr	r13,=0xb3800100
+	ldr	r13,=CONFIG_SPEAR_ARM2STACK
 	bl	cleanup_before_linux
 
-	ldr	r0,=0xb3800600
+	ldr	r0,=CONFIG_SPEAR_ARM2PHOLD
 	ldr	r1,=0xdeadbeef
 	str	r1,[r0]
 	dmb
