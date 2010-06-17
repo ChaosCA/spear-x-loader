@@ -35,7 +35,7 @@
 #define CONFIG_PNOR_OSBOOT_ADDR		(0x50080000)
 #endif
 
-#elif defined(CONFIG_SPEAR1300)
+#elif defined(CONFIG_SPEAR13XX)
 /* U-Boot placement */
 #define CONFIG_SNOR_BOOT_ADDR		(0xE6010000)
 #define CONFIG_PNOR_BOOT_ADDR		(0xA0020000)

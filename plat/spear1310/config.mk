@@ -22,35 +22,4 @@
 # MA 02111-1307 USA
 #
 
-include $(TOPDIR)/config.mk
-
-LIB	= $(obj)lib$(PLAT).a
-
-COBJS-y +=
-
-SOBJS-y +=
-
-SOBJS	:= $(SOBJS-y)
-COBJS	:= $(COBJS-y)
-
-SRCS	:= $(SOBJS:.o=.S) $(COBJS:.o=.c)
-OBJS	:= $(addprefix $(obj),$(COBJS))
-SOBJS	:= $(addprefix $(obj),$(SOBJS))
-
-$(LIB):	$(obj).depend $(OBJS) $(SOBJS)
-	$(AR) $(ARFLAGS) $@ $(OBJS) $(SOBJS)
-
-clean:
-	rm -f $(SOBJS) $(OBJS)
-
-distclean:	clean
-	rm -f $(LIB) core *.bak $(obj).depend
-
-#########################################################################
-
-# defines $(obj).depend target
-include $(TOPDIR)/rules.mk
-
-sinclude $(obj).depend
-
-#########################################################################
+TEXT_BASE = 0xB3802000
