@@ -205,42 +205,42 @@ spear300_usbtty_config :
 	@[ -z "$(findstring usbtty,$@)" ] || \
 		{ echo "#define CONFIG_SPEAR_USBTTY" >> $(obj)include/config.h ; \
 		}
-	@$(MKCONFIG) -a spear300 arm arm926ejs spear300 NULL spear
+	@$(MKCONFIG) -n $@ -a spear300 arm arm926ejs spear300 NULL spear
 
 spear310_config \
 spear310_usbtty_config :
 	@[ -z "$(findstring usbtty,$@)" ] || \
 		{ echo "#define CONFIG_SPEAR_USBTTY" >> $(obj)include/config.h ; \
 		}
-	@$(MKCONFIG) -a spear310 arm arm926ejs spear310 NULL spear
+	@$(MKCONFIG) -n $@ -a spear310 arm arm926ejs spear310 NULL spear
 
 spear320_config \
 spear320_usbtty_config :
 	@[ -z "$(findstring usbtty,$@)" ] || \
 		{ echo "#define CONFIG_SPEAR_USBTTY" >> $(obj)include/config.h ; \
 		}
-	@$(MKCONFIG) -a spear320 arm arm926ejs spear320 NULL spear
+	@$(MKCONFIG) -n $@ -a spear320 arm arm926ejs spear320 NULL spear
 
 spear600_config \
 spear600_usbtty_config :
 	@[ -z "$(findstring usbtty,$@)" ] || \
 		{ echo "#define CONFIG_SPEAR_USBTTY" >> $(obj)include/config.h ; \
 		}
-	@$(MKCONFIG) -a spear600 arm arm926ejs spear600 NULL spear
+	@$(MKCONFIG) -n $@ -a spear600 arm arm926ejs spear600 NULL spear
 
 spear1300_config \
 spear1300_usbtty_config :
 	@[ -z "$(findstring usbtty,$@)" ] || \
 		{ echo "#define CONFIG_SPEAR_USBTTY" >> $(obj)include/config.h ; \
 		}
-	@$(MKCONFIG) -a spear1300 arm arm_cortexa8 spear1300 NULL spear13xx
+	@$(MKCONFIG) -n $@ -a spear1300 arm arm_cortexa8 spear1300 NULL spear13xx
 
 spear1310_config \
 spear1310_usbtty_config :
 	@[ -z "$(findstring usbtty,$@)" ] || \
 		{ echo "#define CONFIG_SPEAR_USBTTY" >> $(obj)include/config.h ; \
 		}
-	@$(MKCONFIG) -a spear1310 arm arm_cortexa8 spear1310 NULL spear13xx
+	@$(MKCONFIG) -n $@ -a spear1310 arm arm_cortexa8 spear1310 NULL spear13xx
 
 #########################################################################
 #########################################################################
