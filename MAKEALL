@@ -1,0 +1,138 @@
+#!/bin/bash
+
+# Print statistics when we exit
+trap exit 1 2 3 15
+trap print_stats 0
+
+# Determine number of CPU cores if no default was set
+: ${BUILD_NCPUS:="`getconf _NPROCESSORS_ONLN`"}
+
+if [ "$BUILD_NCPUS" -gt 1 ]
+then
+	JOBS="-j $((BUILD_NCPUS + 1))"
+else
+	JOBS=""
+fi
+
+
+if [ "${CROSS_COMPILE}" ] ; then
+	MAKE="make CROSS_COMPILE=${CROSS_COMPILE}"
+else
+	MAKE=make
+fi
+
+if [ "${MAKEALL_LOGDIR}" ] ; then
+	LOG_DIR=${MAKEALL_LOGDIR}
+else
+	LOG_DIR="LOG"
+fi
+
+if [ ! "${BUILD_DIR}" ] ; then
+	BUILD_DIR="."
+fi
+
+[ -d ${LOG_DIR} ] || mkdir ${LOG_DIR} || exit 1
+
+LIST=""
+
+# Keep track of the number of builds and errors
+ERR_CNT=0
+ERR_LIST=""
+TOTAL_CNT=0
+RC=0
+
+#########################################################################
+## ARM9 Systems
+#########################################################################
+
+LIST_ARM9="			\
+	spear300		\
+	spear300_usbtty		\
+	spear310		\
+	spear310_usbtty		\
+	spear320		\
+	spear320_usbtty		\
+	spear600		\
+	spear600_usbtty		\
+"
+
+#########################################################################
+## ARM Cortex-A8 Systems
+#########################################################################
+LIST_ARM_CORTEX_A8="		\
+	spear1300		\
+	spear1300_usbtty	\
+	spear1310		\
+	spear1310_usbtty	\
+"
+
+#########################################################################
+## ARM groups
+#########################################################################
+
+LIST_arm="			\
+	${LIST_ARM9}		\
+	${LIST_ARM_CORTEX_A8}	\
+"
+
+#----- for now, just run ARM by default -----
+[ $# = 0 ] && set $LIST_arm
+
+#-----------------------------------------------------------------------
+
+build_target() {
+	target=$1
+
+	${MAKE} distclean >/dev/null
+	${MAKE} ${target}_config
+
+	${MAKE} ${JOBS} all 2>&1 >${LOG_DIR}/$target.MAKELOG \
+				| tee ${LOG_DIR}/$target.ERR
+
+	# Check for 'make' errors
+	if [ ${PIPESTATUS[0]} -ne 0 ] ; then
+		RC=1
+	fi
+
+	if [ -s ${LOG_DIR}/$target.ERR ] ; then
+		ERR_CNT=$((ERR_CNT + 1))
+		ERR_LIST="${ERR_LIST} $target"
+	else
+		rm ${LOG_DIR}/$target.ERR
+	fi
+
+	TOTAL_CNT=$((TOTAL_CNT + 1))
+
+	${CROSS_COMPILE}size ${BUILD_DIR}/xloader \
+				| tee -a ${LOG_DIR}/$target.MAKELOG
+}
+
+#-----------------------------------------------------------------------
+
+print_stats() {
+	echo ""
+	echo "--------------------- SUMMARY ----------------------------"
+	echo "Boards compiled: ${TOTAL_CNT}"
+	if [ ${ERR_CNT} -gt 0 ] ; then
+		echo "Boards with warnings or errors: ${ERR_CNT} (${ERR_LIST} )"
+	fi
+	echo "----------------------------------------------------------"
+
+	exit $RC
+}
+
+#-----------------------------------------------------------------------
+for arg in $@
+do
+	case "$arg" in
+	arm|ARM9|ARM_CORTEX_A8 \
+	)
+			for target in `eval echo '$LIST_'${arg}`
+			do
+				build_target ${target}
+			done
+			;;
+	*)		build_target ${arg}
+			;;
+	esac
+done
