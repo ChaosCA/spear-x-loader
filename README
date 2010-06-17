@@ -1,0 +1,265 @@
+#
+# (C) Copyright 2000 - 2009
+# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
+# Vipin Kumar, ST Microelectronics, vipin.kumar@st.com.
+#
+# See file CREDITS for list of people who contributed to this
+# project.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of
+# the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+# MA 02111-1307 USA
+#
+
+Summary:
+========
+
+This directory contains the source code for Xloader, a 1st level
+boot loader for SPEAr boards based on ARM.
+
+The source code is based on u-boot source organization structure
+and picks many of its files from there. In-fact, this README also
+takes many things from u-boot README
+
+Where to get source code:
+=========================
+
+The SPEAr Xloader source code is maintained in the git repository at
+git://git.bri.st.com/spear/xloader.git
+
+Where we come from:
+===================
+
+- start from u-boot 2009.06 sources
+- create Xloader project
+- clean up code to keep minimum required features
+
+Directory Hierarchy:
+====================
+
+- plat			Platform dependent files
+  - common		Common architecture files
+  - spear300		SPEAr300 related files
+  - spear310		SPEAr310 related files
+  - spear320		SPEAr320 related files
+  - spear600		SPEAr600 related files
+  - spear1300		SPEAr1300 related files
+  - spear1310		SPEAr1310 related files
+- common		Misc architecture independent functions
+- cpu			CPU specific files
+  - arm926ejs		Files specific to ARM 926 CPUs
+  - arm_cortexa8	Files specific to ARM CortexA8/A9 CPUs
+- drivers		Commonly used device drivers
+- include		Header Files
+- lib_arm		Files generic to ARM architecture
+- lib_generic		Files generic to all architectures
+- tools			Tools to build Xloader images, etc.
+
+Software Configuration:
+=======================
+
+Configuration is usually done using C preprocessor defines; the
+rationale behind that is to avoid dead code whenever possible.
+
+Configuration variables are defined in the following way:
+
+* Configuration _OPTIONS_:
+  These are selectable by the user and have names beginning with
+  "CONFIG_".
+* All configuration oprions starting with "CONFIG_SPEAR_" are spear
+  device specific base addresses etc.
+
+
+Selection of Processor Architecture and Board Type:
+---------------------------------------------------
+
+For all supported boards there are ready-to-use default
+configurations available; just type "make <board_name>_config".
+
+Example: For a spear300 module type:
+
+	cd xloader
+	make spear300_config
+
+
+Configuration Options:
+----------------------
+
+Configuration depends on the combination of board and CPU type; all
+such information is kept in a configuration file
+"include/configs/<board_name>.h".
+
+Example: For a spear300 module, all configuration settings are in
+"include/configs/spear300.h".
+
+The following options need to be configured:
+
+- CPU Type:	Define exactly one, e.g. CONFIG_SPEAR300
+
+- Board Type:	Define exactly one, e.g. CONFIG_SPEAR300
+
+- DDR configuration:
+		DDR Device
+
+		Define one of the supported DDR devices to 1. For eg. spear300
+		supports mt47h64m16 device through the macro
+
+		CONFIG_DDR_MT47H64M16
+
+		DDR Frequency
+
+		Define one of the supported options from a set of configurations
+		eg. in spear300 ddr frequency configurations supported are
+
+		CONFIG_DDR_2HCLK
+		DDR frequency = 2 * HClk
+
+		CONFIG_DDR_HCLK
+		DDR frequency = HClk
+
+		CONFIG_DDR_PLL2
+		DDR frequency = PLL2 frequency
+
+- Booting U-Boot:
+		CONFIG_SNOR_BOOT_ADDR
+
+		Define this with the base address of U-Boot image located in
+		Serial Nor device
+
+		CONFIG_NAND_BOOT_BLK
+
+		Define this with the base block number of U-Boot image located
+		in NAND device
+
+		CONFIG_NAND_BOOT_CNT
+
+		Define this with the block numbers upto which U-Boot image is
+		tried in NAND device. This is importeant because NAND device may
+		contian bad blocks, so the U-Boot image may be located at next
+		block after a bad block.
+
+		CONFIG_PNOR_BOOT_ADDR
+
+		Define this with the base address of U-Boot image located in
+		Parallel Nor device
+
+- Booting Linux:
+		By default, the software tries to locate a U-Boot image at
+		address CONFIG_SNOR_BOOT_ADDR, failing which a Linux image is
+		located.
+
+		CONFIG_OS_BOOT
+
+		Define this if you want support for OS booting (currently only
+		Linux is supported)
+
+		CONFIG_BOOT_PARAMS_ADDR
+
+		Define this for location of linux boot parameters to be located
+
+		CONFIG_MEM_START
+
+		Define this for base address of RAM (to be passed to Linux)
+
+		CONFIG_MEM_SIZE
+
+		Define this for size of RAM (to be passed to Linux)
+
+		CONFIG_MACH_TYPE
+
+		Define this for machine type # to be booted
+
+		CONFIG_BOOTARGS
+
+		Define this with the bootargs to be passed to Linux eg.
+		"console=ttyAMA0,115200 mem=128M root=/dev/mtdblock3 " \
+		"rootfstype=jffs2"
+
+		CONFIG_SNOR_BOOTOS_ADDR
+
+		Define this with the base address of U-Boot image located in
+		Serial Nor device
+
+		CONFIG_NAND_BOOTOS_BLK
+
+		Define this with the base block number of U-Boot image located
+		in NAND device
+
+		CONFIG_NAND_BOOTOS_CNT
+
+		Define this with the block numbers upto which U-Boot image is
+		tried in NAND device. This is importeant because NAND device may
+		contian bad blocks, so the U-Boot image may be located at next
+		block after a bad block.
+
+		CONFIG_PNOR_BOOTOS_ADDR
+
+		Define this with the base address of U-Boot image located in
+		Parallel Nor device
+
+- Serial Ports:
+		Serial Port support is needed in case booting Linux is supported
+
+		CONFIG_PL010_SERIAL
+
+		Define this if you want support for Amba PrimeCell PL010 UARTs.
+
+		CONFIG_PL011_SERIAL
+
+		Define this if you want support for Amba PrimeCell PL011 UARTs.
+
+		CONFIG_PL011_CLOCK
+
+		If you have Amba PrimeCell PL011 UARTs, set this variable to
+		the clock speed of the UARTs.
+
+		CONFIG_PL01x_PORTS
+
+		If you have Amba PrimeCell PL010 or PL011 UARTs on your board,
+		define this to a list of base addresses for each (supported)
+		port. See e.g. include/configs/versatile.h
+
+Building the Software:
+======================
+
+It is assumed that you have GNU cross compiling tools available
+in your path. In this case, you must set the environment variable
+CROSS_COMPILE in your shell. Note that no changes to the Makefile
+or any other source files are necessary. For example, please enter:
+
+	$ CROSS_COMPILE=arm-ca9-linux-
+	$ export CROSS_COMPILE
+
+Xloader is intended to be simple to build. After installing the
+sources you must configure Xloader for one specific board type. This
+is done by typing:
+
+	make NAME_config
+
+where "NAME_config" is the name of one of the existing configu-
+rations; see the main Makefile for supported names.
+
+Note: "NAME" with _usbtty option builds the image for Flashing Utility ddr
+driver.
+
+Finally, type "make all", and you should get some working Xloader
+images ready for download to / installation on your system:
+
+- "xloader.bin" is a raw binary image
+- "xloader" is an image in ELF binary format
+- "xloader.srec" is in Motorola S-Record format
+
+Please be aware that the Makefiles assume you are using GNU make, so
+for instance on NetBSD you might need to use "gmake" instead of
+native "make".
