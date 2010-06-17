@@ -111,7 +111,10 @@ u32 find_rdlvl_value(u32 *start, u32 *end)
 	return rdlvl_value;
 
 error:
-	goto error;
+	/*
+	 * Reset the system in case of a leveling error
+	 */
+	reset_cpu(0);
 }
 
 void lvl_read(void)

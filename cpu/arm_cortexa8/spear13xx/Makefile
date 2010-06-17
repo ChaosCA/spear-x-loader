@@ -25,7 +25,7 @@ include $(TOPDIR)/config.mk
 
 LIB	= $(obj)lib$(SOC).a
 
-COBJS-y = 
+COBJS-y = reset.o
 SOBJS-y	= cache.o
 
 COBJS	:= $(COBJS-y)

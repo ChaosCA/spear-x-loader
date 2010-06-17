@@ -63,6 +63,7 @@ void	hang		(void) __attribute__ ((noreturn));
 void	boot		(void);
 void	boot_kernel	(funcp image) __attribute__ ((noreturn));
 int	serial_init	(void);
+void	reset_cpu	(ulong ignored) __attribute__ ((noreturn));
 
 /*
  * plat/xxx/xxx definitions
