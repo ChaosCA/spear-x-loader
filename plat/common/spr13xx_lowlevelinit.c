@@ -121,7 +121,7 @@ static void pll_init(void)
 		;
 	writel(readl(&misc_p->usbphy_gen_cfg) |
 		AUTOPPD_ON_OVRCURR | UTMI_XFER_RST0 | UTMI_XFER_RST1 |
-		UTMI_XFER_RST0 | USB_BURST_INCR16,
+		UTMI_XFER_RST2 | USB_BURST_INCR16,
 		&misc_p->usbphy_gen_cfg);
 
 	/* wait for pll locks */
