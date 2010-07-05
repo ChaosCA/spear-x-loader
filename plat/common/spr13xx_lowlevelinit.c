@@ -119,6 +119,10 @@ static void pll_init(void)
 	writel(usbphycfg, &misc_p->usbphy_gen_cfg);
 	while (!(readl(&misc_p->usbphy_gen_cfg) & USB_PLL_LOCK))
 		;
+	writel(readl(&misc_p->usbphy_gen_cfg) |
+		AUTOPPD_ON_OVRCURR | UTMI_XFER_RST0 | UTMI_XFER_RST1 |
+		UTMI_XFER_RST0 | USB_BURST_INCR16,
+		&misc_p->usbphy_gen_cfg);
 
 	/* wait for pll locks */
 	while (!(readl(&misc_p->pll1_ctr) & PLLLOCK))

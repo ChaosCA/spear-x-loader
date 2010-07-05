@@ -263,11 +263,16 @@ struct misc_regs {
 
 /* usbphy_gen_cfg definitions */
 #define COMMON_PWDN				(1 << 0)
+#define AUTOPPD_ON_OVRCURR			(1 << 5)
 #define USBPHY_POR				(1 << 12)
 #define USBPHY_RST				(1 << 13)
 #define UTMI_XFER_RST0				(1 << 14)
 #define UTMI_XFER_RST1				(1 << 15)
 #define UTMI_XFER_RST2				(1 << 16)
+#define USB_BURST_INCRX				(1 << 17)
+#define USB_BURST_INCR4				(1 << 18)
+#define USB_BURST_INCR8				(1 << 19)
+#define USB_BURST_INCR16			(1 << 20)
 #define USB_PLL_LOCK				(1 << 27)
 
 #endif
