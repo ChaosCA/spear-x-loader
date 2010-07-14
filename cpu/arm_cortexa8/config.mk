@@ -20,10 +20,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 # MA 02111-1307 USA
 #
-PLATFORM_RELFLAGS += -fno-common -msoft-float
+PLATFORM_RELFLAGS += -fno-common -mhard-float
 
 # Make ARMv7a.
-PLATFORM_CPPFLAGS += -march=armv7a
+PLATFORM_CPPFLAGS += -march=armv7-a
 # =========================================================================
 #
 # Supply options according to compiler version
