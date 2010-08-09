@@ -48,6 +48,13 @@
 #define CONFIG_DDR_PLL4			1
 
 /*
+ * DDR frequency selection using PLL4
+ * Select(define to 1) only one out of following list
+ */
+#define CONFIG_DDR_FREQ_400		0
+#define CONFIG_DDR_FREQ_533		1
+
+/*
  * Machine type for SPEAr1300
  */
 #define CONFIG_MACH_TYPE		(2238)

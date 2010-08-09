@@ -104,8 +104,13 @@ static void pll_init(void)
 
 	writel(FREQ_332, &misc_p->pll3_frq);
 	writel(readl(&misc_p->pll3_ctr) | PLLENABLE, &misc_p->pll3_ctr);
-
+#if CONFIG_DDR_FREQ_400
 	writel(FREQ_400, &misc_p->pll4_frq);
+#elif CONFIG_DDR_FREQ_533
+	writel(FREQ_533, &misc_p->pll4_frq);
+#else
+#error Define one of the valid DDR frequency(CONFIG_DDR_FREQ_[533/400])
+#endif
 	/* strobing required for pll4 */
 	writel(0x60A, &misc_p->pll4_ctr);
 	writel(0x60E, &misc_p->pll4_ctr);

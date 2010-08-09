@@ -45,6 +45,7 @@ COBJS-$(CONFIG_SPEAR13XX) += spear13xx.o
 COBJS-$(CONFIG_SPEAR13XX) += spr13xx_lowlevelinit.o
 COBJS-$(CONFIG_SPEAR13XX) += spr13xx_nand.o
 COBJS-$(CONFIG_SPEAR13XX) += spr13xx_mt41j64m16la187e_400_cl6_dqs_dq_term_en.o
+COBJS-$(CONFIG_SPEAR13XX) += spr13xx_mt41j64m16la187e_533_cl7_dqs_dq_term_en.o
 COBJS-$(CONFIG_SPEAR13XX) += spr13xx_swlvl.o
 COBJS-$(CONFIG_SPEAR13XX) += spr13xx_lvl_read.o
 COBJS-$(CONFIG_SPEAR13XX) += spr13xx_lvl_write.o
