@@ -248,6 +248,7 @@ struct misc_regs {
 #define PERIPH2_CLK_ALL				(0xFFFFFFFF)
 #define PERIPH1_RST_ALL				(0x00000000)
 #define PERIPH2_RST_ALL				(0x00000000)
+#define RAS_RST_ALL				(0x00000000)
 
 /* ddr_pad_cfg definitions */
 #define DDR3_SW_SEL				(1 << 0)

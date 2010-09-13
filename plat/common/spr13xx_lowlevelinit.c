@@ -192,6 +192,8 @@ void lowlevel_init(void)
 	writel(PERIPH1_RST_ALL, &misc_p->perip1_sw_rst);
 	writel(PERIPH2_RST_ALL, &misc_p->perip2_sw_rst);
 
+	writel(RAS_RST_ALL, &misc_p->ras_sw_rst);
+
 	/* Initialize MPMC */
 	mpmc_init();
 
