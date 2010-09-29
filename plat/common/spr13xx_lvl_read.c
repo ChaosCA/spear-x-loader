@@ -111,8 +111,13 @@ u32 find_rdlvl_value(u32 *start, u32 *end)
 	return rdlvl_value;
 
 error:
+	/* loop infinitly on read levelling error else it gets un-noticed */
+	while (1)
+		;
+
 	/*
-	 * Reset the system in case of a leveling error
+	 * other possibility is to reset the system
+	 * in case of a leveling error
 	 */
 	reset_cpu(0);
 }
@@ -120,6 +125,8 @@ error:
 void lvl_read(void)
 {
 	u8 resp_array[DATA_SLICE_MAX][RDLVL_DELAY_VALS][2];
+	u32 i, j, k;
+	u32 count = 0;
 	u32 *phy_ctrl_reg0 = &mpmc_p->reg124;
 	u32 *phy_ctrl_reg2 = &mpmc_p->reg135;
 	u32 *phy_ctrl_reg3 = &mpmc_p->reg140;
@@ -130,6 +137,11 @@ void lvl_read(void)
 	writel_field(0xffff, 0xffff, &mpmc_p->reg182);
 	writel_field(0x10 << 16, 0xff << 16, &mpmc_p->reg64);
 	writel_field(0x12 << 8, 0xff << 8, &mpmc_p->reg59);
+
+	for (i = 0; i < DATA_SLICE_MAX; i++)
+		for (j = 0; j < RDLVL_DELAY_VALS; j++)
+			for (k = 0; k < 2; k++)
+				resp_array[i][j][k] = 0x0;
 
 	for (slice = 0; slice < DATA_SLICE_MAX; slice++) {
 		writel_field(0x21 << 14, 0x3F << 14, phy_ctrl_reg0 + slice);
@@ -145,21 +157,20 @@ void lvl_read(void)
 
 	swlvl_load();
 	wait_op_done();
+	for (count = 0; count < 100; count++) {
+		for (slice = 0; slice < DATA_SLICE_MAX; slice++) {
+			for (rdlvl_edge = 0; rdlvl_edge <= 1; rdlvl_edge++) {
+				writel_field(rdlvl_edge << 0, 1 << 0, &mpmc_p->reg7);
+				for (delay_vals = 0; delay_vals < RDLVL_DELAY_VALS; delay_vals++) {
+					prog_rdlvl_delay(slice, delay_vals + RDLVL_DELAY_INIT);
+					swlvl_load();
+					wait_op_done();
 
-	for (slice = 0; slice < DATA_SLICE_MAX; slice++) {
-		for (rdlvl_edge = 0; rdlvl_edge <= 1; rdlvl_edge++) {
-			writel_field(rdlvl_edge << 0, 1 << 0, &mpmc_p->reg7);
-			for (delay_vals = 0; delay_vals < RDLVL_DELAY_VALS;
-					delay_vals++) {
-				prog_rdlvl_delay(slice, delay_vals + RDLVL_DELAY_INIT);
-				swlvl_load();
-				wait_op_done();
-
-				resp_array[slice][delay_vals][rdlvl_edge] = read_resp(slice);
+					resp_array[slice][delay_vals][rdlvl_edge] |= read_resp(slice);
+				}
 			}
 		}
 	}
-
 	for (slice = 0; slice < DATA_SLICE_MAX; slice++) {
 		for (rdlvl_edge = 0; rdlvl_edge <= 1; rdlvl_edge++) {
 			start_point_found = 0;
@@ -169,7 +180,7 @@ void lvl_read(void)
 					start_point_found = 1;
 				}
 				if ((resp_array[slice][delay_vals][0] != 0) && start_point_found) {
-					end_point_0[rdlvl_edge] = delay_vals + RDLVL_DELAY_INIT;
+					end_point_0[rdlvl_edge] = delay_vals + RDLVL_DELAY_INIT - 1;
 					break;
 				}
 			}

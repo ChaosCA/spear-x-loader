@@ -41,7 +41,7 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x00000000,		/* ; DENALI_CTL_07 */
 	0x00000000,		/* ; DENALI_CTL_08 */
 	0x00000000,		/* ; DENALI_CTL_09 */
-	/* 0x00000100, */	/* ; DENALI_CTL_10 VM : half data path */
+	/*0x00000100, */	/* ; DENALI_CTL_10 VM : half data path */
 	0x00000000,		/* ; DENALI_CTL_10 */
 	0x00000101,		/* ; DENALI_CTL_11 */
 	0x00000101,		/* ; DENALI_CTL_12 */
@@ -110,7 +110,7 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x10331033,		/* ; DENALI_CTL_69 */
 	0x10331033,		/* ; DENALI_CTL_70 */
 	0x08300830,		/* ; DENALI_CTL_71 */
-	0x00460046,		/* ; DENALI_CTL_72 */
+	0x00060006,		/* ; DENALI_CTL_72 */
 	0x00080008,		/* ; DENALI_CTL_73 */
 	0x00000000,		/* ; DENALI_CTL_74 */
 	0xff005555,		/* ; DENALI_CTL_75 */
@@ -150,7 +150,7 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x00000001,		/* ; DENALI_CTL_109 */
 	0x00000001,		/* ; DENALI_CTL_110 */
 	0x00000001,		/* ; DENALI_CTL_111 */
-	0x00000006,		/* ; DENALI_CTL_112 */
+	0x000fffff,		/* ; DENALI_CTL_112 */
 	0x00000000,		/* ; DENALI_CTL_113 */
 	0x00040ee6,		/* ; DENALI_CTL_114 */
 	0x00000050,		/* ; DENALI_CTL_115 */
