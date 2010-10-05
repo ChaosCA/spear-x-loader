@@ -102,11 +102,8 @@ void lvl_gatetrn(void)
 		set_gate_parms(++gate_counter, slice);
 
 		if ((resp = read_resp(slice)) == 0) {
-			do {
-				prelim_preamble_start = gate_counter;
-				set_gate_parms(++gate_counter, slice);
-			} while (read_resp(slice) == 0);
-
+			prelim_preamble_start = gate_counter;
+			set_gate_parms_resp(&gate_counter, slice, 0);
 			prelim_rise_edge = gate_counter;
 		} else if (resp == 1) {
 			set_gate_parms_resp(&gate_counter, slice, 1);
