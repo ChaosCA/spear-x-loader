@@ -127,8 +127,8 @@ step_14:
 			prelim_fall_edge = gate_counter;
 		}
 
-		if ((prelim_fall_edge - prelim_rise_edge < 3) ||
-			(prelim_fall_edge - prelim_rise_edge > 5)) {
+		if ((prelim_fall_edge - prelim_rise_edge < 2) ||
+			(prelim_fall_edge - prelim_rise_edge > 6)) {
 
 			prelim_preamble_start = gate_counter;
 
@@ -138,8 +138,8 @@ step_14:
 			goto step_14;
 		}
 
-		if ((prelim_fall_edge - prelim_rise_edge >= 3) &&
-			(prelim_fall_edge - prelim_rise_edge <= 5)) {
+		if ((prelim_fall_edge - prelim_rise_edge >= 2) &&
+			(prelim_fall_edge - prelim_rise_edge <= 6)) {
 
 			prelim_dqs_low_start = gate_counter;
 
@@ -147,8 +147,8 @@ step_14:
 			prelim_dqs_low_end = gate_counter;
 		}
 
-		if ((prelim_dqs_low_end - prelim_dqs_low_start < 3) ||
-			(prelim_dqs_low_end - prelim_dqs_low_start > 5)) {
+		if ((prelim_dqs_low_end - prelim_dqs_low_start < 2) ||
+			(prelim_dqs_low_end - prelim_dqs_low_start > 6)) {
 
 			set_gate_parms_resp(&gate_counter, slice, 1);
 			prelim_preamble_start = gate_counter;
@@ -159,8 +159,8 @@ step_14:
 			goto step_14;
 		}
 
-		if ((prelim_dqs_low_end - prelim_dqs_low_start >= 3) &&
-			(prelim_dqs_low_end - prelim_dqs_low_start <= 5)) {
+		if ((prelim_dqs_low_end - prelim_dqs_low_start >= 2) &&
+			(prelim_dqs_low_end - prelim_dqs_low_start <= 6)) {
 
 			final_gate_counter[slice] = prelim_rise_edge;
 		}
