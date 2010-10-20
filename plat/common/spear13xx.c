@@ -53,17 +53,14 @@ void soc_init(void)
 	cpu2_wake();
 
 	/*
-	 * Enabling the filtering on SCU as well as L2 cache controller level.
+	 * Enabling the filtering at L2 cache controller level.
 	 * This code limits the address range which can be accessed through the
 	 * two ports coming out of ARM core.
 	 *
 	 * Port 0 access -> All - (Port 1 access range)
-	 * Port 1 access -> 0x0 - 0x8000000 (128MB) Half the physical DDR
+	 * Port 1 access -> 0x0 - 0x4000,0000 (1GB) all DDR space
 	 * available on evaluation board
 	 */
-	writel(CONFIG_SPEAR_FLTSTART, CONFIG_SPEAR_CORTEXBASE + 0x40);
-	writel(CONFIG_SPEAR_FLTEND, CONFIG_SPEAR_CORTEXBASE + 0x44);
-	writel(0x2, CONFIG_SPEAR_CORTEXBASE + 0x0);
 
 	/* L2 cache controller filtering registers */
 	writel(CONFIG_SPEAR_FLTEND, CONFIG_SPEAR_L2CCBASE + 0xC04);
