@@ -24,7 +24,9 @@
 #include <common.h>
 #include <asm/io.h>
 #include <asm/arch/spr13xx_mpmc.h>
-
+#define MIN_1_8TH_CYCLE_PREAMBLE	6
+#define MIN_NO_OF_1_8TH_CYCLE		2
+#define MAX_NO_OF_1_8TH_CYCLE		6
 static struct mpmc_regs *mpmc_p = (struct mpmc_regs *)CONFIG_SPEAR_MPMCBASE;
 
 static void prog_rdlvl_gate_delay(u32 slice, u32 delay)
@@ -114,7 +116,7 @@ void lvl_gatetrn(void)
 		}
 
 step_14:
-		while (prelim_rise_edge - prelim_preamble_start < 6) {
+		while (prelim_rise_edge - prelim_preamble_start < MIN_1_8TH_CYCLE_PREAMBLE) {
 			set_gate_parms_resp(&gate_counter, slice, 1);
 			prelim_preamble_start = gate_counter;
 
@@ -122,13 +124,13 @@ step_14:
 			prelim_rise_edge = gate_counter;
 		}
 
-		if (prelim_rise_edge - prelim_preamble_start >= 6) {
+		if (prelim_rise_edge - prelim_preamble_start >= MIN_1_8TH_CYCLE_PREAMBLE) {
 			set_gate_parms_resp(&gate_counter, slice, 1);
 			prelim_fall_edge = gate_counter;
 		}
 
-		if ((prelim_fall_edge - prelim_rise_edge < 2) ||
-			(prelim_fall_edge - prelim_rise_edge > 6)) {
+		if ((prelim_fall_edge - prelim_rise_edge < MIN_NO_OF_1_8TH_CYCLE) ||
+			(prelim_fall_edge - prelim_rise_edge > MAX_NO_OF_1_8TH_CYCLE)) {
 
 			prelim_preamble_start = gate_counter;
 
@@ -138,8 +140,8 @@ step_14:
 			goto step_14;
 		}
 
-		if ((prelim_fall_edge - prelim_rise_edge >= 2) &&
-			(prelim_fall_edge - prelim_rise_edge <= 6)) {
+		if ((prelim_fall_edge - prelim_rise_edge >= MIN_NO_OF_1_8TH_CYCLE) &&
+			(prelim_fall_edge - prelim_rise_edge <= MAX_NO_OF_1_8TH_CYCLE)) {
 
 			prelim_dqs_low_start = gate_counter;
 
@@ -147,8 +149,8 @@ step_14:
 			prelim_dqs_low_end = gate_counter;
 		}
 
-		if ((prelim_dqs_low_end - prelim_dqs_low_start < 2) ||
-			(prelim_dqs_low_end - prelim_dqs_low_start > 6)) {
+		if ((prelim_dqs_low_end - prelim_dqs_low_start < MIN_NO_OF_1_8TH_CYCLE) ||
+			(prelim_dqs_low_end - prelim_dqs_low_start > MAX_NO_OF_1_8TH_CYCLE)) {
 
 			set_gate_parms_resp(&gate_counter, slice, 1);
 			prelim_preamble_start = gate_counter;
@@ -159,8 +161,8 @@ step_14:
 			goto step_14;
 		}
 
-		if ((prelim_dqs_low_end - prelim_dqs_low_start >= 2) &&
-			(prelim_dqs_low_end - prelim_dqs_low_start <= 6)) {
+		if ((prelim_dqs_low_end - prelim_dqs_low_start >= MIN_NO_OF_1_8TH_CYCLE) &&
+			(prelim_dqs_low_end - prelim_dqs_low_start <= MAX_NO_OF_1_8TH_CYCLE)) {
 
 			final_gate_counter[slice] = prelim_rise_edge;
 		}
