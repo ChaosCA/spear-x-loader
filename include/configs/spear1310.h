@@ -37,6 +37,7 @@
  * DDR configuration is based on the following selection
  */
 #define CONFIG_DDR_MT41J64M16		1
+#define CONFIG_DDR_MT41J128M8		0
 
 /*
  * DDR frequency selection
