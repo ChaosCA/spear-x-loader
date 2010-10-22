@@ -67,7 +67,7 @@ static void mpmc_init_values(void)
 	 * MPMC register25 rewrite
 	 * MPMC controller start
 	 */
-	writel(0x03030305, &mpmc_reg_p[25]);
+	writel(0x03070700, &mpmc_reg_p[25]);
 	writel(0x01000101, &mpmc_reg_p[11]);
 
 	while (!(readl(&mpmc_reg_p[105]) & 0x100))
