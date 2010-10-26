@@ -21,7 +21,7 @@
 # MA 02111-1307 USA
 #
 
-VERSION = 2009
+VERSION = 2010
 PATCHLEVEL = 06
 SUBLEVEL =
 EXTRAVERSION =
@@ -116,9 +116,19 @@ $(obj)xloader.srec:	$(obj)xloader
 $(obj)xloader.bin:	$(obj)xloader
 		$(OBJCOPY) ${OBJCFLAGS} -O binary $< $@
 
+ifeq ("$(SOC)","spear13xx")
 $(obj)xloader.img:	$(obj)xloader.bin
 		mkimage -A $(ARCH) -T firmware -C none \
-		-a $(TEXT_BASE) -e $(TEXT_BASE) -n XLOADER -d $< $@
+		-a $(TEXT_BASE) -e $(TEXT_BASE) \
+		-n $(shell sed -n -e 's/.*XLOADER_VERSION//p' $(VERSION_FILE) | \
+			sed -e 's/"[	 ]*$$/ for $(PLAT) board"/') \
+		-d $< $@
+else
+$(obj)xloader.img:	$(obj)xloader.bin
+		mkimage -A $(ARCH) -T firmware -C none \
+		-a $(TEXT_BASE) -e $(TEXT_BASE) -n XLOADER \
+		-d $< $@
+endif
 
 $(obj)xloader.code:	$(obj)xloader
 		$(OBJDUMP) -D $< > $@
@@ -143,7 +153,8 @@ $(LDSCRIPT):	depend
 		$(MAKE) -C $(dir $@) $(notdir $@)
 
 $(VERSION_FILE):
-		@( printf '#define XLOADER_VERSION "Xloader %s%s"\n' "$(XLOADER_VERSION)" ) > $@.tmp
+		@( printf '#define XLOADER_VERSION "Xloader %s%s"\n' "$(XLOADER_VERSION)" \
+		 '$(shell $(TOPDIR)/tools/setlocalversion $(TOPDIR))' ) > $@.tmp
 		@cmp -s $@ $@.tmp && rm -f $@.tmp || mv -f $@.tmp $@
 
 $(TIMESTAMP_FILE):
