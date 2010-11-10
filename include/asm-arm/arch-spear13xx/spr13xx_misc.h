@@ -223,10 +223,9 @@ struct misc_regs {
 #define OSCI_TIM				(0xff << 3)
 
 /* pll_freq definitions in MHz */
-#define FREQ_1000				(0xFA000106)
+#define FREQ_1000				(0x7D000006)
 #define FREQ_996				(0x53000004)
 #define FREQ_533				(0x6F000105)
-#define FREQ_500				(0x7D000203)
 #define FREQ_400				(0x64000203)
 #define FREQ_332				(0x53000203)
 #define FREQ_250				(0x7D000303)
