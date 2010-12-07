@@ -24,7 +24,7 @@
 #include <common.h>
 
 #if defined(CONFIG_SPEAR13XX) && \
-	(CONFIG_DDR_MT41J128M8) && (CONFIG_DDR_FREQ_533)
+	(CONFIG_DDR_MT41J256M8) && (CONFIG_DDR_FREQ_533)
 const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x00000101,
 	0x00000100,
