@@ -52,8 +52,8 @@
  * DDR frequency selection using PLL4
  * Select(define to 1) only one out of following list
  */
-#define CONFIG_DDR_FREQ_400		1
-#define CONFIG_DDR_FREQ_533		0
+#define CONFIG_DDR_FREQ_400		0
+#define CONFIG_DDR_FREQ_533		1
 
 /*
  * Machine type for SPEAr900
