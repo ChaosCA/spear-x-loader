@@ -41,20 +41,18 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x00000000,		/* ; DENALI_CTL_07 */
 	0x00000000,		/* ; DENALI_CTL_08 */
 	0x00000000,		/* ; DENALI_CTL_09 */
-	/*0x00000100, */	/* ; DENALI_CTL_10 VM : half data path */
 	0x00000000,		/* ; DENALI_CTL_10 */
 	0x00000101,		/* ; DENALI_CTL_11 */
 	0x00000101,		/* ; DENALI_CTL_12 */
 	0x01010000,		/* ; DENALI_CTL_13 */
-	0x00000000,		/* ; DENALI_CTL_14 VM : Bit 16 is write_mode_REG, just
-				   for information. */
+	0x00000000,		/* ; DENALI_CTL_14 VM:Bit 16 is write_mode_REG*/
 	0x01000000,		/* ; DENALI_CTL_15 */
 	0x00000000,		/* ; DENALI_CTL_16 */
 	0x00000000,		/* ; DENALI_CTL_17 */
 	0x00000001,		/* ; DENALI_CTL_18 VM : Only one chip select enabled. */
 	/* 0x00000203, */	/* ; DENALI_CTL_18 ECC removed */
-	/* 0x01020102, */	/* ; DENALI_CTL_19 VM : CS2 termination enable when CS1
-				   reas/write taking place & vice-versa. */
+	/* 0x01020102, */	/* ; DENALI_CTL_19 VM : CS2 termination enable
+				 when CS1 reas/write taking place & vice-versa*/
 	0x02010102,		/* ; DENALI_CTL_19 */
 	0x00020000,		/* ; DENALI_CTL_20 */
 	0x07070002,		/* ; DENALI_CTL_21 */
@@ -150,12 +148,11 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x00000001,		/* ; DENALI_CTL_109 */
 	0x00000001,		/* ; DENALI_CTL_110 */
 	0x00000001,		/* ; DENALI_CTL_111 */
-	0x000fffff,		/* ; DENALI_CTL_112 */
+	0x0000ffff,		/* ; DENALI_CTL_112 */
 	0x00000000,		/* ; DENALI_CTL_113 */
 	0x00040ee6,		/* ; DENALI_CTL_114 */
 	0x00000050,		/* ; DENALI_CTL_115 */
-	/* 0x00000050, */	/* ; DENALI_CTL_116 */
-	0xE1200070,		/* ; DENALI_CTL_116 */
+	0x00000050,		/* ; DENALI_CTL_116 */
 	0x00000050,		/* ; DENALI_CTL_117 */
 	0x00000050,		/* ; DENALI_CTL_118 */
 	0x00000050,		/* ; DENALI_CTL_119 */
@@ -163,17 +160,17 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x00000000,		/* ; DENALI_CTL_121 */
 	0x00000000,		/* ; DENALI_CTL_122 */
 	0x000f1133,		/* ; DENALI_CTL_123 */
-	0x00386100,		/* ; DENALI_CTL_124 */
-	0x00386100,		/* ; DENALI_CTL_125 */
-	0x00386100,		/* ; DENALI_CTL_126 */
-	0x00386100,		/* ; DENALI_CTL_127 */
-	0x00386100,		/* ; DENALI_CTL_128 */
-	0x00200002,		/* ; DENALI_CTL_129 */
+	0x00304001,		/* DENALI_CTL_124 */
+	0x00304001,		/* DENALI_CTL_125 */
+	0x00304001,		/* DENALI_CTL_126 */
+	0x00304001,		/* DENALI_CTL_127 */
+	0x00304001,		/* DENALI_CTL_128 */
+	0x00000002,		/* ; DENALI_CTL_129 */
 	0x2288a108,		/* ; DENALI_CTL_130 */
 	0x2288a108,		/* ; DENALI_CTL_131 */
-	0x2288a210,		/* ; DENALI_CTL_132 */
+	0x2288a108,		/* ; DENALI_CTL_132 */
 	0x2288a108,		/* ; DENALI_CTL_133 */
-	0x2288a210,		/* ; DENALI_CTL_134 */
+	0x2288a108,		/* ; DENALI_CTL_134 */
 	0x01000000,		/* ; DENALI_CTL_135 */
 	0x01000000,		/* ; DENALI_CTL_136 */
 	0x01000000,		/* ; DENALI_CTL_137 */
@@ -184,21 +181,21 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x01000000,		/* ; DENALI_CTL_142 */
 	0x01000000,		/* ; DENALI_CTL_143 */
 	0x01000000,		/* ; DENALI_CTL_144 */
-	0x01249249,		/* ; DENALI_CTL_145 */
-	0x01249249,		/* ; DENALI_CTL_146 */
-	0x036db6db,		/* ; DENALI_CTL_147 */
-	0x01249249,		/* ; DENALI_CTL_148 */
-	0x036db6db,		/* ; DENALI_CTL_149 */
-	0x00000108,		/* ; DENALI_CTL_150 */
-	0x00000108,		/* ; DENALI_CTL_151 */
-	0x00000108,		/* ; DENALI_CTL_152 */
-	0x00000108,		/* ; DENALI_CTL_153 */
-	0x00000108,		/* ; DENALI_CTL_154 */
-	0x2494a141,		/* ; DENALI_CTL_155 */
-	0x2494a141,		/* ; DENALI_CTL_156 */
-	0x2494a141,		/* ; DENALI_CTL_157 */
-	0x2494a141,		/* ; DENALI_CTL_158 */
-	0x2494a141,		/* ; DENALI_CTL_159 */
+	0x06db6db6,		/* DENALI_CTL_145 */
+	0x06db6db6,		/* DENALI_CTL_146 */
+	0x06db6db6,		/* DENALI_CTL_147 */
+	0x06db6db6,		/* DENALI_CTL_148 */
+	0x06db6db6,		/* DENALI_CTL_149 */
+	0x00000000,		/* ; DENALI_CTL_150 */
+	0x00000000,		/* ; DENALI_CTL_151 */
+	0x00000000,		/* ; DENALI_CTL_152 */
+	0x00000000,		/* ; DENALI_CTL_153 */
+	0x00000000,		/* ; DENALI_CTL_154 */
+	0x2494a249,		/* ; DENALI_CTL_155 */
+	0x2494a249,		/* ; DENALI_CTL_156 */
+	0x2494a249,		/* ; DENALI_CTL_157 */
+	0x2494a249,		/* ; DENALI_CTL_158 */
+	0x2494a249,		/* ; DENALI_CTL_159 */
 	0x04803219,		/* ; DENALI_CTL_160 */
 	0x04803219,		/* ; DENALI_CTL_161 */
 	0x04803219,		/* ; DENALI_CTL_162 */

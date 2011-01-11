@@ -37,7 +37,7 @@
  * DDR configuration is based on the following selection
  */
 #define CONFIG_DDR_MT41J64M16		1
-#define CONFIG_DDR_MT41J128M8		0
+#define CONFIG_DDR_MT41J256M8		0
 
 /*
  * DDR frequency selection
@@ -52,8 +52,8 @@
  * DDR frequency selection using PLL4
  * Select(define to 1) only one out of following list
  */
-#define CONFIG_DDR_FREQ_400		1
-#define CONFIG_DDR_FREQ_533		0
+#define CONFIG_DDR_FREQ_400		0
+#define CONFIG_DDR_FREQ_533		1
 
 /*
  * Machine type for SPEAr1310
