@@ -54,6 +54,7 @@ COBJS-$(CONFIG_SPEAR13XX) += spr13xx_lvl_write.o
 COBJS-$(CONFIG_SPEAR13XX) += spr13xx_lvl_gatetrn.o
 
 SOBJS-$(CONFIG_SPEAR13XX) += spr13xx_wakeup.o
+SOBJS-$(CONFIG_SPEAR13XX) += cache.o
 
 SOBJS	:= $(SOBJS-y)
 COBJS	:= $(COBJS-y)

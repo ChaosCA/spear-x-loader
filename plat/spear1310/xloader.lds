@@ -29,7 +29,7 @@ OUTPUT_ARCH(arm)
 ENTRY(_start)
 SECTIONS
 {
-	. = 0xB3802000;
+	. = 0xB3801300;
 
 	. = ALIGN(4);
 	.text :
@@ -50,8 +50,14 @@ SECTIONS
 	.bss . :
 	{ *(.bss) }
 
-	. = 0xB3804FF0;
+	. = 0xB3803FF0;
 	. = ALIGN(4);
 	.table . :
 	{*(.table); . = ALIGN(4);}
+
+	.= 0xB3804000;
+	. = ALIGN(0x4000);
+      /* Reserving an Area of 0x4000 for TLB in main memory */
+      . += 0x4000;
+	__TLB_TOP = .;
 }

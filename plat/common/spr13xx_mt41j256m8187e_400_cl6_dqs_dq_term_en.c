@@ -44,7 +44,7 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x01000000,
 	0x00000000,
 	0x00000000,
-	0x00000201,
+	0x00000001,
 	0x02010102,
 	0x00020000,
 	0x03030000,
@@ -87,7 +87,7 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x03000000,
 	0x03030c03,
 	0x060f0c04,
-	0x00006440, /*VM sshould  be 0x56  for 187E*/
+	0x00006456, /*VM sshould  be 0x56  for 187E*/
 	0x00640064,
 	0x00640064,
 	0x000f0064,

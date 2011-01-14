@@ -56,6 +56,12 @@
 #define CONFIG_DDR_FREQ_533		1
 
 /*
+ * DDR ECC Enable selection.
+ * Select(define to 1).
+ */
+#define DDR_ECC_ENABLE			0
+
+/*
  * Machine type for SPEAr900
  */
 #define CONFIG_MACH_TYPE		(3061)

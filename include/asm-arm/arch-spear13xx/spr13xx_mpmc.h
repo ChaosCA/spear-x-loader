@@ -238,7 +238,7 @@ struct mpmc_regs {
 };
 
 #define PHY_CTRL_DELAY			200
-#define DATA_SLICE_MAX			4
+#define DATA_SLICE_MAX			5
 #define WRLVL_DELAY_MAX			8
 #define RDLVL_DELAY_VALS		8
 #define RDLVL_DELAY_INIT		4
