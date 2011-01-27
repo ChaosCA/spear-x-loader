@@ -47,11 +47,11 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x00000001,
 	0x02010102,
 	0x00020000,
-	0x03030000,
-	0x02030301,
-	0x03030303,
-	0x03030403,
-	0x03030305,
+	0x07070000,	/* Changing DB9000AXI priority to high */
+	0x00070700,	/* due to flickering issue on display */
+	0x07000707,	/* form DENALI_CTL_21 to DENALI_CTL_25 */
+	0x00000007,
+	0x03070700,
 	0x00000400,
 	0x02000100,
 	0x04030402,
