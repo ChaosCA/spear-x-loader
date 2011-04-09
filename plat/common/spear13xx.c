@@ -94,9 +94,12 @@ int snor_boot_selected(void)
 {
 	if (snor_boot_supported()) {
 		/* Check whether SNOR boot is selected */
-		if (CONFIG_SPEAR_SNORBOOT == read_bootstrap()) {
+#ifdef CONFIG_SPEAR1340
+		if (CONFIG_SPEAR_SNORBOOT_DEFUART == read_bootstrap())
+#else
+		if (CONFIG_SPEAR_SNORBOOT == read_bootstrap())
+#endif
 			return TRUE;
-		}
 	}
 	return FALSE;
 }
@@ -105,9 +108,12 @@ int nand_boot_selected(void)
 {
 	if (nand_boot_supported()) {
 		/* Check whether NAND boot is selected */
-		if (CONFIG_SPEAR_NANDBOOT == read_bootstrap()) {
+#ifdef CONFIG_SPEAR1340
+		if (CONFIG_SPEAR_NANDBOOT_DEFUART == read_bootstrap())
+#else
+		if (CONFIG_SPEAR_NANDBOOT == read_bootstrap())
+#endif
 			return TRUE;
-		}
 	}
 	return FALSE;
 }
@@ -116,9 +122,12 @@ int pnor_boot_selected(void)
 {
 	if (pnor_boot_supported()) {
 		/* Check whether SNOR boot is selected */
-		if (CONFIG_SPEAR_PNORBOOT == read_bootstrap()) {
+#ifdef CONFIG_SPEAR1340
+		if (CONFIG_SPEAR_PNORBOOT_DEFUART == read_bootstrap())
+#else
+		if (CONFIG_SPEAR_SNORBOOT == read_bootstrap())
+#endif
 			return TRUE;
-		}
 	}
 	return FALSE;
 }
@@ -127,15 +136,21 @@ int usb_boot_selected(void)
 {
 	if (usb_boot_supported()) {
 		/* Check whether SNOR boot is selected */
-		if (CONFIG_SPEAR_USBBOOT == read_bootstrap()) {
+		if (CONFIG_SPEAR_USBBOOT == read_bootstrap())
 			return TRUE;
-		}
 	}
 	return FALSE;
 }
 
 int mmc_boot_selected(void)
 {
+	if (mmc_boot_supported()) {
+		/* Check whether MMC boot is selected */
+#ifdef CONFIG_SPEAR1340
+		if (CONFIG_SPEAR_MMCBOOT == read_bootstrap())
+			return TRUE;
+#endif
+	}
 	return FALSE;
 }
 

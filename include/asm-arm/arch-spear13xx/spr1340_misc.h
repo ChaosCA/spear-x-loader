@@ -1,6 +1,6 @@
 /*
  * (C) Copyright 2000-2009
- * Vipin Kumar, ST Microelectronics, vipin.kumar@st.com
+ * Vipul Kumar Samar, ST Microelectronics, vipulkumar.samar@st.com
  *
  * See file CREDITS for list of people who contributed to this
  * project.
@@ -21,14 +21,8 @@
  * MA 02111-1307 USA
  */
 
-#ifndef __SPR13XX_MISC_H
-#define __SPR13XX_MISC_H
-
-#include <common.h>
-
-#ifdef CONFIG_SPEAR1340
-#include <asm/arch/spr1340_misc.h>
-#else
+#ifndef __SPR1340_MISC_H
+#define __SPR1340_MISC_H
 
 struct misc_regs {
 	u32 soc_cfg;				/* 0x000 */
@@ -57,44 +51,57 @@ struct misc_regs {
 	u32 pll4_mod;				/* 0x240 */
 	u32 perip_clk_cfg;			/* 0x244 */
 	u32 gmac_clk_cfg;			/* 0x248 */
-	u32 c3_clk_synt;			/* 0x24c */
-	u32 clcd_clk_synt;			/* 0x250 */
-	u32 uart_clk_synt;			/* 0x254 */
-	u32 gmac_clk_synt;			/* 0x258 */
-	u32 mcif_sd_clk_synt;			/* 0x25c */
-	u32 mcif_cfxd_clk_synt;			/* 0x260 */
-	u32 ras_clk_synt0;			/* 0x264 */
-	u32 ras_clk_synt1;			/* 0x268 */
-	u32 ras_clk_synt2;			/* 0x26c */
-	u32 ras_clk_synt3;			/* 0x270 */
-	u32 perip1_clk_enb;			/* 0x274 */
-	u32 perip2_clk_enb;			/* 0x278 */
-	u32 perip1_sw_rst;			/* 0x27c */
-	u32 perip2_sw_rst;			/* 0x280 */
-	u32 ras_clk_enb;			/* 0x284 */
-	u32 ras_sw_rst;				/* 0x288 */
-	u32 pll1_synt;				/* 0x28c */
-	u32 i2s_clk_cfg;			/* 0x290 */
-	u8  reserved_3[0x300 - 0x294];
-	u32 dmac_hs_sel;			/* 0x300 */
-	u32 dmac_sel;				/* 0x304 */
-	u32 dmac_flow_sel;			/* 0x308 */
-	u32 dmac_dir_sel;			/* 0x30c */
-	u32 dmac_cfg;				/* 0x310 */
-	u32 usbphy_gen_cfg;			/* 0x314 */
-	u32 usbphy_p1_cfg;			/* 0x318 */
-	u32 usbphy_p2_cfg;			/* 0x31c */
-	u32 usbphy_p3_cfg;			/* 0x320 */
-	u32 pcie_cfg;				/* 0x324 */
-	u32 pcie_miphy_cfg;			/* 0x328 */
-	u32 perip_cfg;				/* 0x32c */
-	u32 fsmc_cfg;				/* 0x330 */
-	u32 mpmc_ctr_sts;			/* 0x334 */
-	u8  reserved_4[0x400 - 0x338];
-	u32 expi_clk_cfg;			/* 0x400 */
-	u32 expi_cfg;				/* 0x404 */
-	u32 expi_dmachs_flex;			/* 0x408 */
-	u8  reserved_5[0x500 - 0x40C];
+	u32 i2s_clk_cfg;			/* 0x24c */
+	u32 c3_clk_synt;			/* 0x250 */
+	u32 uart1_clk_synt;			/* 0x254 */
+	u32 uart2_clk_synt;			/* 0x258 */
+	u32 gmac_clk_synt;			/* 0x25c */
+	u32 mcif_sd_clk_synt;			/* 0x260 */
+	u32 mcif_cfxd_clk_synt;			/* 0x264 */
+	u32 cec1_clk_synt;			/* 0x268 */
+	u32 cec2_clk_synt;			/* 0x26c */
+	u32 adc_clk_synt;			/* 0x270 */
+	u32 amba_clk_sscg;			/* 0x274 */
+	u32 amba_clk_sscg_mod;			/* 0x278 */
+	u32 clcd_clk_sscg;			/* 0x27c */
+	u32 clcd_clk_sscg_mod;			/* 0x280 */
+	u32 cpu_clk_sscg;			/* 0x284 */
+	u32 cpu_clk_sscg_mod;			/* 0x288 */
+	u32 gen_clk_sscg0;			/* 0x28C */
+	u32 gen_clk_sscg0_mod;			/* 0x290 */
+	u32 gen_clk_sscg1;			/* 0x294 */
+	u32 gen_clk_sscg1_mod;			/* 0x298 */
+	u32 gen_clk_sscg2;			/* 0x29c */
+	u8  reserved_3[0x300 - 0x2A0];
+	u32 gen_clk_sscg2_mod;			/* 0x300 */
+	u32 gen_clk_sscg3;			/* 0x304 */
+	u32 gen_clk_sscg3_mod;			/* 0x308 */
+	u32 perip1_clk_enb;			/* 0x30c */
+	u32 perip2_clk_enb;			/* 0x310 */
+	u32 perip3_clk_enb;			/* 0x314 */
+	u32 perip1_sw_rst;			/* 0x318 */
+	u32 perip2_sw_rst;			/* 0x31c */
+	u32 perip3_sw_rst;			/* 0x320 */
+	u8  reserved_4[0x400 - 0x324];
+	u32 dmac_hs_sel;			/* 0x400 */
+	u32 dmac_sel;				/* 0x404 */
+	u32 dmac_flow_sel;			/* 0x408 */
+	u32 dmac_dir_sel;			/* 0x40c */
+	u32 endianess_cfg;			/* 0x410 */
+	u32 usbphy_gen_cfg;			/* 0x414 */
+	u32 usbphy_p1_cfg;			/* 0x418 */
+	u32 usbphy_p2_cfg;			/* 0x41c */
+	u32 usbphy_p3_cfg;			/* 0x420 */
+	u32 pcie_sata_cfg;			/* 0x424 */
+	u32 pcie_miphy_cfg;			/* 0x428 */
+	u32 perip_cfg;				/* 0x42c */
+	u32 fsmc_cfg;				/* 0x430 */
+	u32 mpmc_cfg;				/* 0x434 */
+	u32 mpmc_ctr_sts;			/* 0x438 */
+	u32 sata_core_id;			/* 0x43c */
+	u32 mali_gen_purpose_1;			/* 0x440 */
+	u32 mali_gen_purpose_2;			/* 0x444 */
+	u8  reserved_5[0x500 - 0x448];
 	u32 prc1_lock_ctr;			/* 0x500 */
 	u32 prc2_lock_ctr;			/* 0x504 */
 	u32 prc1_irq_ctr;			/* 0x508 */
@@ -117,23 +124,35 @@ struct misc_regs {
 	u32 pad_pd_cfg_6;			/* 0x634 */
 	u32 pad_pd_cfg_7;			/* 0x638 */
 	u32 pad_pd_cfg_8;			/* 0x63c */
-	u32 pad_sleep_cfg;			/* 0x640 */
-	u32 pad_hyst_cfg;			/* 0x644 */
-	u32 pad_drv_cfg;			/* 0x648 */
-	u32 pad_slew_cfg;			/* 0x64c */
-	u32 pad_function_en_1;			/* 0x650 */
-	u32 pad_function_en_2;			/* 0x654 */
-	u32 pad_function_en_3;			/* 0x658 */
-	u32 ddr_pad_cfg;			/* 0x65c */
-	u8  reserved_8[0x6C4 - 0x660];
-	u32 thsens_cfg;				/* 0x6C4 */
-	u8  reserved_9[0x700 - 0x6C8];
-	u32 comp_1_cfg;				/* 0x700 */
-	u32 comp_2_cfg;				/* 0x704 */
-	u32 comp3v3_1_cfg;			/* 0x708 */
-	u32 comp3v3_2_cfg;			/* 0x70c */
-	u32 compddr_cfg;			/* 0x710 */
-	u8  reserved_10[0x800 - 0x714];
+	u8  reserved_8[0x648 - 0x640];
+	u32 pad_drv_cfg_1;			/* 0x648 */
+	u32 pad_drv_cfg_2;			/* 0x64c */
+	u32 pad_drv_cfg_3;			/* 0x650 */
+	u32 pad_drv_cfg_4;			/* 0x654 */
+	u32 pad_drv_cfg_5;			/* 0x658 */
+	u32 pad_slew_cfg_1;			/* 0x65c */
+	u32 pad_slew_cfg_2;			/* 0x660 */
+	u32 pad_slew_cfg_3;			/* 0x664 */
+	u32 pad_function_en_1;			/* 0x668 */
+	u32 pad_function_en_2;			/* 0x66c */
+	u32 pad_function_en_3;			/* 0x670 */
+	u32 pad_function_en_4;			/* 0x674 */
+	u8  reserved_9[0x690 - 0x678];
+	u32 pad_function_en_5;			/* 0x690 */
+	u32 pad_function_en_6;			/* 0x694 */
+	u32 pad_function_en_7;			/* 0x698 */
+	u32 pad_function_en_8;			/* 0x69c */
+	u32 pad_shared_ip_en_1;			/* 0x6A0 */
+	u32 pad_shared_ip_en_2;			/* 0x6A4 */
+	u32 ddr_pad_cfg;			/* 0x6A8 */
+	u8  reserved_10[0x700 - 0x6Ac];
+	u32 compensation_1v8_3v3_1_cfg;		/* 0x700 */
+	u32 compensation_1v8_3v3_2_cfg;		/* 0x704 */
+	u32 compensation_3v3_1_cfg;		/* 0x708 */
+	u32 compensation_3v3_2_cfg;		/* 0x70c */
+	u32 compensation_ddr_cfg;		/* 0x710 */
+	u32 compensation_2v5_3v3_1_cfg;		/* 0x714 */
+	u8  reserved_11[0x800 - 0x718];
 	u32 otp_prog_ctr;			/* 0x800 */
 	u32 otp_wdata1_1;			/* 0x804 */
 	u32 otp_wdata1_2;			/* 0x808 */
@@ -183,35 +202,36 @@ struct misc_regs {
 	u32 otp_rdatam_6;			/* 0x8b8 */
 	u32 otp_rdatam_7;			/* 0x8bc */
 	u32 otp_rdatam_8;			/* 0x8c0 */
-	u8  reserved_11[0x900 - 0x8c4];
+	u32 thsens_cfg;				/* 0x8c4 */
+	u8  reserved_12[0x900 - 0x8c8];
 	u32 a9sm_clusterid;			/* 0x900 */
-	u32 a9sm_status;			/* 0x904 */
+	u32 a9sm_statusl;			/* 0x904 */
 	u32 a9sm_debug;				/* 0x908 */
 	u32 a9sm_filter;			/* 0x90c */
 	u32 a9sm_parity_cfg;			/* 0x910 */
 	u32 a9sm_parity_err;			/* 0x914 */
-	u8  reserved_12[0xa00 - 0x918];
+	u8  reserved_13[0xa00 - 0x918];
 	u32 die_id_1;				/* 0xa00 */
 	u32 die_id_2;				/* 0xa04 */
 	u32 die_id_3;				/* 0xa08 */
 	u32 die_id_4;				/* 0xa0c */
-	u32 die_id_valid;			/* 0xa10 */
-	u8  reserved_13[0xb00 - 0xa14];
-	u32 ras1_gpp_inp;			/* 0xb00 */
-	u32 ras2_gpp_inp;			/* 0xb04 */
-	u32 ras1_gpp_out;			/* 0xb08 */
-	u32 ras2_gpp_out;			/* 0xb0c */
-	u8  reserved_14[0x1000 - 0xb10];
+	u8  reserved_14[0xc00 - 0xa10];
+	u32 axi_cache_user_ctrl_0;		/* 0xc00 */
+	u32 axi_cache_user_ctrl_1;		/* 0xc04 */
+	u32 axi_cache_user_ctrl_2;		/* 0xc08 */
+	u32 axi_cache_user_ctrl_3;		/* 0xc0c */
+	u32 ahb_cache_user_ctrl_0;		/* 0xc10 */
+	u32 ahb_cache_user_ctrl_1;		/* 0xc14 */
+	u32 ahb_cache_user_ctrl_2;		/* 0xc18 */
+	u32 ahb_cache_user_ctrl_3;		/* 0xc1c */
+	u32 ahb_cache_user_ctrl_4;		/* 0xc20 */
+	u32 ahb_cache_user_ctrl_5;		/* 0xc24 */
+	u32 ahb_cache_user_ctrl_6;		/* 0xc28 */
+	u32 ahb_cache_user_ctrl_7;		/* 0xc2c */
+	u8  reserved_15[0x1000 - 0xc30];
 	u32 miphy_test;				/* 0x1000 */
-	u32 pcie_mstr_p1;			/* 0x1004 */
-	u32 pcie_awmisc_p1;			/* 0x1008 */
-	u32 pcie_armisc_p1;			/* 0x100c */
-	u32 pcie_mstr_p2;			/* 0x1010 */
-	u32 pcie_awmisc_p2;			/* 0x1014 */
-	u32 pcie_armisc_p2;			/* 0x1018 */
-	u32 pcie_mstr_p3;			/* 0x101c */
-	u32 pcie_awmisc_p3;			/* 0x1020 */
-	u32 pcie_armisc_p3;			/* 0x1024 */
+	u32 usb_test;				/* 0x1004 */
+	u32 misc_cfg;				/* 0x1008 */
 };
 
 /* sys_clk_ctrl definitions */
@@ -239,7 +259,7 @@ struct misc_regs {
 
 /* pll_ctr definitions */
 #define PLLLOCK					(1 << 0)
-#define PLLENABLE				(1 << 1)
+#define PLLENABLE				(1 << 2)
 
 /* perip_clk_cfg definitions */
 #define MPMC_CLK_PLL4				(1 << 10)
@@ -251,9 +271,10 @@ struct misc_regs {
 
 #define PERIPH1_CLK_ALL				(0xFFFFFFFF)
 #define PERIPH2_CLK_ALL				(0xFFFFFFFF)
+#define PERIPH3_CLK_ALL				(0xFFFFFFFF)
 #define PERIPH1_RST_ALL				(0x00000000)
 #define PERIPH2_RST_ALL				(0x00000000)
-#define RAS_RST_ALL				(0x00000000)
+#define PERIPH3_RST_ALL				(0x00000000)
 
 /* ddr_pad_cfg definitions */
 #define DDR3_SW_SEL				(1 << 0)
@@ -275,11 +296,6 @@ struct misc_regs {
 #define UTMI_XFER_RST0				(1 << 14)
 #define UTMI_XFER_RST1				(1 << 15)
 #define UTMI_XFER_RST2				(1 << 16)
-#define USB_BURST_INCRX				(1 << 17)
-#define USB_BURST_INCR4				(1 << 18)
-#define USB_BURST_INCR8				(1 << 19)
-#define USB_BURST_INCR16			(1 << 20)
-#define USB_PLL_LOCK				(1 << 27)
+#define USB_PLL_LOCK				(1 << 24)
 
-#endif
 #endif
