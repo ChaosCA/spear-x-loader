@@ -60,7 +60,7 @@ int	disable_interrupts	(void);
 void	dcache_disable	(void);
 void	icache_disable	(void);
 void	hang		(void) __attribute__ ((noreturn));
-void	boot		(void);
+u32	boot		(void);
 void	boot_kernel	(funcp image) __attribute__ ((noreturn));
 int	serial_init	(void);
 void	reset_cpu	(ulong ignored) __attribute__ ((noreturn));

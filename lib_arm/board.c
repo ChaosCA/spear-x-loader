@@ -66,7 +66,7 @@ void mpmc_config_ecc(u32 value)
 }
 #endif
 
-void start_armboot(void)
+ulong start_armboot(void)
 {
 #if DDR_ECC_ENABLE
 	u32 j, i = 0;
@@ -86,7 +86,7 @@ void start_armboot(void)
 	icache_disable();
 	__disable_mmu();
 #endif
-	boot();
+	return boot();
 }
 
 void hang(void)
