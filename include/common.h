@@ -76,6 +76,8 @@ int uart_boot_selected(void);
 int tftp_boot_selected(void);
 int i2c_boot_selected(void);
 int spi_boot_selected(void);
+int mmc_boot_selected(void);
+
 
 void plat_late_init(void);
 

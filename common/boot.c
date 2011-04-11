@@ -129,6 +129,12 @@ void boot(void)
 		}
 	}
 
+	if (mmc_boot_supported() && mmc_boot_selected()) {
+		/* MMC booting */
+		plat_late_init();
+		return;
+	}
+
 	if (spi_boot_supported() && spi_boot_selected()) {
 		/* SPI booting */
 		/* Not Supported for any platform as of now */

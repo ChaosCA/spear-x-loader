@@ -219,6 +219,11 @@ int i2c_boot_selected(void)
 	return FALSE;
 }
 
+int mmc_boot_selected(void)
+{
+	return FALSE;
+}
+
 void plat_late_init(void)
 {
 	spear_late_init();

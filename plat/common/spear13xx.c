@@ -134,6 +134,11 @@ int usb_boot_selected(void)
 	return FALSE;
 }
 
+int mmc_boot_selected(void)
+{
+	return FALSE;
+}
+
 int pcie_boot_selected(void)
 {
 	if (pcie_boot_supported()) {

@@ -95,6 +95,7 @@
 #define uart_boot_supported()		1
 #define spi_boot_supported()		0
 #define i2c_boot_supported()		0
+#define mmc_boot_supported()            0
 
 #include <configs/spear-common.h>
 #include <configs/spear-boot.h>
