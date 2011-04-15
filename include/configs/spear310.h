@@ -49,6 +49,9 @@
 #define CONFIG_DDR_HCLK			0
 #define CONFIG_DDR_PLL2			0
 
+/* Maximum supported DDR size */
+#define PHYS_SDRAM_MAXSIZE		(1 * 1024 * 1024 * 1024)
+
 /*
  * Machine type for SPEAr310
  */

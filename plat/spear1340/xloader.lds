@@ -59,10 +59,8 @@ SECTIONS
 	.bss . :
 	{ *(.bss) } > xloader
 
+	. = 0xB3807FF0;
 	. = ALIGN(4);
-	.table : { __xloader_table = .; } > xloader_table
-
-	. = 0xFFFF0000;
-	.boot_table : { __bootrom_table = .; } > bootrom_table
-
+	.table . :
+	{*(.table); . = ALIGN(4);}
 }

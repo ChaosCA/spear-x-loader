@@ -48,6 +48,9 @@
 #define CONFIG_DDR_PLL1			0
 #define CONFIG_DDR_PLL4			1
 
+/* Maximum supported DDR size */
+#define PHYS_SDRAM_MAXSIZE		(1 * 1024 * 1024 * 1024)
+
 /*
  * DDR frequency selection using PLL4
  * Select(define to 1) only one out of following list
@@ -60,6 +63,7 @@
  * Select(define to 1).
  */
 #define DDR_ECC_ENABLE			0
+#define CONFIG_C3_DDR_INIT		0
 
 /*
  * Machine type for SPEAr1310_reva
