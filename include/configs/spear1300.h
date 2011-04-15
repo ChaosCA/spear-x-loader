@@ -60,6 +60,7 @@
  * Select(define to 1).
  */
 #define DDR_ECC_ENABLE			0
+#define USE_C3				1	/* In this platform always use C3 to init memory */
 
 /*
  * Machine type for SPEAr1300
