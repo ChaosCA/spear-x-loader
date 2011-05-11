@@ -37,8 +37,8 @@
  * Each definition corresponds to a supported DDR chip.
  * DDR configuration is based on the following selection
  */
-#define CONFIG_DDR_MT41J64M16		1
-#define CONFIG_DDR_MT41J256M8		0
+#define CONFIG_DDR_MT41J64M16		0
+#define CONFIG_DDR_MT41J256M8		1
 
 /*
  * DDR frequency selection
@@ -77,7 +77,7 @@
  * these definitions are derived from SPEAr300 hardware support
  */
 #define CONFIG_SPEAR_MPMCBASE		(0xEC000000)
-#define CONFIG_SPEAR_MPMCREGS		(201)
+#define CONFIG_SPEAR_MPMCREGS		(208)
 
 #define CONFIG_SPEAR_BOOTSTRAPCFG	(0xE0700004)
 #define CONFIG_SPEAR_BOOTSTRAPSHFT	(0)

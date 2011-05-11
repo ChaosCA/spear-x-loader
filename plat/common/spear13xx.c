@@ -36,7 +36,7 @@ void plat_ddr_init(void)
 {
 	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
 
-	writel(DATA_PROGB | DATA_PROGA | CLK_PROGB | CLK_PROGA |
+	writel(PAD_VREF | DATA_PROGB | DATA_PROGA | CLK_PROGB | CLK_PROGA |
 		CTRL_PROGB | CTRL_PROGA, &misc_p->ddr_pad_cfg);
 
 	lvl_write();
