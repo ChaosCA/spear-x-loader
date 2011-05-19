@@ -246,12 +246,12 @@ spear1300_usbtty_config :
 		}
 	@$(MKCONFIG) -n $@ -a spear1300 arm arm_cortexa8 spear1300 NULL spear13xx
 
-spear1310_config \
-spear1310_usbtty_config :
+spear1310_reva_config \
+spear1310_reva_usbtty_config :
 	@[ -z "$(findstring usbtty,$@)" ] || \
 		{ echo "#define CONFIG_SPEAR_USBTTY" >> $(obj)include/config.h ; \
 		}
-	@$(MKCONFIG) -n $@ -a spear1310 arm arm_cortexa8 spear1310 NULL spear13xx
+	@$(MKCONFIG) -n $@ -a spear1310_reva arm arm_cortexa8 spear1310_reva NULL spear13xx
 
 spear1340_config \
 spear1340_usbtty_config :

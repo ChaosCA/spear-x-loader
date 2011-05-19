@@ -55,7 +55,7 @@ Directory Hierarchy:
   - spear320		SPEAr320 related files
   - spear600		SPEAr600 related files
   - spear1300		SPEAr1300 related files
-  - spear1310		SPEAr1310 related files
+  - spear1310_reva	SPEAr1310_reva related files
 - common		Misc architecture independent functions
 - cpu			CPU specific files
   - arm926ejs		Files specific to ARM 926 CPUs

@@ -28,7 +28,7 @@
  * High Level Configuration Options
  * (easy to change)
  */
-#define CONFIG_SPEAR1310		1
+#define CONFIG_SPEAR1310_REVA		1
 #define CONFIG_SPEAR13XX		1
 
 /*
@@ -62,9 +62,9 @@
 #define DDR_ECC_ENABLE			0
 
 /*
- * Machine type for SPEAr1310
+ * Machine type for SPEAr1310_reva
  */
-#define CONFIG_MACH_TYPE		(2881)
+#define CONFIG_MACH_TYPE		(7777)
 #define CONFIG_BOOTARGS			\
 		"console=ttyAMA0,115200 mem=128M root=/dev/mtdblock3 " \
 		"rootfstype=jffs2"
