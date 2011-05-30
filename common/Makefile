@@ -28,6 +28,7 @@ LIB	= $(obj)libcommon.a
 COBJS-y	+= boot.o
 COBJS-y	+= image.o
 COBJS-y	+= table.o
+COBJS-y	+= memsize.o
 
 SRCS	:= $(SOBJS-y:.o=.S) $(COBJS-y:.o=.c)
 OBJS	:= $(addprefix $(obj),$(SOBJS-y) $(COBJS-y))

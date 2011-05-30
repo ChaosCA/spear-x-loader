@@ -52,6 +52,10 @@ typedef unsigned char		uchar;
 
 typedef void (*funcp)(void) __attribute__ ((noreturn));
 
+/* common/memsize.c */
+long    get_ram_size  (volatile long *, long);
+
+
 /*
  * Function Prototypes
  */
