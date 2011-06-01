@@ -87,7 +87,6 @@ ulong start_armboot(void)
 	memset_long((u32 *)(0x00), 0, end); /* Initializing DDR*/
 	__v7_flush_dcache_all();
 	__disable_dcache();
-	icache_disable();
 	__disable_mmu();
 #endif
 #endif

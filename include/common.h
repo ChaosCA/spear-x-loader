@@ -59,7 +59,7 @@ long    get_ram_size  (volatile long *, long);
 /*
  * Function Prototypes
  */
-int	cleanup_before_linux	(void);
+int	cleanup_caches(void);
 int	disable_interrupts	(void);
 void	dcache_disable	(void);
 void	icache_disable	(void);

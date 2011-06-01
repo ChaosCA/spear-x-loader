@@ -255,7 +255,7 @@ static void boot_os(void)
 
 static void boot_image(funcp image)
 {
-	icache_disable();
+	cleanup_caches();
 	(*image) ();
 }
 

@@ -35,9 +35,9 @@
 #include <asm/system.h>
 #include <asm/arch/sys_proto.h>
 
-static void cache_flush(void);
+static void invalidate_icache(void);
 
-int cleanup_before_linux(void)
+int cleanup_caches(void)
 {
 	unsigned int i;
 
@@ -54,7 +54,7 @@ int cleanup_before_linux(void)
 	dcache_disable();
 
 	/* invalidate I-cache */
-	cache_flush();
+	invalidate_icache();
 
 	/* invalidate D-cache also */
 	invalidate_dcache();
@@ -66,7 +66,7 @@ int cleanup_before_linux(void)
 	return 0;
 }
 
-static void cache_flush(void)
+static void invalidate_icache(void)
 {
 	asm ("mcr p15, 0, %0, c7, c5, 0": :"r" (0));
 }

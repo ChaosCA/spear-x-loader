@@ -31,9 +31,9 @@
 
 #include <common.h>
 
-static void cache_flush(void);
+static void invalidate_icache(void);
 
-int cleanup_before_linux (void)
+int cleanup_caches(void)
 {
 	/*
 	 * this function is called just before we call linux
@@ -44,18 +44,17 @@ int cleanup_before_linux (void)
 
 	disable_interrupts ();
 
-
 	/* turn off I/D-cache */
 	icache_disable();
 	dcache_disable();
 	/* flush I/D-cache */
-	cache_flush();
+	invalidate_icache();
 
 	return 0;
 }
 
 /* flush I/D-cache */
-static void cache_flush (void)
+static void invalidate_icache(void)
 {
 	unsigned long i = 0;
 

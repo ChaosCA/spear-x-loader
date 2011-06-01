@@ -104,6 +104,6 @@ void boot_kernel(funcp image_p)
 	setup_commandline_tag(CONFIG_BOOTARGS);
 	setup_end_tag();
 
-	cleanup_before_linux ();
+	cleanup_caches();
 	(*kernel) (0, CONFIG_MACH_TYPE, CONFIG_BOOT_PARAMS_ADDR);
 }
