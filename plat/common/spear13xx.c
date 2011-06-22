@@ -95,7 +95,8 @@ int snor_boot_selected(void)
 	if (snor_boot_supported()) {
 		/* Check whether SNOR boot is selected */
 #ifdef CONFIG_SPEAR1340
-		if (CONFIG_SPEAR_SNORBOOT_DEFUART == read_bootstrap())
+		if ((CONFIG_SPEAR_SNORBOOT_DEFUART == read_bootstrap()) ||
+			(CONFIG_SPEAR_SNORBOOT_DEFUSBD == read_bootstrap()))
 #else
 		if (CONFIG_SPEAR_SNORBOOT == read_bootstrap())
 #endif
@@ -109,7 +110,8 @@ int nand_boot_selected(void)
 	if (nand_boot_supported()) {
 		/* Check whether NAND boot is selected */
 #ifdef CONFIG_SPEAR1340
-		if (CONFIG_SPEAR_NANDBOOT_DEFUART == read_bootstrap())
+		if ((CONFIG_SPEAR_NANDBOOT_DEFUART == read_bootstrap()) ||
+			(CONFIG_SPEAR_NANDBOOT_DEFUSBD == read_bootstrap()))
 #else
 		if (CONFIG_SPEAR_NANDBOOT == read_bootstrap())
 #endif
@@ -123,7 +125,8 @@ int pnor_boot_selected(void)
 	if (pnor_boot_supported()) {
 		/* Check whether SNOR boot is selected */
 #ifdef CONFIG_SPEAR1340
-		if (CONFIG_SPEAR_PNORBOOT_DEFUART == read_bootstrap())
+		if ((CONFIG_SPEAR_PNORBOOT_DEFUART == read_bootstrap()) ||
+			(CONFIG_SPEAR_PNORBOOT_DEFUSBD == read_bootstrap()))
 #else
 		if (CONFIG_SPEAR_SNORBOOT == read_bootstrap())
 #endif
