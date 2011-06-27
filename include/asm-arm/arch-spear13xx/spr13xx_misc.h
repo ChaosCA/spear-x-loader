@@ -229,13 +229,11 @@ struct misc_regs {
 #define OSCI_TIM				(0xff << 3)
 
 /* pll_freq definitions in MHz */
-#define FREQ_1000				(0x7D000006)
-#define FREQ_996				(0x53000004)
-#define FREQ_533				(0x6F000105)
-#define FREQ_400				(0x64000203)
-#define FREQ_332				(0x53000203)
-#define FREQ_250				(0x7D000303)
-#define FREQ_125				(0x7D000403)
+#define FREQ_1000				(0x7D000006) /* VCO = 1000 */
+#define FREQ_533				(0x6F000105) /* VCO = 1056 */
+#define FREQ_400				(0x64000106) /* VCO = 800 */
+#define FREQ_332				(0x53000203) /* VCO = 1328 */
+#define FREQ_125				(0x7D000306) /* VCO = 1000 */
 
 /* pll_ctr definitions */
 #define PLLLOCK					(1 << 0)
