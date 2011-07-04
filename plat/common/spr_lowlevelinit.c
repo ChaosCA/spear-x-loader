@@ -68,7 +68,15 @@ static void mpmc_init_values(void)
 		writel(*mpmc_val_p, mpmc_reg_p);
 
 	mpmc_reg_p = (u32 *)CONFIG_SPEAR_MPMCBASE;
+	/*
+	 * MPMC controller start
+	 * MPMC waiting for DLLLOCKREG high
+	 */
 	writel(0x01000100, &mpmc_reg_p[7]);
+
+	while (!(readl(&mpmc_reg_p[3]) & 0x10000))
+		;
+
 }
 
 static void mpmc_init(void)

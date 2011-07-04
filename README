@@ -117,6 +117,17 @@ The following options need to be configured:
 
 		CONFIG_DDR_MT47H64M16
 
+		DUAL DDR configuration
+
+		Define one of the supported options from a set of configurations
+		eg. in spear300 ddr frequency configurations supported are
+
+		CONFIG_DUAL_DDR = 0
+		single DDR configuration
+
+		CONFIG_DUAL_DDR = 1
+		dual DDR configuration
+
 		DDR Frequency
 
 		Define one of the supported options from a set of configurations

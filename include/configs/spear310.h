@@ -39,6 +39,12 @@
 #define CONFIG_DDR_MT47H64M16		1
 
 /*
+ * Please define CONFIG_DUAL_DDR
+ * only if we use 2 DDR memories (2 chip selects)
+ */
+#define CONFIG_DUAL_DDR			0
+
+/*
  * Synchronous/Asynchronous operation of DDR
  *
  * Select CONFIG_DDR_2HCLK for DDR clk = 333MHz, synchronous operation
