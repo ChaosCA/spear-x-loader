@@ -69,6 +69,7 @@ struct xloader_table {
 
 #define BOOTROM_TABLE_VERSION_1_0	1
 #define BOOTROM_TABLE_VERSION_2_0	2
+#define BOOTROM_TABLE_VERSION_2_1	3
 
 struct bootrom_table_1_0 {
 	const void *boot_flashdetectandinit_ptr;
@@ -77,7 +78,6 @@ struct bootrom_table_1_0 {
 	const void *boot_nandreadpage_ptr;
 };
 
-/* BootROM version 2 tables */
 struct soc_type_s {
 	u8	soc;
 	u8	revision;
@@ -86,6 +86,10 @@ struct soc_type_s {
 #define SOC_SPEAR1300 3
 #define SOC_1300REVAA 1
 
+#define SOC_SPEAR1340 4
+#define SOC_1340REVAA 1
+
+/* BootROM version 2 table */
 struct bootrom_table_2_0 {
 	struct soc_type_s * (*get_soc_type)(void);
 	u8	(*get_boot_type)(void);
@@ -94,9 +98,33 @@ struct bootrom_table_2_0 {
 			size_t *length, u_char *buffer);
 }__attribute__ ((packed));
 
+/* BootROM version 2.1 table */
+struct bootrom_table_2_1 {
+	struct soc_type_s * (*get_soc_type)(void);
+	u8	(*get_boot_type)(void);
+
+	nand_info_t *nand_info;
+	int	(*nand_read)(nand_info_t *nand, size_t offset,
+			size_t *length, u_char *buffer);
+
+	u8 *	(*get_version)(void);
+
+	int	(*get_otpbits)(u32 bit_off, u32 bit_cnt, u32 *buffer);
+
+	u32	(*hamming_encode)(u32 parity, void *data, unsigned int d,
+			unsigned int nr);
+	void	(*hamming_fix)(void *data, unsigned int d, unsigned int nr,
+			unsigned int fix);
+} __attribute__ ((packed));
+
+/*
+ * Generic bootrom table structure's union. Contains the table structure for
+ * all version
+ */
 union bootrom_ver_table {
 	struct bootrom_table_1_0 table_1_0;
 	struct bootrom_table_2_0 table_2_0;
+	struct bootrom_table_2_1 table_2_1;
 };
 
 struct bootrom_table {
