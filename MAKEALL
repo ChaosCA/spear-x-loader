@@ -62,8 +62,12 @@ LIST_ARM9="			\
 LIST_ARM_CORTEX_A8="		\
 	spear1300		\
 	spear1300_usbtty	\
-	spear1310		\
-	spear1310_usbtty	\
+	spear1310_reva		\
+	spear1310_reva_usbtty	\
+	spear1340		\
+	spear1340_usbtty	\
+	spear900		\
+	spear900_usbtty		\
 "
 
 #########################################################################

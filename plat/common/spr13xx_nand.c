@@ -46,6 +46,12 @@ void nand_init(void)
 		boot_getboottype = romtb_p->table.table_2_0.get_boot_type;
 		boot_nandinfo = romtb_p->table.table_2_0.nand_info;
 		boot_nandread = romtb_p->table.table_2_0.nand_read;
+
+	} else if (BOOTROM_TABLE_VERSION_2_1 == romtb_p->table_version) {
+		boot_getsoctype = romtb_p->table.table_2_1.get_soc_type;
+		boot_getboottype = romtb_p->table.table_2_1.get_boot_type;
+		boot_nandinfo = romtb_p->table.table_2_1.nand_info;
+		boot_nandread = romtb_p->table.table_2_1.nand_read;
 	} else {
 		boot_getsoctype = NULL;
 		boot_getboottype = NULL;

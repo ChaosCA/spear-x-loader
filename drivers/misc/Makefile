@@ -1,5 +1,5 @@
 #
-# (C) Copyright 2004-2006
+# (C) Copyright 2000-2007
 # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
 #
 # See file CREDITS for list of people who contributed to this
@@ -23,15 +23,15 @@
 
 include $(TOPDIR)/config.mk
 
-LIB	= $(obj)libcommon.a
+LIB	:= $(obj)libmisc.a
 
-COBJS-y	+= boot.o
-COBJS-y	+= image.o
-COBJS-y	+= table.o
-COBJS-y	+= memsize.o
+COBJS-$(CONFIG_C3_DEVICE) += c3.o
 
-SRCS	:= $(SOBJS-y:.o=.S) $(COBJS-y:.o=.c)
-OBJS	:= $(addprefix $(obj),$(SOBJS-y) $(COBJS-y))
+COBJS	:= $(COBJS-y)
+SRCS	:= $(COBJS:.o=.c)
+OBJS	:= $(addprefix $(obj),$(COBJS))
+
+all:	$(LIB)
 
 $(LIB):	$(obj).depend $(OBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)

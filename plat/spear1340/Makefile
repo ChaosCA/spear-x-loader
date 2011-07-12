@@ -1,6 +1,8 @@
 #
-# (C) Copyright 2004-2006
-# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
+# (C) Copyright 2009
+# Vipin Kumar, ST Microelectronics, vipin.kumar@st.com
+# Viresh Kumar, ST Microelectronics, viresh.kumar@st.com
+# Vipul Kumar Samar, ST Microelectronics, vipulkumar.samar@st.com
 #
 # See file CREDITS for list of people who contributed to this
 # project.
@@ -12,7 +14,7 @@
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
@@ -23,18 +25,27 @@
 
 include $(TOPDIR)/config.mk
 
-LIB	= $(obj)libcommon.a
+LIB	= $(obj)lib$(PLAT).a
 
-COBJS-y	+= boot.o
-COBJS-y	+= image.o
-COBJS-y	+= table.o
-COBJS-y	+= memsize.o
+COBJS-y +=
 
-SRCS	:= $(SOBJS-y:.o=.S) $(COBJS-y:.o=.c)
-OBJS	:= $(addprefix $(obj),$(SOBJS-y) $(COBJS-y))
+SOBJS-y +=
 
-$(LIB):	$(obj).depend $(OBJS)
-	$(AR) $(ARFLAGS) $@ $(OBJS)
+SOBJS	:= $(SOBJS-y)
+COBJS	:= $(COBJS-y)
+
+SRCS	:= $(SOBJS:.o=.S) $(COBJS:.o=.c)
+OBJS	:= $(addprefix $(obj),$(COBJS))
+SOBJS	:= $(addprefix $(obj),$(SOBJS))
+
+$(LIB):	$(obj).depend $(OBJS) $(SOBJS)
+	$(AR) $(ARFLAGS) $@ $(OBJS) $(SOBJS)
+
+clean:
+	rm -f $(SOBJS) $(OBJS)
+
+distclean:	clean
+	rm -f $(LIB) core *.bak $(obj).depend
 
 #########################################################################
 

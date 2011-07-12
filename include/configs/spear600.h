@@ -50,6 +50,9 @@
 #define CONFIG_DDR_HCLK			0
 #define CONFIG_DDR_PLL2			0
 
+/* Maximum supported DDR size */
+#define PHYS_SDRAM_MAXSIZE		(1 * 1024 * 1024 * 1024)
+
 /*
  * Machine type for SPEAr600
  */
@@ -89,6 +92,7 @@
 #define uart_boot_supported()		0
 #define spi_boot_supported()		0
 #define i2c_boot_supported()		0
+#define mmc_boot_supported()            0
 
 #include <configs/spear-common.h>
 #include <configs/spear-boot.h>

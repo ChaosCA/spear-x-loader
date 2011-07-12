@@ -44,6 +44,16 @@ static void ddr_clock_init(void)
 	perip2_clkenb |= DDR_CTRL_CLKEN | DDR_CORE_CLKEN;
 	writel(perip2_clkenb, &misc_p->perip2_clk_enb);
 
+	/*
+	 * MISC compensation_ddr_cfg before mpmc reset
+	 * disable automatic ddr pad compensation
+	 * use fixed comzcp=0000 and comzcn=0000
+	 */
+#ifdef CONFIG_SPEAR1340
+	/* MISC 0x710 update=0, enb=0, encomzc=0 */
+	writel(0x00000000, &misc_p->compensation_ddr_cfg);
+#endif
+
 	perip2_swrst = readl(&misc_p->perip2_sw_rst);
 	perip2_swrst |= DDR_CTRL_CLKEN | DDR_CORE_CLKEN;
 	writel(perip2_swrst, &misc_p->perip2_sw_rst);
@@ -69,8 +79,11 @@ static void mpmc_init_values(void)
 	 */
 	writel(0x03070700, &mpmc_reg_p[25]);
 	writel(0x01000101, &mpmc_reg_p[11]);
-
+#ifdef CONFIG_SPEAR1340
+	while (!(readl(&mpmc_reg_p[105]) & 0x200))
+#else
 	while (!(readl(&mpmc_reg_p[105]) & 0x100))
+#endif
 		;
 }
 
@@ -124,10 +137,16 @@ static void pll_init(void)
 	writel(usbphycfg, &misc_p->usbphy_gen_cfg);
 	while (!(readl(&misc_p->usbphy_gen_cfg) & USB_PLL_LOCK))
 		;
-	writel(readl(&misc_p->usbphy_gen_cfg) |
-		AUTOPPD_ON_OVRCURR | UTMI_XFER_RST0 | UTMI_XFER_RST1 |
-		UTMI_XFER_RST2 | USB_BURST_INCR16,
-		&misc_p->usbphy_gen_cfg);
+	/* AHB Master Burst is not supported for SPEAr1340 */
+
+	usbphycfg = readl(&misc_p->usbphy_gen_cfg);
+
+	usbphycfg |= AUTOPPD_ON_OVRCURR | UTMI_XFER_RST0 | UTMI_XFER_RST1 |
+		UTMI_XFER_RST2;
+#ifndef CONFIG_SPEAR1340
+	usbphycfg |= USB_BURST_INCR16;
+#endif
+	writel(usbphycfg, &misc_p->usbphy_gen_cfg);
 
 	/* wait for pll locks */
 	while (!(readl(&misc_p->pll1_ctr) & PLLLOCK))
@@ -157,7 +176,7 @@ static void sys_init(void)
 
 	writel(PLL_TIM, &misc_p->sys_clk_plltimer);
 	writel(OSCI_TIM, &misc_p->sys_clk_oscitimer);
-	
+
 	/* Initialize PLLs */
 	pll_init();
 
@@ -192,7 +211,11 @@ void lowlevel_init(void)
 	writel(PERIPH1_RST_ALL, &misc_p->perip1_sw_rst);
 	writel(PERIPH2_RST_ALL, &misc_p->perip2_sw_rst);
 
+#ifdef CONFIG_SPEAR1340
+	writel(PERIPH3_RST_ALL, &misc_p->perip3_sw_rst);
+#else
 	writel(RAS_RST_ALL, &misc_p->ras_sw_rst);
+#endif
 
 	/* Initialize MPMC */
 	mpmc_init();

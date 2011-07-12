@@ -30,9 +30,11 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x00000101,		/* ; DENALI_CTL_00 */
 	0x00000100,		/* ; DENALI_CTL_01 */
 	0x01010000,		/* ; DENALI_CTL_02 */
-	0x00000100,		/* ; DENALI_CTL_03 VM : Disable memory init
-				   interruption. */
-	/* 0x00010100, */	/* ; DENALI_CTL_03 */
+#if DDR_ECC_ENABLE
+	0x00000101,
+#else
+	0x00000100,
+#endif
 	0x00000000,		/* ; DENALI_CTL_04 */
 	0x00010101,		/* ; DENALI_CTL_05 VM : Disable DRAM cmds until TDLL
 				   expires. */

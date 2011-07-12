@@ -1,6 +1,7 @@
 /*
  * (C) Copyright 2009
  * Vipin Kumar, ST Micoelectronics, vipin.kumar@st.com.
+ * Vipul Kumar Samar, ST Micoelectronics, vipulkumar.samar@st.com.
  *
  * See file CREDITS for list of people who contributed to this
  * project.
@@ -28,7 +29,7 @@
  * High Level Configuration Options
  * (easy to change)
  */
-#define CONFIG_SPEAR1310		1
+#define CONFIG_SPEAR1340		1
 #define CONFIG_SPEAR13XX		1
 
 /*
@@ -36,8 +37,8 @@
  * Each definition corresponds to a supported DDR chip.
  * DDR configuration is based on the following selection
  */
-#define CONFIG_DDR_MT41J64M16		1
-#define CONFIG_DDR_MT41J256M8		0
+#define CONFIG_DDR_MT41J64M16		0
+#define CONFIG_DDR_MT41J256M8		1
 
 /*
  * DDR frequency selection
@@ -47,6 +48,9 @@
  */
 #define CONFIG_DDR_PLL1			0
 #define CONFIG_DDR_PLL4			1
+
+/* Maximum supported DDR size */
+#define PHYS_SDRAM_MAXSIZE		(2 * 1024 * 1024 * 1024)
 
 /*
  * DDR frequency selection using PLL4
@@ -60,13 +64,14 @@
  * Select(define to 1).
  */
 #define DDR_ECC_ENABLE			0
+#define CONFIG_C3_DDR_INIT		0
 
 /*
- * Machine type for SPEAr1310
+ * Machine type for SPEAr1340
  */
-#define CONFIG_MACH_TYPE		(2881)
+#define CONFIG_MACH_TYPE		(3394)
 #define CONFIG_BOOTARGS			\
-		"console=ttyAMA0,115200 mem=128M root=/dev/mtdblock3 " \
+		"console=ttyAMA0,115200 mem=1G root=/dev/mtdblock4 " \
 		"rootfstype=jffs2"
 
 /*
@@ -76,36 +81,43 @@
  * these definitions are derived from SPEAr300 hardware support
  */
 #define CONFIG_SPEAR_MPMCBASE		(0xEC000000)
-#define CONFIG_SPEAR_MPMCREGS		(201)
+#define CONFIG_SPEAR_MPMCREGS		(208)
 
 #define CONFIG_SPEAR_BOOTSTRAPCFG	(0xE0700004)
 #define CONFIG_SPEAR_BOOTSTRAPSHFT	(0)
 #define CONFIG_SPEAR_BOOTSTRAPMASK	(0xF)
 #define CONFIG_SPEAR_BOOTBYPASS		(0x0)
-#define CONFIG_SPEAR_SNORBOOT		(0x1)
-#define CONFIG_SPEAR_NANDBOOT		(0x2)
-#define CONFIG_SPEAR_PNORBOOT		(0x3)
-#define CONFIG_SPEAR_I2CBOOT		(0x4)
-#define CONFIG_SPEAR_UARTBOOT		(0x5)
-#define CONFIG_SPEAR_PCIEBOOT		(0x6)
+#define CONFIG_SPEAR_SNORBOOT_DEFUSBD   (0x1)
+#define CONFIG_SPEAR_NANDBOOT_DEFUSBD   (0x2)
+#define CONFIG_SPEAR_PNORBOOT_DEFUSBD   (0x3)
+#define CONFIG_SPEAR_I2CBOOT            (0x4)
+#define CONFIG_SPEAR_UARTBOOT           (0x5)
+#define CONFIG_SPEAR_PCIEBOOT           (0x6)
+#define CONFIG_SPEAR_SATABOOT           (0x7)
 #define CONFIG_SPEAR_USBBOOT		(0x8)
-#define CONFIG_SPEAR_TFTPBOOT		(0x9)
-#define CONFIG_SPEAR_SPIBOOT		(0xA)
+#define CONFIG_SPEAR_SNORBOOT_DEFUART   (0x9)
+#define CONFIG_SPEAR_NANDBOOT_DEFUART   (0xA)
+#define CONFIG_SPEAR_PNORBOOT_DEFUART   (0xB)
+#define CONFIG_SPEAR_MMCBOOT            (0xC)
+#define CONFIG_SPEAR_TFTPBOOT           (0xD)
+#define CONFIG_SPEAR_SPIBOOT            (0xE)
+
 
 /*
  * xxx_boot_supported macro defines whether a booting type is supported
  * or not. Modify/Add to only these macros to define new boot types
  */
-#define boot_bypass_supported()		1
+#define boot_bypass_supported()         1
 #define usb_boot_supported()		1
-#define pcie_boot_supported()		1
-#define snor_boot_supported()		1
-#define nand_boot_supported()		1
-#define pnor_boot_supported()		1
-#define tftp_boot_supported()		0
-#define uart_boot_supported()		0
-#define spi_boot_supported()		0
-#define i2c_boot_supported()		0
+#define pcie_boot_supported()           0
+#define snor_boot_supported()           1
+#define nand_boot_supported()           1
+#define pnor_boot_supported()           1
+#define tftp_boot_supported()           0
+#define uart_boot_supported()           1
+#define spi_boot_supported()            0
+#define i2c_boot_supported()            0
+#define mmc_boot_supported()            1
 
 #include <configs/spear-common.h>
 #include <configs/spear-boot.h>

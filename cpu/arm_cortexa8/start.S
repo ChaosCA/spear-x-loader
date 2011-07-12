@@ -74,7 +74,7 @@ reset:
  * eg. Ethernet boot, UART boot, USB boot
  * Saving registers for returning back
  */
-	stmdb	sp!, {r0-r12,r14}
+	stmdb	sp!, {r1-r12,r14}
 	bl	cpu_init_crit
 /*
  * Clearing bss area is not done in Xloader. 
@@ -82,7 +82,7 @@ reset:
  * bss is assumed to be uninitialized.
  */
 	bl	start_armboot
-	ldmia	sp!, {r0-r12,pc}
+	ldmia	sp!, {r1-r12,pc}
 
 /*************************************************************************
  *

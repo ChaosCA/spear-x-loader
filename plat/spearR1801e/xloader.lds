@@ -1,9 +1,5 @@
 /*
- * January 2004 - Changed to support H4 device
- * Copyright (c) 2004-2008 Texas Instruments
- *
- * (C) Copyright 2002
- * Gary Jennejohn, DENX Software Engineering, <garyj@denx.de>
+ * Copyright (c) 20010 ST Microelectronics
  *
  * See file CREDITS for list of people who contributed to this
  * project.

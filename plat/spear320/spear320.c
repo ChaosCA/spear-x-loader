@@ -174,6 +174,11 @@ int i2c_boot_selected(void)
 	return FALSE;
 }
 
+int mmc_boot_selected(void)
+{
+	return FALSE;
+}
+
 /**
  * get_pnor_width:
  *

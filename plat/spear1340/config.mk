@@ -1,6 +1,8 @@
 #
-# (C) Copyright 2004-2006
-# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
+# (C) Copyright 2009
+# Vipin Kumar, ST Microelectronics, vipin.kumar@st.com
+# Viresh Kumar, ST Microelectronics, viresh.kumar@st.com
+# Vipul Kumar Samar, ST Microelectronics, vipulkumar.samar@st.com
 #
 # See file CREDITS for list of people who contributed to this
 # project.
@@ -12,7 +14,7 @@
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
@@ -21,26 +23,4 @@
 # MA 02111-1307 USA
 #
 
-include $(TOPDIR)/config.mk
-
-LIB	= $(obj)libcommon.a
-
-COBJS-y	+= boot.o
-COBJS-y	+= image.o
-COBJS-y	+= table.o
-COBJS-y	+= memsize.o
-
-SRCS	:= $(SOBJS-y:.o=.S) $(COBJS-y:.o=.c)
-OBJS	:= $(addprefix $(obj),$(SOBJS-y) $(COBJS-y))
-
-$(LIB):	$(obj).depend $(OBJS)
-	$(AR) $(ARFLAGS) $@ $(OBJS)
-
-#########################################################################
-
-# defines $(obj).depend target
-include $(TOPDIR)/rules.mk
-
-sinclude $(obj).depend
-
-#########################################################################
+TEXT_BASE = 0xB3801500

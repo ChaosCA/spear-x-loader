@@ -50,13 +50,13 @@ static const char loader_name[] = "U-Boot";
  * Generic readback APIs are provided for each supported booting type
  * eg. nand_read_skip_bad
  */
-void boot(void)
+u32 boot(void)
 {
 	funcp image;
 
 #ifdef CONFIG_SPEAR_USBTTY
 	plat_late_init();
-	return;
+	return TRUE;
 #endif
 
 	/*
@@ -78,6 +78,7 @@ void boot(void)
 
 			/* Jump to boot image */
 			boot_image(image);
+			return TRUE;
 		}
 	}
 
@@ -95,6 +96,7 @@ void boot(void)
 
 			/* Jump to boot image */
 			boot_image(image);
+			return TRUE;
 		}
 	}
 
@@ -125,16 +127,29 @@ void boot(void)
 
 				/* Jump to boot image */
 				boot_image(image);
+				return TRUE;
 			}
 		}
 	}
 
+	if (mmc_boot_supported() && mmc_boot_selected()) {
+		/* MMC booting */
+		plat_late_init();
+#ifdef CONFIG_SPEAR1340
+		return (char *)MMC_UBOOT_FILE;
+#else
+		return FALSE;
+#endif
+	}
+
 	if (spi_boot_supported() && spi_boot_selected()) {
+		return FALSE;
 		/* SPI booting */
 		/* Not Supported for any platform as of now */
 	}
 
 	if (i2c_boot_supported() && i2c_boot_selected()) {
+		return FALSE;
 		/* I2C booting */
 		/* Not Supported for any platform as of now */
 	}
@@ -147,17 +162,17 @@ void boot(void)
 
 	if (usb_boot_supported() && usb_boot_selected()) {
 		plat_late_init();
-		return;
+		return TRUE;
 	}
 
 	if (tftp_boot_supported() && tftp_boot_selected()) {
 		plat_late_init();
-		return;
+		return TRUE;
 	}
 
 	if (uart_boot_supported() && uart_boot_selected()) {
 		plat_late_init();
-		return;
+		return TRUE;
 	}
 #if defined(CONFIG_OS_BOOT)
 	/*
@@ -240,7 +255,7 @@ static void boot_os(void)
 
 static void boot_image(funcp image)
 {
-	icache_disable();
+	cleanup_caches();
 	(*image) ();
 }
 

@@ -25,11 +25,18 @@
 
 #if defined(CONFIG_SPEAR13XX) && \
 	(CONFIG_DDR_MT41J256M8) && (CONFIG_DDR_FREQ_400)
+
+#if !defined(CONFIG_SPEAR1340)
+
 const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
+	0x00000101, /* DENALI_CTL_00 */
+	0x00000100, /* DENALI_CTL_01 */
+	0x01010000, /* DENALI_CTL_02 */
+#if DDR_ECC_ENABLE
 	0x00000101,
+#else
 	0x00000100,
-	0x01010000,
-	0x00000100,
+#endif
 	0x00000000,
 	0x00010101,
 	0x00000001,
@@ -87,7 +94,7 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x03000000,
 	0x03030c03,
 	0x060f0c04,
-	0x00006456, /*VM sshould  be 0x56  for 187E*/
+	0x00006456, /*VM sshould be 0x56 for 187E*/
 	0x00640064,
 	0x00640064,
 	0x000f0064,
@@ -228,4 +235,6 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x00000007,
 	0x00000000,
 };
+#endif
+
 #endif

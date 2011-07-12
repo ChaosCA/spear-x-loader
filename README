@@ -55,7 +55,7 @@ Directory Hierarchy:
   - spear320		SPEAr320 related files
   - spear600		SPEAr600 related files
   - spear1300		SPEAr1300 related files
-  - spear1310		SPEAr1310 related files
+  - spear1310_reva	SPEAr1310_reva related files
 - common		Misc architecture independent functions
 - cpu			CPU specific files
   - arm926ejs		Files specific to ARM 926 CPUs
@@ -116,6 +116,17 @@ The following options need to be configured:
 		supports mt47h64m16 device through the macro
 
 		CONFIG_DDR_MT47H64M16
+
+		DUAL DDR configuration
+
+		Define one of the supported options from a set of configurations
+		eg. in spear300 ddr frequency configurations supported are
+
+		CONFIG_DUAL_DDR = 0
+		single DDR configuration
+
+		CONFIG_DUAL_DDR = 1
+		dual DDR configuration
 
 		DDR Frequency
 

@@ -39,6 +39,12 @@
 #define CONFIG_DDR_MT47H64M16		1
 
 /*
+ * Please define CONFIG_DUAL_DDR
+ * only if we use 2 DDR memories (2 chip selects)
+ */
+#define CONFIG_DUAL_DDR			0
+
+/*
  * Synchronous/Asynchronous operation of DDR
  *
  * Select CONFIG_DDR_2HCLK for DDR clk = 333MHz, synchronous operation
@@ -48,6 +54,9 @@
 #define CONFIG_DDR_2HCLK		1
 #define CONFIG_DDR_HCLK			0
 #define CONFIG_DDR_PLL2			0
+
+/* Maximum supported DDR size */
+#define PHYS_SDRAM_MAXSIZE		(1 * 1024 * 1024 * 1024)
 
 /*
  * Machine type for SPEAr320
@@ -99,6 +108,7 @@
 #define uart_boot_supported()		1
 #define spi_boot_supported()		0
 #define i2c_boot_supported()		0
+#define mmc_boot_supported()            0
 
 #include <configs/spear-common.h>
 #include <configs/spear-boot.h>

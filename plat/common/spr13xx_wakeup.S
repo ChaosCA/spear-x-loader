@@ -23,7 +23,7 @@
 
 #include <config.h>
 
-.global cleanup_before_linux
+.global cleanup_caches
 
 .global cpu2_wake
 cpu2_wake:
@@ -40,7 +40,7 @@ cpu2_wake:
 cpu2_start:
 	/* stack init, needed for calling C routine */
 	ldr	r13,=CONFIG_SPEAR_ARM2STACK
-	bl	cleanup_before_linux
+	bl	cleanup_caches
 
 	ldr	r0,=CONFIG_SPEAR_ARM2PHOLD
 	ldr	r1,=0xdeadbeef

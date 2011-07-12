@@ -1,9 +1,9 @@
 /*
- * January 2004 - Changed to support H4 device
- * Copyright (c) 2004-2008 Texas Instruments
+ * April 2011 - Changed to support SPEAr device
+ * Copyright (c) 20011-2015 ST Microelectronics
  *
- * (C) Copyright 2002
- * Gary Jennejohn, DENX Software Engineering, <garyj@denx.de>
+ * (C) Copyright 2011
+ * Vipul Kumar Samar, ST Microelectronics, <vipulkumar.samar@st.com>
  *
  * See file CREDITS for list of people who contributed to this
  * project.
@@ -27,28 +27,37 @@
 OUTPUT_FORMAT("elf32-littlearm", "elf32-littlearm", "elf32-littlearm")
 OUTPUT_ARCH(arm)
 ENTRY(_start)
+
+MEMORY
+{
+	xloader : ORIGIN = 0xB3801500 , LENGTH = 0x4000
+	xloader_table : ORIGIN = 0xB3803FF0 , LENGTH = 0x16
+
+	bootrom : ORIGIN = 0xffff0000, LENGTH = 0x5000
+	bootrom_table : ORIGIN = 0xffff7f00, LENGTH = 0x100
+}
+
 SECTIONS
 {
-	. = 0xB3801300;
+	. = 0xB3801500;
 
-	. = ALIGN(4);
 	.text :
 	{
 		cpu/arm_cortexa8/start.o	(.text)
 		*(.text)
-	}
+	} > xloader
 
 	. = ALIGN(4);
 	.rodata . :
-	{ *(.rodata*) }
+	{ *(.rodata*); . = ALIGN(4); } > xloader
 
 	. = ALIGN(4);
 	.data . :
-	{ *(.data) }
+	{ *(.data) } > xloader
 
 	. = ALIGN(4);
 	.bss . :
-	{ *(.bss) }
+	{ *(.bss) } > xloader
 
 	. = 0xB3807FF0;
 	. = ALIGN(4);
