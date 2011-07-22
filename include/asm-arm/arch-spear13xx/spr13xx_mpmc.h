@@ -238,7 +238,13 @@ struct mpmc_regs {
 };
 
 #define PHY_CTRL_DELAY			200
+
+#ifdef CONFIG_SPEAR900_LCAD
+#define DATA_SLICE_MAX			4 /* ECC OFF, no DDR ECC chip */
+#else
 #define DATA_SLICE_MAX			5
+#endif
+
 #define WRLVL_DELAY_MAX			8
 #define RDLVL_DELAY_VALS		8
 #define RDLVL_DELAY_INIT		4
