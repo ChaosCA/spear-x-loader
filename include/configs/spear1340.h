@@ -50,7 +50,7 @@
 #define CONFIG_DDR_PLL4			1
 
 /* Maximum supported DDR size */
-#define PHYS_SDRAM_MAXSIZE		(2 * 1024 * 1024 * 1024)
+#define PHYS_SDRAM_MAXSIZE		(1 * 1024 * 1024 * 1024)
 
 /*
  * DDR frequency selection using PLL4
