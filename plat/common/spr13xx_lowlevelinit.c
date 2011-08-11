@@ -46,12 +46,17 @@ static void ddr_clock_init(void)
 
 	/*
 	 * MISC compensation_ddr_cfg before mpmc reset
-	 * disable automatic ddr pad compensation
-	 * use fixed comzcp=0000 and comzcn=0000
+	 * enable automatic ddr pad compensation
+	 * disable automatic update
 	 */
 #ifdef CONFIG_SPEAR1340
-	/* MISC 0x710 update=0, enb=0, encomzc=0 */
-	writel(0x00000000, &misc_p->compensation_ddr_cfg);
+	/* MISC 0x710 update=0, enb=0, encomzc=1 */
+	writel(0x00000400, &misc_p->compensation_ddr_cfg);
+
+	/* wait for comzcrdy done */
+	while (!(readl(&misc_p->compensation_ddr_cfg) & 0x1))
+		;
+
 #endif
 
 	perip2_swrst = readl(&misc_p->perip2_sw_rst);
