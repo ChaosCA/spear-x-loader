@@ -296,4 +296,10 @@ struct misc_regs {
 #define UTMI_XFER_RST2				(1 << 16)
 #define USB_PLL_LOCK				(1 << 24)
 
+/* pad_pu_cfg definitions */
+#define PAD_88_PU_CFG				(1 << 24)
+#define PAD_88_PD_CFG				(~PAD_88_PU_CFG)
+#define PAD_89_PU_CFG				(1 << 25)
+#define PAD_89_PD_CFG				(~PAD_89_PU_CFG)
+
 #endif

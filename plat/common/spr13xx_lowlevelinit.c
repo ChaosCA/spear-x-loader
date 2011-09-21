@@ -50,12 +50,30 @@ static void ddr_clock_init(void)
 	 * disable automatic update
 	 */
 #ifdef CONFIG_SPEAR1340
+	u32 pad_pu_cfg_3, pad_pd_cfg_3;
+
 	/* MISC 0x710 update=0, enb=0, encomzc=1 */
 	writel(0x00000400, &misc_p->compensation_ddr_cfg);
 
 	/* wait for comzcrdy done */
 	while (!(readl(&misc_p->compensation_ddr_cfg) & 0x1))
 		;
+
+	/*
+	 * The code below modifies pad_pu_cfg_3 and pad_pd_cfg_3
+	 * registers settings in order to add support for SPEAr1340
+	 * DDR Board Modifications:
+	 * - DDR_CLKEN (XGPIO 88: PullDown = 1, PullUp = 0)
+	 * - DDR_RESET (XGPIO 89: PullDown = 1, PullUp = 0)
+	 */
+	pad_pu_cfg_3 = readl(&misc_p->pad_pu_cfg_3);
+	pad_pu_cfg_3 |= (PAD_88_PU_CFG | PAD_89_PU_CFG);
+	writel(pad_pu_cfg_3, &misc_p->pad_pu_cfg_3);
+
+	pad_pd_cfg_3 = readl(&misc_p->pad_pd_cfg_3);
+	pad_pd_cfg_3 &= PAD_88_PD_CFG;
+	pad_pd_cfg_3 &= PAD_89_PD_CFG;
+	writel(pad_pd_cfg_3, &misc_p->pad_pd_cfg_3);
 
 #endif
 
