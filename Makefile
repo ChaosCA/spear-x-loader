@@ -233,6 +233,13 @@ spear320_usbtty_config :
 		}
 	@$(MKCONFIG) -n $@ -a spear320 arm arm926ejs spear320 NULL spear
 
+spear320_hmi_config \
+spear320_hmi_usbtty_config :
+	@[ -z "$(findstring usbtty,$@)" ] || \
+		{ echo "#define CONFIG_SPEAR_USBTTY" >> $(obj)include/config.h ; \
+		}
+	@$(MKCONFIG) -n $@ -a spear320_hmi arm arm926ejs spear320_hmi NULL spear
+
 spear600_config \
 spear600_usbtty_config :
 	@[ -z "$(findstring usbtty,$@)" ] || \

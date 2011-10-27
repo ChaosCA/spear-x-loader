@@ -52,6 +52,8 @@ LIST_ARM9="			\
 	spear310_usbtty		\
 	spear320		\
 	spear320_usbtty		\
+	spear320_hmi		\
+	spear320_hmi_usbtty	\
 	spear600		\
 	spear600_usbtty		\
 "
