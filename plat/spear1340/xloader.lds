@@ -30,7 +30,7 @@ ENTRY(_start)
 
 MEMORY
 {
-	xloader : ORIGIN = 0xB3801500 , LENGTH = 0x4000
+	xloader : ORIGIN = 0xB3801504 , LENGTH = 0x4000
 	xloader_table : ORIGIN = 0xB3803FF0 , LENGTH = 0x16
 
 	bootrom : ORIGIN = 0xffff0000, LENGTH = 0x5000
@@ -39,8 +39,6 @@ MEMORY
 
 SECTIONS
 {
-	. = 0xB3801500;
-
 	.text :
 	{
 		cpu/arm_cortexa8/start.o	(.text)
