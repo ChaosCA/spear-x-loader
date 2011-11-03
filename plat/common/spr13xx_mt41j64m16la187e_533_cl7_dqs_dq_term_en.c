@@ -51,8 +51,11 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x01000000,		/* ; DENALI_CTL_15 */
 	0x00000000,		/* ; DENALI_CTL_16 */
 	0x00000000,		/* ; DENALI_CTL_17 */
-	0x00000001,		/* ; DENALI_CTL_18 VM : Only one chip select enabled. */
-	/* 0x00000203, */	/* ; DENALI_CTL_18 ECC removed */
+#if DDR_ECC_ENABLE
+	0x00000001,		/* DENALI_CTL_18 */
+#else
+	0x00000201,		/* DENALI_CTL_18 */
+#endif
 	/* 0x01020102, */	/* ; DENALI_CTL_19 VM : CS2 termination enable
 				 when CS1 reas/write taking place & vice-versa*/
 	0x02010102,		/* ; DENALI_CTL_19 */

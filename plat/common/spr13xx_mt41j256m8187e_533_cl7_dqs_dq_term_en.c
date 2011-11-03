@@ -51,7 +51,11 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x01000000, /* DENALI_CTL_15 */
 	0x00000000, /* DENALI_CTL_16 */
 	0x00000000, /* DENALI_CTL_17 */
+#if DDR_ECC_ENABLE
 	0x00000001, /* DENALI_CTL_18 */
+#else
+	0x00000201, /* DENALI_CTL_18 */
+#endif
 	0x02010102, /* DENALI_CTL_19 */
 	0x00020000, /* DENALI_CTL_20 */
 	0x07070000, /* DENALI_CTL_21 *//* changing DB9000AXI priority to high */
