@@ -201,8 +201,6 @@ static void sys_init(void)
 
 	mac_init();
 
-	writel(0x0, &misc_p->perip_clk_cfg);
-
 	/* Set system state to NORMAL */
 	sysclkctrl = readl(&misc_p->sys_clk_ctrl);
 	sysclkctrl &= ~SYS_MODE_MASK;
