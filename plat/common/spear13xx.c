@@ -128,7 +128,7 @@ int pnor_boot_selected(void)
 		if ((CONFIG_SPEAR_PNORBOOT_DEFUART == read_bootstrap()) ||
 			(CONFIG_SPEAR_PNORBOOT_DEFUSBD == read_bootstrap()))
 #else
-		if (CONFIG_SPEAR_SNORBOOT == read_bootstrap())
+		if (CONFIG_SPEAR_PNORBOOT == read_bootstrap())
 #endif
 			return TRUE;
 	}
