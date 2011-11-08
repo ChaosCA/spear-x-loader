@@ -261,6 +261,8 @@ struct misc_regs {
 
 /* perip_clk_cfg definitions */
 #define MPMC_CLK_PLL4				(1 << 10)
+#define UARTCLK_48MHZ				0
+#define UARTCLK_MASK				(0x3 << 4)
 
 /* perip*_[clk_enb/sw_rst] definitions */
 #define DDR_CTRL_CLKEN				(1 << 0)

@@ -84,5 +84,6 @@ int mmc_boot_selected(void);
 
 
 void plat_late_init(void);
+void spear_serial_init(void);
 
 #endif	/* __COMMON_H_ */

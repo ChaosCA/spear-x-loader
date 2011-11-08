@@ -93,10 +93,10 @@ void boot_kernel(funcp image_p)
 {
 	typedef void (*theKernel)(int zero, int arch, uint params) __attribute__ ((noreturn));
 	theKernel kernel = (theKernel)image_p;
-	
-	/*
-	 * Setup the serial driver before booting linux
-	 */
+
+	/* setup the platform for serial driver */
+	spear_serial_init();
+	/* configure uart */
 	serial_init();
 
 	setup_start_tag();
