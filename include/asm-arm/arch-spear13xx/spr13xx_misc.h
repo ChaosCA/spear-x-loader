@@ -248,6 +248,7 @@ struct misc_regs {
 #define DDR_CTRL_CLKEN				(1 << 0)
 #define DDR_CORE_CLKEN				(1 << 1)
 #define UART_CLKEN				(1 << 15)
+#define GPIOA_CLKEN				(1 << 23)
 
 #define PERIPH1_CLK_ALL				(0xFFFFFFFF)
 #define PERIPH2_CLK_ALL				(0xFFFFFFFF)
@@ -281,5 +282,10 @@ struct misc_regs {
 #define USB_BURST_INCR16			(1 << 20)
 #define USB_PLL_LOCK				(1 << 27)
 
+/* plgpio_cfg definitions */
+#define PLGPIO3_PU_CFG				(1 << 3)
+#define PLGPIO3_PD_CFG				(~PLGPIO3_PU_CFG)
+#define PLGPIO2_PU_CFG				(1 << 2)
+#define PLGPIO2_PD_CFG				(~PLGPIO2_PU_CFG)
 #endif
 #endif
