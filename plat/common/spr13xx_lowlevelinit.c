@@ -71,8 +71,31 @@ static void ddr_clock_init(void)
 	pad_pd_cfg_3 &= PAD_89_PD_CFG;
 	writel(pad_pd_cfg_3, &misc_p->pad_pd_cfg_3);
 
-#endif
+#else
 
+#define PLGPIO_2_3_DIR_SEL		(void *)(CONFIG_SPEAR_GPIOA + 0x400)
+#define PLGPIO_2_3_RW_DATA		(void *)(CONFIG_SPEAR_GPIOA + 0x3FC)
+
+	/* Enable the GPIO Clock Enable */
+	writel(readl(&misc_p->perip1_clk_enb) | GPIOA_CLKEN,
+			&misc_p->perip1_clk_enb);
+	/*
+	 * The code below modifies plgpio2 and plgpio3
+	 * registers settings in order to add support for SPEAr13xx
+	 * DDR Board Modifications:
+	 * - DDR_CLKEN (PLGPIO 2: PullDown = 1, PullUp = 0)
+	 * - DDR_RESET (PLGPIO 3: PullDown = 1, PullUp = 0)
+	 */
+
+	/* Set up the plgpio direction as output */
+	writel(readl(PLGPIO_2_3_DIR_SEL) | 0xc, PLGPIO_2_3_DIR_SEL);
+	/* Set up the Value for DDR_CLKEN and DDR_RESET */
+	writel(readl(PLGPIO_2_3_RW_DATA) | (PLGPIO3_PU_CFG | PLGPIO2_PU_CFG) ,
+			PLGPIO_2_3_RW_DATA);
+	writel(readl(PLGPIO_2_3_RW_DATA) & (PLGPIO3_PD_CFG & PLGPIO2_PD_CFG),
+			PLGPIO_2_3_RW_DATA);
+
+#endif
 	perip2_swrst = readl(&misc_p->perip2_sw_rst);
 	perip2_swrst |= DDR_CTRL_CLKEN | DDR_CORE_CLKEN;
 	writel(perip2_swrst, &misc_p->perip2_sw_rst);
