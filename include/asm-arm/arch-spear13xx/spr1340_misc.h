@@ -299,6 +299,10 @@ struct misc_regs {
 #define USB_PLL_LOCK				(1 << 24)
 
 /* pad_pu_cfg definitions */
+#define PAD_21_PU_CFG				(1 << 21)
+#define PAD_21_PD_CFG				(~PAD_21_PU_CFG)
+#define PAD_22_PU_CFG				(1 << 22)
+#define PAD_22_PD_CFG				(~PAD_22_PU_CFG)
 #define PAD_88_PU_CFG				(1 << 24)
 #define PAD_88_PD_CFG				(~PAD_88_PU_CFG)
 #define PAD_89_PU_CFG				(1 << 25)

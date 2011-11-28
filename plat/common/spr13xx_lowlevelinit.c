@@ -219,6 +219,26 @@ static void sys_init(void)
 	writel(PLL_TIM, &misc_p->sys_clk_plltimer);
 	writel(OSCI_TIM, &misc_p->sys_clk_oscitimer);
 
+#ifdef CONFIG_SPEAR1340
+	u32 pad_pu_cfg_1, pad_pd_cfg_1;
+
+	/*
+	 * The code below modifies pad_pu_cfg_1 and pad_pd_cfg_1
+	 * registers settings in order to add support for SPEAr1340
+	 * DDR Board Modifications:
+	 * - DDR_PHY_1v2 (XGPIO 21: PullDown = 1, PullUp = 0)
+	 * - DDR_PHY_1v5 (XGPIO 22: PullDown = 1, PullUp = 0)
+	 */
+	pad_pu_cfg_1 = readl(&misc_p->pad_pu_cfg_1);
+	pad_pu_cfg_1 |= (PAD_21_PU_CFG | PAD_22_PU_CFG);
+	writel(pad_pu_cfg_1, &misc_p->pad_pu_cfg_1);
+
+	pad_pd_cfg_1 = readl(&misc_p->pad_pd_cfg_1);
+	pad_pd_cfg_1 &= PAD_21_PD_CFG;
+	pad_pd_cfg_1 &= PAD_22_PD_CFG;
+	writel(pad_pd_cfg_1, &misc_p->pad_pd_cfg_1);
+#endif
+
 	/* Initialize PLLs */
 	pll_init();
 
