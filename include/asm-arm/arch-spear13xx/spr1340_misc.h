@@ -308,4 +308,10 @@ struct misc_regs {
 #define PAD_89_PU_CFG				(1 << 25)
 #define PAD_89_PD_CFG				(~PAD_89_PU_CFG)
 
+/* PLGPIO definitions */
+#define PLGPIO_BASE				(0xE2800000)
+#define PLGPIO_ENB_3				(PLGPIO_BASE | 0x8)
+#define PLGPIO_88_CFG				(1 << 24)
+#define PLGPIO_89_CFG				(1 << 25)
+
 #endif

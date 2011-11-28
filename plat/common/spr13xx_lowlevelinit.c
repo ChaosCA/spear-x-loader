@@ -220,6 +220,17 @@ static void sys_init(void)
 	writel(OSCI_TIM, &misc_p->sys_clk_oscitimer);
 
 #ifdef CONFIG_SPEAR1340
+	u32 plgpio_enb_3;
+	/*
+	 * The code below modifies  plgpio_enb_3 register
+	 * settings in order to add support for SPEAr1340
+	 * rev AB DDR Board Modifications setting in output
+	 * GPIOs 88 and 89 on GPIO controller.
+	 */
+	plgpio_enb_3 = readl(PLGPIO_ENB_3);
+	plgpio_enb_3 &= ~(PLGPIO_88_CFG | PLGPIO_89_CFG);
+	writel(plgpio_enb_3, PLGPIO_ENB_3);
+
 	u32 pad_pu_cfg_1, pad_pd_cfg_1;
 
 	/*
