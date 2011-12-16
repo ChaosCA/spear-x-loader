@@ -50,10 +50,52 @@ static void ddr_clock_init(void)
 	 * use fixed comzcp=0000 and comzcn=0000
 	 */
 #ifdef CONFIG_SPEAR1340
+	u32 pad_pu_cfg_3, pad_pd_cfg_3;
+
 	/* MISC 0x710 update=0, enb=0, encomzc=0 */
 	writel(0x00000000, &misc_p->compensation_ddr_cfg);
-#endif
 
+	/*
+	 * The code below modifies pad_pu_cfg_3 and pad_pd_cfg_3
+	 * registers settings in order to add support for SPEAr1340
+	 * DDR Board Modifications:
+	 * - DDR_CLKEN (XGPIO 88: PullDown = 1, PullUp = 0)
+	 * - DDR_RESET (XGPIO 89: PullDown = 1, PullUp = 0)
+	 */
+	pad_pu_cfg_3 = readl(&misc_p->pad_pu_cfg_3);
+	pad_pu_cfg_3 |= (PAD_88_PU_CFG | PAD_89_PU_CFG);
+	writel(pad_pu_cfg_3, &misc_p->pad_pu_cfg_3);
+
+	pad_pd_cfg_3 = readl(&misc_p->pad_pd_cfg_3);
+	pad_pd_cfg_3 &= PAD_88_PD_CFG;
+	pad_pd_cfg_3 &= PAD_89_PD_CFG;
+	writel(pad_pd_cfg_3, &misc_p->pad_pd_cfg_3);
+
+#else
+
+#define PLGPIO_2_3_DIR_SEL		(void *)(CONFIG_SPEAR_GPIOA + 0x400)
+#define PLGPIO_2_3_RW_DATA		(void *)(CONFIG_SPEAR_GPIOA + 0x3FC)
+
+	/* Enable the GPIO Clock Enable */
+	writel(readl(&misc_p->perip1_clk_enb) | GPIOA_CLKEN,
+			&misc_p->perip1_clk_enb);
+	/*
+	 * The code below modifies plgpio2 and plgpio3
+	 * registers settings in order to add support for SPEAr13xx
+	 * DDR Board Modifications:
+	 * - DDR_CLKEN (PLGPIO 2: PullDown = 1, PullUp = 0)
+	 * - DDR_RESET (PLGPIO 3: PullDown = 1, PullUp = 0)
+	 */
+
+	/* Set up the plgpio direction as output */
+	writel(readl(PLGPIO_2_3_DIR_SEL) | 0xc, PLGPIO_2_3_DIR_SEL);
+	/* Set up the Value for DDR_CLKEN and DDR_RESET */
+	writel(readl(PLGPIO_2_3_RW_DATA) | (PLGPIO3_PU_CFG | PLGPIO2_PU_CFG) ,
+			PLGPIO_2_3_RW_DATA);
+	writel(readl(PLGPIO_2_3_RW_DATA) & (PLGPIO3_PD_CFG & PLGPIO2_PD_CFG),
+			PLGPIO_2_3_RW_DATA);
+
+#endif
 	perip2_swrst = readl(&misc_p->perip2_sw_rst);
 	perip2_swrst |= DDR_CTRL_CLKEN | DDR_CORE_CLKEN;
 	writel(perip2_swrst, &misc_p->perip2_sw_rst);
@@ -177,12 +219,41 @@ static void sys_init(void)
 	writel(PLL_TIM, &misc_p->sys_clk_plltimer);
 	writel(OSCI_TIM, &misc_p->sys_clk_oscitimer);
 
+#ifdef CONFIG_SPEAR1340
+	u32 plgpio_enb_3;
+	/*
+	 * The code below modifies  plgpio_enb_3 register
+	 * settings in order to add support for SPEAr1340
+	 * rev AB DDR Board Modifications setting in output
+	 * GPIOs 88 and 89 on GPIO controller.
+	 */
+	plgpio_enb_3 = readl(PLGPIO_ENB_3);
+	plgpio_enb_3 &= ~(PLGPIO_88_CFG | PLGPIO_89_CFG);
+	writel(plgpio_enb_3, PLGPIO_ENB_3);
+
+	u32 pad_pu_cfg_1, pad_pd_cfg_1;
+
+	/*
+	 * The code below modifies pad_pu_cfg_1 and pad_pd_cfg_1
+	 * registers settings in order to add support for SPEAr1340
+	 * DDR Board Modifications:
+	 * - DDR_PHY_1v2 (XGPIO 21: PullDown = 1, PullUp = 0)
+	 * - DDR_PHY_1v5 (XGPIO 22: PullDown = 1, PullUp = 0)
+	 */
+	pad_pu_cfg_1 = readl(&misc_p->pad_pu_cfg_1);
+	pad_pu_cfg_1 |= (PAD_21_PU_CFG | PAD_22_PU_CFG);
+	writel(pad_pu_cfg_1, &misc_p->pad_pu_cfg_1);
+
+	pad_pd_cfg_1 = readl(&misc_p->pad_pd_cfg_1);
+	pad_pd_cfg_1 &= PAD_21_PD_CFG;
+	pad_pd_cfg_1 &= PAD_22_PD_CFG;
+	writel(pad_pd_cfg_1, &misc_p->pad_pd_cfg_1);
+#endif
+
 	/* Initialize PLLs */
 	pll_init();
 
 	mac_init();
-
-	writel(0x0, &misc_p->perip_clk_cfg);
 
 	/* Set system state to NORMAL */
 	sysclkctrl = readl(&misc_p->sys_clk_ctrl);

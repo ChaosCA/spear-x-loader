@@ -29,6 +29,7 @@ endif
 
 LIB	= $(obj)libcommon.a
 
+COBJS-y += spr_serial.o
 COBJS-$(CONFIG_SPEAR600) += spr_lowlevelinit.o
 COBJS-$(CONFIG_SPEAR3XX) += spr_lowlevelinit.o
 COBJS-$(CONFIG_SPEAR600) += spr_nand.o

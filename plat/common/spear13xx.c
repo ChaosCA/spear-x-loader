@@ -122,13 +122,17 @@ int nand_boot_selected(void)
 
 int pnor_boot_selected(void)
 {
+	u32 bootstrap = read_bootstrap();
+
 	if (pnor_boot_supported()) {
 		/* Check whether SNOR boot is selected */
 #ifdef CONFIG_SPEAR1340
-		if ((CONFIG_SPEAR_PNORBOOT_DEFUART == read_bootstrap()) ||
-			(CONFIG_SPEAR_PNORBOOT_DEFUSBD == read_bootstrap()))
+		if ((CONFIG_SPEAR_PNOR8BOOT_DEFUSBD == bootstrap) ||
+			(CONFIG_SPEAR_PNOR16BOOT_DEFUSBD == bootstrap) ||
+			(CONFIG_SPEAR_PNOR8BOOT_DEFUART == bootstrap) ||
+			(CONFIG_SPEAR_PNOR16BOOT_DEFUART == bootstrap))
 #else
-		if (CONFIG_SPEAR_SNORBOOT == read_bootstrap())
+		if (CONFIG_SPEAR_PNORBOOT == bootstrap)
 #endif
 			return TRUE;
 	}

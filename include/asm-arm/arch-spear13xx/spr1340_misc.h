@@ -261,6 +261,8 @@ struct misc_regs {
 
 /* perip_clk_cfg definitions */
 #define MPMC_CLK_PLL4				(1 << 10)
+#define UARTCLK_48MHZ				0
+#define UARTCLK_MASK				(0x3 << 4)
 
 /* perip*_[clk_enb/sw_rst] definitions */
 #define DDR_CTRL_CLKEN				(1 << 0)
@@ -295,5 +297,21 @@ struct misc_regs {
 #define UTMI_XFER_RST1				(1 << 15)
 #define UTMI_XFER_RST2				(1 << 16)
 #define USB_PLL_LOCK				(1 << 24)
+
+/* pad_pu_cfg definitions */
+#define PAD_21_PU_CFG				(1 << 21)
+#define PAD_21_PD_CFG				(~PAD_21_PU_CFG)
+#define PAD_22_PU_CFG				(1 << 22)
+#define PAD_22_PD_CFG				(~PAD_22_PU_CFG)
+#define PAD_88_PU_CFG				(1 << 24)
+#define PAD_88_PD_CFG				(~PAD_88_PU_CFG)
+#define PAD_89_PU_CFG				(1 << 25)
+#define PAD_89_PD_CFG				(~PAD_89_PU_CFG)
+
+/* PLGPIO definitions */
+#define PLGPIO_BASE				(0xE2800000)
+#define PLGPIO_ENB_3				(PLGPIO_BASE | 0x8)
+#define PLGPIO_88_CFG				(1 << 24)
+#define PLGPIO_89_CFG				(1 << 25)
 
 #endif
