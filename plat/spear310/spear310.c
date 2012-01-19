@@ -41,11 +41,11 @@ void plat_ddr_init(void)
 	ddrpad &= ~DDR_PAD_CNF_MSK;
 
 #if (CONFIG_DDR_HCLK)
-	ddrpad |= 0x7AAD;
+	ddrpad |= 0x3AA4;
 #elif (CONFIG_DDR_2HCLK)
-	ddrpad |= 0x7AA5;
+	ddrpad |= 0x3AA4;
 #elif (CONFIG_DDR_PLL2)
-	ddrpad |= 0x7AA5;
+	ddrpad |= 0x3AA4;
 #endif
 	writel(ddrpad, &misc_p->ddr_pad);
 
