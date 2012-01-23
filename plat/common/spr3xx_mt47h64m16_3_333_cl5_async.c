@@ -33,7 +33,7 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x00000000,
 #else
 	0x02020201,
-	0x02020202,
+	0x00000202,
 #endif
 	0x01000000,
 	0x00000101,
