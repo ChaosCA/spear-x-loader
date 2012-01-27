@@ -288,6 +288,27 @@ static void set_lcad_power_on(void)
 }
 #endif
 
+#ifdef CONFIG_SPEAR1340_LCAD
+static void pl061_init(void)
+{
+	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
+
+	writel(readl(&misc_p->perip1_clk_enb) | GPIO0_CLKEN,
+			&misc_p->perip1_clk_enb);
+}
+
+/*
+ * SPEAr1340 LCAD board requires a GPIO to be set in order to
+ * power on...
+ */
+static void set_lcad_power_on(void)
+{
+	pl061_set_value(CONFIG_SPEAR_GPIO0_BASE, GPIO0_3, 1);
+	pl061_set_out(CONFIG_SPEAR_GPIO0_BASE, GPIO0_3);
+	pl061_set_value(CONFIG_SPEAR_GPIO0_BASE, GPIO0_3, 1);
+}
+#endif
+
 void lowlevel_init(void)
 {
 	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
@@ -304,7 +325,7 @@ void lowlevel_init(void)
 	writel(PERIPH1_RST_ALL, &misc_p->perip1_sw_rst);
 	writel(PERIPH2_RST_ALL, &misc_p->perip2_sw_rst);
 
-#ifdef CONFIG_SPEAR900_LCAD
+#if defined(CONFIG_SPEAR900_LCAD) || defined(CONFIG_SPEAR1340_LCAD)
 	pl061_init();
 
 	/* Power on complete */
