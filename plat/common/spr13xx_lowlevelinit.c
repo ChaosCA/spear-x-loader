@@ -25,6 +25,7 @@
 #include <asm/io.h>
 #include <asm/arch/spr13xx_misc.h>
 #include <asm/arch/spr13xx_defs.h>
+#include <pl061.h>
 
 static void ddr_clock_init(void)
 {
@@ -266,6 +267,27 @@ static void sys_init(void)
 			SYS_STATE_NORMAL);
 }
 
+#ifdef CONFIG_SPEAR900_LCAD
+static void pl061_init(void)
+{
+	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
+
+	writel(readl(&misc_p->perip1_clk_enb) | GPIO1_CLKEN,
+			&misc_p->perip1_clk_enb);
+}
+
+/*
+ * SPEAr900 LCAD board requires a GPIO to be set in order to
+ * power on...
+ */
+static void set_lcad_power_on(void)
+{
+	pl061_set_value(CONFIG_SPEAR_GPIO1_BASE, GPIO1_1, 1);
+	pl061_set_out(CONFIG_SPEAR_GPIO1_BASE, GPIO1_1);
+	pl061_set_value(CONFIG_SPEAR_GPIO1_BASE, GPIO1_1, 1);
+}
+#endif
+
 void lowlevel_init(void)
 {
 	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
@@ -281,6 +303,13 @@ void lowlevel_init(void)
 	/* Enable IPs (release reset) */
 	writel(PERIPH1_RST_ALL, &misc_p->perip1_sw_rst);
 	writel(PERIPH2_RST_ALL, &misc_p->perip2_sw_rst);
+
+#ifdef CONFIG_SPEAR900_LCAD
+	pl061_init();
+
+	/* Power on complete */
+	set_lcad_power_on();
+#endif
 
 #ifdef CONFIG_SPEAR1340
 	writel(PERIPH3_RST_ALL, &misc_p->perip3_sw_rst);
