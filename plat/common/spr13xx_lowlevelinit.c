@@ -73,11 +73,11 @@ static void ddr_clock_init(void)
 
 #else
 
-#define PLGPIO_2_3_DIR_SEL		(void *)(CONFIG_SPEAR_GPIOA + 0x400)
-#define PLGPIO_2_3_RW_DATA		(void *)(CONFIG_SPEAR_GPIOA + 0x3FC)
+#define PLGPIO_2_3_DIR_SEL		(void *)(CONFIG_SPEAR_GPIO0_BASE, + 0x400)
+#define PLGPIO_2_3_RW_DATA		(void *)(CONFIG_SPEAR_GPIO0_BASE, + 0x3FC)
 
 	/* Enable the GPIO Clock Enable */
-	writel(readl(&misc_p->perip1_clk_enb) | GPIOA_CLKEN,
+	writel(readl(&misc_p->perip1_clk_enb) | GPIO0_CLKEN,
 			&misc_p->perip1_clk_enb);
 	/*
 	 * The code below modifies plgpio2 and plgpio3
