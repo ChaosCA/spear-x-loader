@@ -34,7 +34,7 @@
  * (easy to change)
  */
 #define CONFIG_SPEAR1340		1
-#define CONFIG_SPEAR1340_LCAD	1
+#define CONFIG_SPEAR1340_LCAD		1
 #define CONFIG_SPEAR13XX		1
 
 /*
@@ -63,8 +63,8 @@
  * DDR frequency selection using PLL4
  * Select(define to 1) only one out of following list
  */
-#define CONFIG_DDR_FREQ_400		1
-#define CONFIG_DDR_FREQ_533		0
+#define CONFIG_DDR_FREQ_400		0
+#define CONFIG_DDR_FREQ_533		1
 
 /*
  * Enable GPIO support
