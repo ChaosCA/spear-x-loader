@@ -86,6 +86,7 @@ LIBS += plat/common/libcommon.a
 LIBS += lib_$(ARCH)/lib$(ARCH).a
 LIBS += drivers/mtd/libmtd.a
 LIBS += drivers/misc/libmisc.a
+LIBS += drivers/pl061/libpl061.a
 LIBS += common/libcommon.a
 LIBS += drivers/serial/libserial.a
 
