@@ -1,6 +1,5 @@
 /*
  * (C) Copyright 2000-2009
- * Viresh Kumar, ST Microelectronics, viresh.kumar@st.com
  * Vipin Kumar, ST Microelectronics, vipin.kumar@st.com
  *
  * See file CREDITS for list of people who contributed to this
@@ -27,6 +26,9 @@
 #include <asm/arch/spr_misc.h>
 #include <asm/arch/spr_defs.h>
 
+#define CONFIG_SPEAR_FUNCENB		0xB3000008
+#define FUNCENBDEF			0x00002FF4
+
 /**
  * plat_ddr_init:
  */
@@ -41,11 +43,11 @@ void plat_ddr_init(void)
 	ddrpad &= ~DDR_PAD_CNF_MSK;
 
 #if (CONFIG_DDR_HCLK)
-	ddrpad |= 0x3AA4;
+	ddrpad |= 0xEAAB;
 #elif (CONFIG_DDR_2HCLK)
-	ddrpad |= 0x3AA4;
+	ddrpad |= 0x7AA5;
 #elif (CONFIG_DDR_PLL2)
-	ddrpad |= 0x3AA4;
+	ddrpad |= 0x7AA5;
 #endif
 	writel(ddrpad, &misc_p->ddr_pad);
 
@@ -66,13 +68,8 @@ void plat_ddr_init(void)
  */
 void soc_init(void)
 {
-	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
-
-	writel(readl(&misc_p->amem_cfg_ctrl) | PORT_CLK_EN,
-	       &misc_p->amem_cfg_ctrl);
-
-	writel(0x2f7bc210, &misc_p->plgpio3_pad_prg);
-	writel(0x017bdef6, &misc_p->plgpio4_pad_prg);
+	writel(RASSELDEF, (u32 *)CONFIG_SPEAR_RASSELECT);
+	writel(RASMODEDEF, (u32 *)CONFIG_SPEAR_RASMODE);
 }
 
 /**
@@ -103,8 +100,11 @@ int nand_boot_selected(void)
 	u32 bootstrap = read_bootstrap();
 
 	/* Check whether NAND boot is selected */
-	if (nand_boot_supported() && (bootstrap == CONFIG_SPEAR_NANDBOOT))
-		return TRUE;
+	if (nand_boot_supported()) {
+		if ((bootstrap == CONFIG_SPEAR_NAND8BOOT) ||
+		    (bootstrap == CONFIG_SPEAR_NAND16BOOT))
+			return TRUE;
+	}
 
 	return FALSE;
 }
@@ -114,8 +114,13 @@ int pnor_boot_selected(void)
 	u32 bootstrap = read_bootstrap();
 
 	/* Check whether Parallel NOR boot is selected */
-	if (pnor_boot_supported() && (bootstrap == CONFIG_SPEAR_PNORBOOT))
-		return TRUE;
+	if (pnor_boot_supported()) {
+		if ((bootstrap == CONFIG_SPEAR_PNOR8BOOT) ||
+		    (bootstrap == CONFIG_SPEAR_PNOR16BOOT) ||
+		    (bootstrap == CONFIG_SPEAR_PNOR8NOACKBOOT) ||
+		    (bootstrap == CONFIG_SPEAR_PNOR16NOACKBOOT))
+			return TRUE;
+	}
 
 	return FALSE;
 }
@@ -133,11 +138,26 @@ int usb_boot_selected(void)
 
 int tftp_boot_selected(void)
 {
+	u32 bootstrap = read_bootstrap();
+
+	/* Check whether tftp boot is selected */
+	if (tftp_boot_supported()) {
+		if ((bootstrap == CONFIG_SPEAR_TFTPI2CBOOT) ||
+		    (bootstrap == CONFIG_SPEAR_TFTPSPIBOOT))
+			return TRUE;
+	}
+
 	return FALSE;
 }
 
 int uart_boot_selected(void)
 {
+	u32 bootstrap = read_bootstrap();
+
+	/* Check whether UART boot is selected */
+	if (uart_boot_supported() && (bootstrap == CONFIG_SPEAR_UARTBOOT))
+		return TRUE;
+
 	return FALSE;
 }
 
@@ -166,38 +186,23 @@ int mmc_boot_selected(void)
  */
 u32 get_pnor_width(void)
 {
-	u32 pnorwidth = ((readl(CONFIG_SPEAR_BOOTSTRAPCFG) >> CONFIG_SPEAR_PNORSHFT)
-			& CONFIG_SPEAR_PNORMASK);
+	u32 bootstrap = read_bootstrap();
 
-	switch (pnorwidth) {
+	switch (bootstrap) {
 	case CONFIG_SPEAR_PNOR8BOOT:
+	case CONFIG_SPEAR_PNOR8NOACKBOOT:
 		return PNOR_WIDTH_8;
 
 	case CONFIG_SPEAR_PNOR16BOOT:
+	case CONFIG_SPEAR_PNOR16NOACKBOOT:
 		return PNOR_WIDTH_16;
-
-	case CONFIG_SPEAR_PNOR32BOOT:
-		return PNOR_WIDTH_32;
 
 	default:
 		return PNOR_WIDTH_SEARCH;
 	}
 }
 
-/**
- * plat_late_init:
- *
- * Platform related initialisations. Late initialisations are performed just
- * before passing the control to second level boot image
- */
 void plat_late_init(void)
 {
 	spear_late_init();
-
-	/*
-	 * Bad fix : has to be removed later
-	 * BootROM function flashdetectandinit initializes function enable
-	 * register to incorrect value. Specific to SPEAr310
-	 */
-	writel(FUNCENBDEF, (u32 *)CONFIG_SPEAR_FUNCENB);
 }

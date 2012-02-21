@@ -66,46 +66,54 @@ u32 find_rdlvl_value(u32 *start, u32 *end)
 		if (diff < 0)
 			diff = start[1] - start[0];
 
-		if (start[1] == start[0])
-			rdlvl_value = start[1] + 1;
-		else if (diff < 2) {
-			if ((edge_delta[0] == 1) && (edge_delta[1] == 1)) {
-				if (start[1] == (start[0] + 1))
-					rdlvl_value = start[1];
-				else if (start[0] == (start[1] + 1))
-					rdlvl_value = start[0];
-				else
-					goto error;
-			} else if (edge_delta[0] == edge_delta[1]) {
-				if (start[1] == (start[0] + 1))
-					rdlvl_value = start[1] + 1;
-				else if (start[0] == (start[1] + 1))
-					rdlvl_value = start[0] + 1;
-				else
-					goto error;
-			} else if (edge_delta[0] > edge_delta[1]) {
-				if (start[1] == (start[0] + 1))
-					rdlvl_value = start[0] + 2;
-				else if (start[0] == (start[1] + 1)) {
-					if (edge_delta[1] == 1)
-						rdlvl_value = start[1] + 1;
+		if ((start[1] == start[0]) && (edge_delta[0] > 2) && (edge_delta[1] > 2)) {
+			if (start[0] > 6)
+				rdlvl_value = start[0] + 1;
+			else
+				rdlvl_value = start[0] + 2;
+		} else {
+
+			if (start[1] == start[0]) {
+				rdlvl_value = start[1] + 1;
+			} else if (diff < 2) {
+				if ((edge_delta[0] == 1) && (edge_delta[1] == 1)) {
+					if (start[1] == (start[0] + 1))
+						rdlvl_value = start[1];
+					else if (start[0] == (start[1] + 1))
+						rdlvl_value = start[0];
 					else
-						rdlvl_value = start[1] + 2;
-				} else
-					goto error;
-			} else {
-				if (start[0] == (start[1] + 1))
-					rdlvl_value = start[1] + 2;
-				else if (start[1] == (start[0] + 1)) {
-					if (edge_delta[0] == 1)
+						goto error;
+				} else if (edge_delta[0] == edge_delta[1]) {
+					if (start[1] == (start[0] + 1))
+						rdlvl_value = start[1] + 1;
+					else if (start[0] == (start[1] + 1))
 						rdlvl_value = start[0] + 1;
 					else
+						goto error;
+				} else if (edge_delta[0] > edge_delta[1]) {
+					if (start[1] == (start[0] + 1))
 						rdlvl_value = start[0] + 2;
-				} else
-					goto error;
-			}
-		} else
-			goto error;
+					else if (start[0] == (start[1] + 1)) {
+						if (edge_delta[1] == 1)
+							rdlvl_value = start[1] + 1;
+						else
+							rdlvl_value = start[1] + 2;
+					} else
+						goto error;
+				} else {
+					if (start[0] == (start[1] + 1))
+						rdlvl_value = start[1] + 2;
+					else if (start[1] == (start[0] + 1)) {
+						if (edge_delta[0] == 1)
+							rdlvl_value = start[0] + 1;
+						else
+							rdlvl_value = start[0] + 2;
+					} else
+						goto error;
+				}
+			} else
+				goto error;
+		}
 	}
 
 	return rdlvl_value;
@@ -179,7 +187,7 @@ void lvl_read(void)
 					start_point_0[rdlvl_edge] = delay_vals + RDLVL_DELAY_INIT;
 					start_point_found = 1;
 				}
-				if ((resp_array[slice][delay_vals][0] != 0) && start_point_found) {
+				if ((resp_array[slice][delay_vals][rdlvl_edge] != 0) && start_point_found) {
 					end_point_0[rdlvl_edge] = delay_vals + RDLVL_DELAY_INIT - 1;
 					break;
 				}

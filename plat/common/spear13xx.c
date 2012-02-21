@@ -39,9 +39,36 @@ void plat_ddr_init(void)
 	writel(PAD_VREF | DATA_PROGB | DATA_PROGA | CLK_PROGB | CLK_PROGA |
 		CTRL_PROGB | CTRL_PROGA, &misc_p->ddr_pad_cfg);
 
+#ifdef CONFIG_SPEAR1340
+	/*
+	 * MISC compensation_ddr_cfg
+	 * disable automatic ddr pad compensation
+	 * update=0 enb=0 encomzcin=0
+	 * use fixed comzcp=0000 and comzcn=0000
+	 */
+	writel(0x00000000, &misc_p->compensation_ddr_cfg);
+	writel(0x00000000, &misc_p->compensation_ddr_cfg);
+	writel(0x00000000, &misc_p->compensation_ddr_cfg);
+#endif
+
 	lvl_write();
 	lvl_gatetrn();
 	lvl_read();
+
+#ifdef CONFIG_SPEAR1340
+	/*
+	 * MISC compensation_ddr_cfg
+	 * enable automatic ddr pad compensation
+	 * update=0 enb=0 encomzcin=1
+	 */
+	writel(0x00000400, &misc_p->compensation_ddr_cfg);
+	writel(0x00000400, &misc_p->compensation_ddr_cfg);
+	writel(0x00000400, &misc_p->compensation_ddr_cfg);
+
+	/* wait for comzcrdy done */
+	while (!(readl(&misc_p->compensation_ddr_cfg) & 0x1))
+		;
+#endif
 }
 
 /**

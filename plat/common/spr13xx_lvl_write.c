@@ -377,7 +377,7 @@ void set_dqs_parms(u32 wrlvl_start, u32 *final_wrlvl_delay)
 
 		phy_clk_phase_match_pre &= 0x7; /* only 3 bits[2:0] are significant */
 		if (phy_clk_phase_match_pre > dq_clk_phase_match_pre)
-			dqs_dq_clk_phase_match_delta = (7 - phy_clk_phase_match_pre) + dq_clk_phase_match_pre;
+			dqs_dq_clk_phase_match_delta = phy_clk_phase_match_pre - dq_clk_phase_match_pre;
 		else
 			dqs_dq_clk_phase_match_delta = dq_clk_phase_match_pre - phy_clk_phase_match_pre;
 		dqs_dq_clk_phase_match_delta &= 0xF;
@@ -443,7 +443,7 @@ void set_dqs_parms(u32 wrlvl_start, u32 *final_wrlvl_delay)
 
 		phy_clk_phase_match_pre &= 0x7; /* only 3 bits[2:0] are significant */
 		if (phy_clk_phase_match_pre > dq_clk_phase_match_pre)
-			dqs_dq_clk_phase_match_delta = (7 - phy_clk_phase_match_pre) + dq_clk_phase_match_pre;
+			dqs_dq_clk_phase_match_delta = phy_clk_phase_match_pre - dq_clk_phase_match_pre;
 		else
 			dqs_dq_clk_phase_match_delta = dq_clk_phase_match_pre - phy_clk_phase_match_pre;
 		dqs_dq_clk_phase_match_delta &= 0xF;

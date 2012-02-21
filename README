@@ -53,6 +53,7 @@ Directory Hierarchy:
   - spear300		SPEAr300 related files
   - spear310		SPEAr310 related files
   - spear320		SPEAr320 related files
+  - spear320_hmi	SPEAr320 HMI related files
   - spear600		SPEAr600 related files
   - spear1300		SPEAr1300 related files
   - spear1310_reva	SPEAr1310_reva related files
