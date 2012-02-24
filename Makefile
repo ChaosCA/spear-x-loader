@@ -282,6 +282,13 @@ spearR1801e_usbtty_config :
 		}
 	@$(MKCONFIG) -n $@ -a spearR1801e arm arm_cortexa8 spearR1801e NULL spear13xx
 
+spear1310_reva_bedrock_config \
+spear1310_reva_bedrock_usbtty_config :
+	@[ -z "$(findstring usbtty,$@)" ] || \
+		{ echo "#define CONFIG_SPEAR_USBTTY" >> $(obj)include/config.h ; \
+		}
+	@$(MKCONFIG) -n $@ -a spear1310_reva_bedrock arm arm_cortexa8 spear1310_reva_bedrock NULL spear13xx
+
 #########################################################################
 #########################################################################
 #########################################################################
