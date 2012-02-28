@@ -36,8 +36,9 @@
  * Each definition corresponds to a supported DDR chip.
  * DDR configuration is based on the following selection
  */
-#define CONFIG_DDR_MT41J64M16		1
+#define CONFIG_DDR_MT41J64M16		0
 #define CONFIG_DDR_MT41J256M8		0
+#define CONFIG_DDR_MT41J64M16_15E	1
 
 /*
  * DDR frequency selection
