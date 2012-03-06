@@ -41,6 +41,7 @@ COBJS-$(CONFIG_SPEAR600) += spr600_mt47h128m8_3_266_cl5_async.o
 COBJS-$(CONFIG_SPEAR3XX) += spr3xx_mt47h64m16_3_333_cl5_async.o
 COBJS-$(CONFIG_SPEAR3XX) += spr3xx_mt47h64m16_3_266_cl5_async.o
 COBJS-$(CONFIG_SPEAR3XX) += spr3xx_mt47h64m16_3_166_cl4_async.o
+COBJS-$(CONFIG_SPEAR3XX) += spr3xx_mt46h32m16_6_166_cl3.o
 
 COBJS-$(CONFIG_SPEAR13XX) += spear13xx.o
 COBJS-$(CONFIG_SPEAR13XX) += spr13xx_lowlevelinit.o

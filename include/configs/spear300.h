@@ -37,6 +37,7 @@
  * DDR configuration is based on the following selection
  */
 #define CONFIG_DDR_MT47H64M16		1
+#define CONFIG_DDR_MT46H32M16		0
 
 /*
  * Please define CONFIG_DUAL_DDR
