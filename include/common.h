@@ -82,8 +82,8 @@ int i2c_boot_selected(void);
 int spi_boot_selected(void);
 int mmc_boot_selected(void);
 
-
 void plat_late_init(void);
 void spear_serial_init(void);
+void serial_puts(const char *);
 
 #endif	/* __COMMON_H_ */

@@ -77,6 +77,7 @@ COBJS-$(CONFIG_SPEAR13XX) += spr13xx_swlvl.o
 COBJS-$(CONFIG_SPEAR13XX) += spr13xx_lvl_read.o
 COBJS-$(CONFIG_SPEAR13XX) += spr13xx_lvl_write.o
 COBJS-$(CONFIG_SPEAR13XX) += spr13xx_lvl_gatetrn.o
+COBJS-y += ddrtest.o
 
 SOBJS-$(CONFIG_SPEAR13XX) += spr13xx_wakeup.o
 SOBJS-$(CONFIG_SPEAR13XX) += cache.o

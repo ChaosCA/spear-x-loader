@@ -85,3 +85,27 @@ int serial_init (void)
 
 	return 0;
 }
+
+static void pl01x_putc(int portnum, char c)
+{
+	/* Wait until there is space in the FIFO */
+	while (IO_READ(port[portnum] + UART_PL01x_FR) & UART_PL01x_FR_TXFF)
+		;
+
+	/* Send the character */
+	IO_WRITE(port[portnum] + UART_PL01x_DR, c);
+}
+
+void serial_putc(const char c)
+{
+	if (c == '\n')
+		pl01x_putc(CONSOLE_PORT, '\r');
+
+	pl01x_putc(CONSOLE_PORT, c);
+}
+
+void serial_puts(const char *s)
+{
+	while (*s)
+		serial_putc(*s++);
+}

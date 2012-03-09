@@ -59,6 +59,10 @@
 /* Maximum supported DDR size */
 #define PHYS_SDRAM_MAXSIZE		(1 * 1024 * 1024 * 1024)
 
+/* enable DDR test */
+#define DDRTEST_EN			1
+#define DDR_TEST_SIZE			(1 * 1024 * 1024)
+
 /*
  * Machine type for SPEAr300
  */
