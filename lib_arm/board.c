@@ -70,10 +70,10 @@ void mpmc_config_ecc(u32 value)
 ulong start_armboot(void)
 {
 #if DDR_ECC_ENABLE
-	unsigned long end = get_ram_size(0x00, PHYS_SDRAM_MAXSIZE);
+	void *end = (void *)get_ram_size(0x00, PHYS_SDRAM_MAXSIZE);
 
 #if defined(CONFIG_C3_DEVICE) && CONFIG_C3_DDR_INIT
-	void *c3sram = C3_INT_MEM_BASE_ADDR;
+	void *c3sram = (void *)C3_INT_MEM_BASE_ADDR;
 	c3_init();
 	mpmc_config_ecc(ECC_CORR_ON);
 	c3_memset(c3sram, end, 0);

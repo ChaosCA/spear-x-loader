@@ -103,13 +103,11 @@ u32 boot(void)
 	if (pnor_boot_supported() && pnor_boot_selected()) {
 
 		extern u32 get_pnor_width(void);
-		u32 width;
 
 #ifdef CONFIG_SPEAR1340
 		return CONFIG_PNOR_BOOT_ADDR;
 #else
-
-		width = get_pnor_width();
+		u32 width = get_pnor_width();
 
 		/*
 		 * Try with 8-bit initialization first.
@@ -140,10 +138,14 @@ u32 boot(void)
 	}
 
 	if (mmc_boot_supported() && mmc_boot_selected()) {
+#ifdef CONFIG_SPEAR1340
+		char *filename = (char *)MMC_UBOOT_FILE;
+#endif
+
 		/* MMC booting */
 		plat_late_init();
 #ifdef CONFIG_SPEAR1340
-		return (char *)MMC_UBOOT_FILE;
+		return (u32)filename;
 #else
 		return FALSE;
 #endif
