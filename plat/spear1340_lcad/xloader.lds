@@ -9,6 +9,9 @@
  * Vincenzo Frascino, ST Microelectronics, <vincenzo.frascino@st.com>
  * Mirko Gardi, ST Microelectronics, <mirko.gardi@st.com>
  *
+ * (C) Copyright 2012
+ * Vipin Kumar, ST Microelectronics, <vipin.kumar@st.com>
+ *
  * See file CREDITS for list of people who contributed to this
  * project.
  *
@@ -36,9 +39,6 @@ MEMORY
 {
 	xloader : ORIGIN = 0xB3801504 , LENGTH = 0x4000
 	xloader_table : ORIGIN = 0xB3803FF0 , LENGTH = 0x16
-
-	bootrom : ORIGIN = 0xffff0000, LENGTH = 0x5000
-	bootrom_table : ORIGIN = 0xffff7f00, LENGTH = 0x100
 }
 
 SECTIONS
@@ -46,23 +46,11 @@ SECTIONS
 	.text :
 	{
 		cpu/arm_cortexa8/start.o	(.text)
-		*(.text)
+		*(.text); . = ALIGN(4);
 	} > xloader
 
-	. = ALIGN(4);
-	.rodata . :
-	{ *(.rodata*); . = ALIGN(4); } > xloader
-
-	. = ALIGN(4);
-	.data . :
-	{ *(.data) } > xloader
-
-	. = ALIGN(4);
-	.bss . :
-	{ *(.bss) } > xloader
-
-	. = 0xB3807FF0;
-	. = ALIGN(4);
-	.table . :
-	{*(.table); . = ALIGN(4);}
+	.rodata : { *(.rodata*); . = ALIGN(4); } > xloader
+	.data : { *(.data); . = ALIGN(4); } > xloader
+	.bss : { *(.bss) } > xloader
+	.table : {*(.table); . = ALIGN(4); } > xloader_table
 }

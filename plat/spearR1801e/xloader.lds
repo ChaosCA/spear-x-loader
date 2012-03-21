@@ -1,4 +1,7 @@
 /*
+ * (C) Copyright 2012
+ * Vipin Kumar, ST Microelectronics, <vipin.kumar@st.com>
+ *
  * Copyright (c) 20010 ST Microelectronics
  *
  * See file CREDITS for list of people who contributed to this
@@ -23,31 +26,23 @@
 OUTPUT_FORMAT("elf32-littlearm", "elf32-littlearm", "elf32-littlearm")
 OUTPUT_ARCH(arm)
 ENTRY(_start)
+
+MEMORY
+{
+	xloader : ORIGIN = 0xB3801300 , LENGTH = 0x6CF0
+	xloader_table : ORIGIN = 0xB3807FF0 , LENGTH = 0x10
+}
+
 SECTIONS
 {
-	. = 0xB3801300;
-
-	. = ALIGN(4);
 	.text :
 	{
 		cpu/arm_cortexa8/start.o	(.text)
-		*(.text)
-	}
+		*(.text); . = ALIGN(4);
+	} > xloader
 
-	. = ALIGN(4);
-	.rodata . :
-	{ *(.rodata*) }
-
-	. = ALIGN(4);
-	.data . :
-	{ *(.data) }
-
-	. = ALIGN(4);
-	.bss . :
-	{ *(.bss) }
-
-	. = 0xB3807FF0;
-	. = ALIGN(4);
-	.table . :
-	{*(.table); . = ALIGN(4);}
+	.rodata : { *(.rodata*); . = ALIGN(4); } > xloader
+	.data : { *(.data); . = ALIGN(4); } > xloader
+	.bss : { *(.bss) } > xloader
+	.table : {*(.table); . = ALIGN(4); } > xloader_table
 }

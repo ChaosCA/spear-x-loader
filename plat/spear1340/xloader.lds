@@ -1,4 +1,7 @@
 /*
+ * (C) Copyright 2012
+ * Vipin Kumar, ST Microelectronics, <vipin.kumar@st.com>
+ *
  * April 2011 - Changed to support SPEAr device
  * Copyright (c) 20011-2015 ST Microelectronics
  *
@@ -30,11 +33,8 @@ ENTRY(_start)
 
 MEMORY
 {
-	xloader : ORIGIN = 0xB3801504 , LENGTH = 0x4000
-	xloader_table : ORIGIN = 0xB3803FF0 , LENGTH = 0x16
-
-	bootrom : ORIGIN = 0xffff0000, LENGTH = 0x5000
-	bootrom_table : ORIGIN = 0xffff7f00, LENGTH = 0x100
+	xloader : ORIGIN = 0xB3801300 , LENGTH = 0x6CF0
+	xloader_table : ORIGIN = 0xB3807FF0 , LENGTH = 0x10
 }
 
 SECTIONS
@@ -42,23 +42,11 @@ SECTIONS
 	.text :
 	{
 		cpu/arm_cortexa8/start.o	(.text)
-		*(.text)
+		*(.text); . = ALIGN(4);
 	} > xloader
 
-	. = ALIGN(4);
-	.rodata . :
-	{ *(.rodata*); . = ALIGN(4); } > xloader
-
-	. = ALIGN(4);
-	.data . :
-	{ *(.data) } > xloader
-
-	. = ALIGN(4);
-	.bss . :
-	{ *(.bss) } > xloader
-
-	. = 0xB3807FF0;
-	. = ALIGN(4);
-	.table . :
-	{*(.table); . = ALIGN(4);}
+	.rodata : { *(.rodata*); . = ALIGN(4); } > xloader
+	.data : { *(.data); . = ALIGN(4); } > xloader
+	.bss : { *(.bss) } > xloader
+	.table : {*(.table); . = ALIGN(4); } > xloader_table
 }
