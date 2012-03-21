@@ -38,7 +38,6 @@ ENTRY(_start)
 MEMORY
 {
 	xloader : ORIGIN = 0xB3801504 , LENGTH = 0x4000
-	xloader_table : ORIGIN = 0xB3803FF0 , LENGTH = 0x16
 }
 
 SECTIONS
@@ -52,5 +51,4 @@ SECTIONS
 	.rodata : { *(.rodata*); . = ALIGN(4); } > xloader
 	.data : { *(.data); . = ALIGN(4); } > xloader
 	.bss : { *(.bss) } > xloader
-	.table : {*(.table); . = ALIGN(4); } > xloader_table
 }
