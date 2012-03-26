@@ -51,9 +51,15 @@ void plat_ddr_init(void)
 	writel(0x00000000, &misc_p->compensation_ddr_cfg);
 #endif
 
+#if CONFIG_DDR2
 	lvl_write();
 	lvl_gatetrn();
 	lvl_read();
+#else
+	lvl_write();
+	lvl_read();
+	lvl_gatetrn();
+#endif
 
 #ifdef CONFIG_SPEAR1340
 	/*

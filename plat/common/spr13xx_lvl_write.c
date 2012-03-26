@@ -475,6 +475,72 @@ void set_dqs_parms(u32 wrlvl_start, u32 *final_wrlvl_delay)
 	}
 }
 
+#if CONFIG_DDR2
+
+void set_wrlvldelay_ddr2(u32 wrlvl_start, u32 *final_wrlvl_delay)
+{
+	u32 *phy_ctrl_reg1 = &mpmc_p->reg130;
+	u32 *phy_ctrl_reg0 = &mpmc_p->reg124;
+	u32 slice;
+	u32 start_wrlvl_delay_mod;
+	u32 phy_ctrl_reg1_dqsgate_assertval[] = {
+		(0 << 0) | (1 << 3),
+		(0 << 0) | (2 << 3),
+		(0 << 0) | (1 << 3),
+		(0 << 0) | (2 << 3)
+	};
+	u32 phy_ctrl_reg1_dqsgate_deassertval[] = {
+		(0 << 5) | (2 << 8),
+		(0 << 5) | (1 << 8),
+		(0 << 5) | (2 << 8),
+		(0 << 5) | (1 << 8)
+	};
+	int WRLVL_DELAY_VALUE[5] = {2, 2, 2, 2, 2};
+
+	WRLVL_DELAY_VALUE[0] = WRLVL_DELAY_VALUE_0;
+	WRLVL_DELAY_VALUE[1] = WRLVL_DELAY_VALUE_1;
+	WRLVL_DELAY_VALUE[2] = WRLVL_DELAY_VALUE_2;
+	WRLVL_DELAY_VALUE[3] = WRLVL_DELAY_VALUE_3;
+	WRLVL_DELAY_VALUE[4] = WRLVL_DELAY_VALUE_4;
+
+	for (slice = 0; slice < DATA_SLICE_MAX; slice++) {
+
+		reset_phy_ctrl_reg(phy_ctrl_reg0 + slice);
+
+		final_wrlvl_delay[slice] = WRLVL_DELAY_VALUE[slice];
+
+		prog_wrlvl_delay(slice, final_wrlvl_delay[slice]);
+		start_wrlvl_delay_mod = wrlvl_start + final_wrlvl_delay[slice];
+
+		writel_field(phy_ctrl_reg1_dqsgate_assertval[start_wrlvl_delay_mod/4],
+				DQSGATE_ASSERT_MSK, phy_ctrl_reg1 + slice);
+		writel_field(phy_ctrl_reg1_dqsgate_deassertval[start_wrlvl_delay_mod/4],
+				DQSGATE_DEASSERT_MSK, phy_ctrl_reg1 + slice);
+	}
+}
+
+void lvl_write(void)
+{
+
+	int wrlvl_start;
+	u32 final_wrlvl_delay[DATA_SLICE_MAX];
+	u32 wrlvl_base_offset_reg = 0;
+	static struct mpmc_regs *mpmc_p = (struct mpmc_regs *)CONFIG_SPEAR_MPMCBASE;
+
+	wrlvl_base_offset_reg = WRLVL_BASE_OFFSET_REG_VALUE;
+
+	/* enable also wrlvl_reg_en, rdlvl_gate_reg_en, rdlvl_reg_en when START MPMC parameter is enabled  */
+	writel(readl(&mpmc_p->reg15) | WRLVL_REG_EN, &mpmc_p->reg15);
+	writel(readl(&mpmc_p->reg8) | RDLVL_GATE_REG_EN, &mpmc_p->reg8);
+	writel(readl(&mpmc_p->reg9) | RDLVL_REG_EN, &mpmc_p->reg9);
+
+	wrlvl_start = get_wrlvl_start(wrlvl_base_offset_reg);
+
+	set_wrlvldelay_ddr2(wrlvl_start, final_wrlvl_delay);
+
+	set_dqs_parms(wrlvl_start, final_wrlvl_delay);
+}
+#else
 void lvl_write(void)
 {
 	int wrlvl_start;
@@ -494,3 +560,4 @@ void lvl_write(void)
 
 	set_dqs_parms(wrlvl_start, final_wrlvl_delay);
 }
+#endif

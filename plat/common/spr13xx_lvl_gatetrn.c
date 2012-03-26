@@ -57,6 +57,53 @@ static void set_gate_parms_resp(u32 *gate_cnt_p, u32 slice, u32 loopon)
 	} while (read_resp(slice) == loopon);
 }
 
+#if CONFIG_DDR2
+void lvl_gatetrn(void)
+{
+	u32 *phy_ctrl_reg0 = &mpmc_p->reg124;
+	u32 *phy_ctrl_reg6 = &mpmc_p->reg155;
+	u32 final_gate_counter[DATA_SLICE_MAX];
+	u32 slice;
+
+	u32 phy_ctrl_reg6_dqs_assertval[] = {
+		(0x0 << 0) | (0x0 << 20),
+		(0x0 << 0) | (0x0 << 20),
+		(0x8 << 0) | (0x8 << 20),
+		(0x9 << 0) | (0x9 << 20),
+		(0xa << 0) | (0xa << 20),
+		(0xb << 0) | (0xb << 20)
+	};
+	u32 phy_ctrl_reg6_dqs_deassertval[] = {
+		(0x00 << 5) | (0x00 << 25),
+		(0x10 << 5) | (0x10 << 25),
+		(0x11 << 5) | (0x11 << 25),
+		(0x12 << 5) | (0x12 << 25),
+		(0x13 << 5) | (0x13 << 25),
+		(0x14 << 5) | (0x14 << 25)
+	};
+
+	int RDLVL_GATE_DELAY_VALUE[5] = {32, 32, 32, 32, 32};
+
+	RDLVL_GATE_DELAY_VALUE[0] = RDLVL_GATE_DELAY_VALUE_0;
+	RDLVL_GATE_DELAY_VALUE[1] = RDLVL_GATE_DELAY_VALUE_1;
+	RDLVL_GATE_DELAY_VALUE[2] = RDLVL_GATE_DELAY_VALUE_2;
+	RDLVL_GATE_DELAY_VALUE[3] = RDLVL_GATE_DELAY_VALUE_3;
+	RDLVL_GATE_DELAY_VALUE[4] = RDLVL_GATE_DELAY_VALUE_4;
+
+	for (slice = 0; slice < DATA_SLICE_MAX; slice++) {
+		final_gate_counter[slice] = RDLVL_GATE_DELAY_VALUE[slice];
+		writel_field((final_gate_counter[slice] / 8) << 20, 7 << 20, phy_ctrl_reg0 + slice);
+		prog_rdlvl_gate_delay(slice, final_gate_counter[slice] % 8);
+	}
+
+	for (slice = 0; slice < DATA_SLICE_MAX; slice++) {
+		writel_field(phy_ctrl_reg6_dqs_assertval[final_gate_counter[slice] / 8],
+				(0x1F << 0) | (0x1F << 20), phy_ctrl_reg6 + slice);
+		writel_field(phy_ctrl_reg6_dqs_deassertval[final_gate_counter[slice] / 8],
+				(0x1F << 5) | (0x1F << 25), phy_ctrl_reg6 + slice);
+	}
+}
+#else
 void lvl_gatetrn(void)
 {
 	u32 *phy_ctrl_reg0 = &mpmc_p->reg124;
@@ -185,3 +232,4 @@ step_14:
 				(0x1F << 5) | (0x1F << 25), phy_ctrl_reg6 + slice);
 	}
 }
+#endif
