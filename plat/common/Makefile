@@ -65,6 +65,9 @@ COBJS-$(CONFIG_SPEAR1310_REVA) += spr13xx_mt41j64m16la187e_533_cl7_dqs_dq_term_e
 COBJS-$(CONFIG_SPEAR1310_REVA) += spr13xx_mt41j256m8187e_400_cl6_dqs_dq_term_en.o
 COBJS-$(CONFIG_SPEAR1310_REVA) += spr13xx_mt41j256m8187e_533_cl7_dqs_dq_term_en.o
 
+COBJS-$(CONFIG_SPEAR1310) += spr1340_mt41j256m8187e_400_cl6_dqs_dq_term_en.o
+COBJS-$(CONFIG_SPEAR1310) += spr1340_mt41j256m8187e_533_cl7_dqs_dq_term_en.o
+
 COBJS-$(CONFIG_SPEAR1340) += spr1340_mt41j256m8187e_400_cl6_dqs_dq_term_en.o
 COBJS-$(CONFIG_SPEAR1340) += spr1340_mt41j256m8187e_533_cl7_dqs_dq_term_en.o
 COBJS-$(CONFIG_SPEAR1340) += spr1340_mt47h128m16rt187e_533_cl7_DDR2.o

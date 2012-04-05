@@ -366,16 +366,13 @@ void set_dqs_parms(u32 wrlvl_start, u32 *final_wrlvl_delay)
 		dq_clk_phase_match0_pre = get_match0_pre(slice);
 		dq_clk_phase_match1_pre = get_match1_pre(slice);
 
-		if (((dq_clk_phase_match0_pre == 8) && (dq_clk_phase_match1_pre == 9)) ||
-				((dq_clk_phase_match1_pre == 8) && (dq_clk_phase_match0_pre == 9)))
-			dq_clk_phase_match_pre = 0;
-		/* else if ((dq_clk_phase_match0_pre & 0x1) == 0) */
-		else if ((dq_clk_phase_match0_pre & 0x8) == 0)
-			dq_clk_phase_match_pre = dq_clk_phase_match0_pre & 7;
-		else
-			dq_clk_phase_match_pre = dq_clk_phase_match1_pre & 7;
 
-		phy_clk_phase_match_pre &= 0x7; /* only 3 bits[2:0] are significant */
+		if ((dq_clk_phase_match0_pre & 0x8) == 0)
+			dq_clk_phase_match_pre = dq_clk_phase_match0_pre & 0xF;
+		else
+			dq_clk_phase_match_pre = dq_clk_phase_match1_pre & 0xF;
+
+		phy_clk_phase_match_pre &= 0xF;
 		if (phy_clk_phase_match_pre > dq_clk_phase_match_pre)
 			dqs_dq_clk_phase_match_delta = phy_clk_phase_match_pre - dq_clk_phase_match_pre;
 		else
@@ -432,16 +429,13 @@ void set_dqs_parms(u32 wrlvl_start, u32 *final_wrlvl_delay)
 		dq_clk_phase_match0_pre = get_match0_pre(slice);
 		dq_clk_phase_match1_pre = get_match1_pre(slice);
 
-		if (((dq_clk_phase_match0_pre == 8) && (dq_clk_phase_match1_pre == 9)) ||
-				((dq_clk_phase_match1_pre == 8) && (dq_clk_phase_match0_pre == 9)))
-			dq_clk_phase_match_pre = 0;
-		/* else if ((dq_clk_phase_match0_pre & 0x1) == 0) */
-		else if ((dq_clk_phase_match0_pre & 0x8) == 0)
-			dq_clk_phase_match_pre = dq_clk_phase_match0_pre & 7;
-		else
-			dq_clk_phase_match_pre = dq_clk_phase_match1_pre & 7;
 
-		phy_clk_phase_match_pre &= 0x7; /* only 3 bits[2:0] are significant */
+		if ((dq_clk_phase_match0_pre & 0x8) == 0)
+			dq_clk_phase_match_pre = dq_clk_phase_match0_pre & 0xF;
+		else
+			dq_clk_phase_match_pre = dq_clk_phase_match1_pre & 0xF;
+
+		phy_clk_phase_match_pre &= 0xF;
 		if (phy_clk_phase_match_pre > dq_clk_phase_match_pre)
 			dqs_dq_clk_phase_match_delta = phy_clk_phase_match_pre - dq_clk_phase_match_pre;
 		else

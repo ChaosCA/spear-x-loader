@@ -23,7 +23,7 @@
 
 #include <common.h>
 
-#if defined(CONFIG_SPEAR1340) && \
+#if (defined(CONFIG_SPEAR1340) || defined(CONFIG_SPEAR1310)) && \
 	(CONFIG_DDR_MT41J128M16) && (CONFIG_DDR_FREQ_400)
 const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x00000100, /* MPMC_REG_00 0x00000100 */

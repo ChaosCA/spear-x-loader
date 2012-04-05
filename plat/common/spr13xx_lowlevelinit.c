@@ -51,7 +51,7 @@ static void ddr_clock_init(void)
 	 * disable automatic ddr pad compensation
 	 * use fixed comzcp=0000 and comzcn=0000
 	 */
-#ifdef CONFIG_SPEAR1340
+#if (defined(CONFIG_SPEAR1340) || defined(CONFIG_SPEAR1310))
 	u32 pad_pu_cfg_3, pad_pd_cfg_3;
 
 	/* MISC 0x710 update=0, enb=0, encomzc=0 */
@@ -105,6 +105,17 @@ static void ddr_clock_init(void)
 	perip2_swrst = readl(&misc_p->perip2_sw_rst);
 	perip2_swrst &= ~(DDR_CTRL_CLKEN | DDR_CORE_CLKEN);
 	writel(perip2_swrst, &misc_p->perip2_sw_rst);
+
+#if defined(CONFIG_SPEAR1310)
+	/* enable MPMC ECC gasket for all AXI ports */
+	writel(0x0, &misc_p->mpmc_ctr_sts);
+
+	/* wait for turn-on */
+	while ((readl(&misc_p->mpmc_ctr_sts) & 0xFFF))
+		;
+
+#endif
+
 }
 
 static void mpmc_init_values(void)
@@ -123,7 +134,7 @@ static void mpmc_init_values(void)
 	 */
 	writel(0x03070700, &mpmc_reg_p[25]);
 	writel(0x01000101, &mpmc_reg_p[11]);
-#ifdef CONFIG_SPEAR1340
+#if (defined(CONFIG_SPEAR1340) || defined(CONFIG_SPEAR1310))
 	while (!(readl(&mpmc_reg_p[105]) & 0x200))
 #else
 	while (!(readl(&mpmc_reg_p[105]) & 0x100))
@@ -187,7 +198,7 @@ static void pll_init(void)
 
 	usbphycfg |= AUTOPPD_ON_OVRCURR | UTMI_XFER_RST0 | UTMI_XFER_RST1 |
 		UTMI_XFER_RST2;
-#ifndef CONFIG_SPEAR1340
+#if (!defined(CONFIG_SPEAR1340) && !defined(CONFIG_SPEAR1310))
 	usbphycfg |= USB_BURST_INCR16;
 #endif
 	writel(usbphycfg, &misc_p->usbphy_gen_cfg);
@@ -221,7 +232,7 @@ static void sys_init(void)
 	writel(PLL_TIM, &misc_p->sys_clk_plltimer);
 	writel(OSCI_TIM, &misc_p->sys_clk_oscitimer);
 
-#ifdef CONFIG_SPEAR1340
+#if (defined(CONFIG_SPEAR1340) || defined(CONFIG_SPEAR1310))
 	u32 plgpio_enb_3;
 	/*
 	 * The code below modifies  plgpio_enb_3 register
@@ -320,6 +331,9 @@ void ddr_memory_test(void)
 	result = probememory(start, start + val);
 
 	if (result) {
+#if defined(CONFIG_SPEAR1310)
+		serial_init();
+#endif
 		serial_puts("\nRAM_TEST_FAIL\n");
 		while (1) /* loop infinitly on ddr test error */
 		;
@@ -329,6 +343,7 @@ void ddr_memory_test(void)
 void lowlevel_init(void)
 {
 	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
+	u32 pad_dir_sel1_reg;
 
 	/* Initialize PLLs */
 	sys_init();
@@ -349,10 +364,16 @@ void lowlevel_init(void)
 	set_lcad_power_on();
 #endif
 
-#ifdef CONFIG_SPEAR1340
+#if defined(CONFIG_SPEAR1340)
 	writel(PERIPH3_RST_ALL, &misc_p->perip3_sw_rst);
 #else
 	writel(RAS_RST_ALL, &misc_p->ras_sw_rst);
+#endif
+
+#if defined(CONFIG_SPEAR1310)
+	pad_dir_sel1_reg = readl(&misc_p->pad_dir_sel_1);
+	pad_dir_sel1_reg |= PAD_DIR_SEL_1_UART;
+	writel(pad_dir_sel1_reg, &misc_p->pad_dir_sel_1);
 #endif
 
 	/* Initialize MPMC */

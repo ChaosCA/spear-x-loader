@@ -104,7 +104,7 @@ u32 boot(void)
 
 		extern u32 get_pnor_width(void);
 
-#ifdef CONFIG_SPEAR1340
+#if (defined(CONFIG_SPEAR1340) || defined(CONFIG_SPEAR1310))
 		return CONFIG_PNOR_BOOT_ADDR;
 #else
 		u32 width = get_pnor_width();
@@ -138,13 +138,13 @@ u32 boot(void)
 	}
 
 	if (mmc_boot_supported() && mmc_boot_selected()) {
-#ifdef CONFIG_SPEAR1340
+#if (defined(CONFIG_SPEAR1340) || defined(CONFIG_SPEAR1310))
 		char *filename = (char *)MMC_UBOOT_FILE;
 #endif
 
 		/* MMC booting */
 		plat_late_init();
-#ifdef CONFIG_SPEAR1340
+#if (defined(CONFIG_SPEAR1340) || defined(CONFIG_SPEAR1310))
 		return (u32)filename;
 #else
 		return FALSE;
