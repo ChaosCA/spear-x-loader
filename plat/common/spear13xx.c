@@ -53,12 +53,12 @@ void plat_ddr_init(void)
 
 #if CONFIG_DDR2
 	lvl_write();
-	lvl_gatetrn();
 	lvl_read();
+	lvl_gatetrn();
 #else
 	lvl_write();
-	lvl_read();
 	lvl_gatetrn();
+	lvl_read();
 #endif
 
 #if (defined(CONFIG_SPEAR1340) || defined(CONFIG_SPEAR1310))
