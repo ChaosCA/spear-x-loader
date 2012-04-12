@@ -32,7 +32,9 @@ static void ddr_clock_init(void)
 {
 	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
 	u32 perip_clkcfg, perip2_clkenb, perip2_swrst;
+#ifdef CONFIG_SPEAR1310
 	u32 mpmc_cfg;
+#endif
 
 	perip_clkcfg = readl(&misc_p->perip_clk_cfg);
 
@@ -358,8 +360,9 @@ void ddr_memory_test(void)
 void lowlevel_init(void)
 {
 	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
+#if defined(CONFIG_SPEAR1310)
 	u32 pad_dir_sel1_reg;
-
+#endif
 	/* Initialize PLLs */
 	sys_init();
 
