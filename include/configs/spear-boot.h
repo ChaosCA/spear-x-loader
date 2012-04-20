@@ -27,6 +27,7 @@
 #if defined(CONFIG_SPEAR3XX) || defined(CONFIG_SPEAR600)
 /* U-Boot placement */
 #define CONFIG_SNOR_BOOT_ADDR		(0xF8010000)
+#define CONFIG_SNOR_BOOT_ADDR_EXTRA	(0xF8040000)
 #define CONFIG_PNOR_BOOT_ADDR		(0x50020000)
 
 /* OS placement definitions */
@@ -38,6 +39,7 @@
 #elif defined(CONFIG_SPEAR13XX)
 /* U-Boot placement */
 #define CONFIG_SNOR_BOOT_ADDR		(0xE6010000)
+#define CONFIG_SNOR_BOOT_ADDR_EXTRA	(0xE6040000)
 #define CONFIG_PNOR_BOOT_ADDR		(0xA0020000)
 #define MMC_UBOOT_FILE			"u-boot.img"
 

@@ -72,7 +72,12 @@ u32 boot(void)
 
 		/* Serial NOR booting */
 		if (TRUE == snor_image_load((u8 *) CONFIG_SNOR_BOOT_ADDR,
-					&image, loader_name)) {
+					&image, loader_name)
+#ifdef CONFIG_SNOR_BOOT_ADDR_EXTRA
+		    || TRUE == snor_image_load((u8 *) CONFIG_SNOR_BOOT_ADDR_EXTRA,
+					&image, loader_name)
+#endif
+		    ) {
 			/* Platform related late initialasations */
 			plat_late_init();
 
