@@ -28,7 +28,7 @@
  * High Level Configuration Options
  * (easy to change)
  */
-#define CONFIG_SPEAR310			1
+#define CONFIG_SPEAR320			1
 #define CONFIG_SPEAR3XX			1
 
 /*
