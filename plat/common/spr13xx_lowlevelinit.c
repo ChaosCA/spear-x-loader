@@ -32,6 +32,7 @@ static void ddr_clock_init(void)
 {
 	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
 	u32 perip_clkcfg, perip2_clkenb, perip2_swrst;
+	u32 mpmc_cfg;
 
 	perip_clkcfg = readl(&misc_p->perip_clk_cfg);
 
@@ -45,6 +46,20 @@ static void ddr_clock_init(void)
 	perip2_clkenb = readl(&misc_p->perip2_clk_enb);
 	perip2_clkenb |= DDR_CTRL_CLKEN | DDR_CORE_CLKEN;
 	writel(perip2_clkenb, &misc_p->perip2_clk_enb);
+
+#ifdef CONFIG_SPEAR1310
+	/*
+	 * Following modifies write access as non-bufferable
+	 * and read to happen word by word. Without this
+	 * dependent write-read are happening out of order
+	 * resulting in Linux crash.
+	 */
+	mpmc_cfg = readl(&misc_p->mpmc_cfg);
+	mpmc_cfg |= 0x05000000;
+	mpmc_cfg &= ~0xf0f;
+	mpmc_cfg |= 0x101;
+	writel(mpmc_cfg, &misc_p->mpmc_cfg);
+#endif
 
 	/*
 	 * MISC compensation_ddr_cfg before mpmc reset
