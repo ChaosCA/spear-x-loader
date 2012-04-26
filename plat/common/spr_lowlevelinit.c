@@ -183,6 +183,7 @@ static void sys_init(void)
 		!= NORMAL);
 }
 
+#ifdef CONFIG_RAM_TEST
 void ddr_memory_test(void)
 {
 	unsigned long  start = 0x00100000;
@@ -197,6 +198,7 @@ void ddr_memory_test(void)
 		;
 	}
 }
+#endif
 
 void lowlevel_init(void)
 {
@@ -216,7 +218,7 @@ void lowlevel_init(void)
 	/* Initialize MPMC */
 	mpmc_init();
 
-#if DDRTEST_EN
+#ifdef CONFIG_RAM_TEST
 	ddr_memory_test(); /* ddr memory test */
 #endif
 

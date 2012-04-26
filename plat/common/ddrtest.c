@@ -24,6 +24,7 @@
 #include <common.h>
 #include <ddrtest.h>
 
+#ifdef CONFIG_RAM_TEST
 int probememory(unsigned long start_ddr, unsigned long end_ddr)
 {
 	u32	*addr, *start, *end;
@@ -72,3 +73,4 @@ int probememory(unsigned long start_ddr, unsigned long end_ddr)
 
 	return errs;
 }
+#endif
