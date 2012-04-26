@@ -66,10 +66,6 @@
 #define DDR_ECC_ENABLE			0
 #define CONFIG_C3_DDR_INIT		0
 
-/* enable DDR test */
-#define DDRTEST_EN			1
-#define DDR_TEST_SIZE			(1 * 1024 * 1024)
-
 /*
  * Machine type for SPEAr1310
  */
