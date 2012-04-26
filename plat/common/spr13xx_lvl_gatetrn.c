@@ -38,25 +38,6 @@ static void prog_rdlvl_gate_delay(u32 slice, u32 delay)
 	writel_field(delay << shift, 0xFFFF << shift, rdlvl_gate_delay_reg);
 }
 
-static void set_gate_parms(u32 gate_cnt, u32 slice)
-{
-	u32 *phy_ctrl_reg0 = &mpmc_p->reg124;
-
-	writel_field((gate_cnt / 8) << 20, 7 << 20, phy_ctrl_reg0 + slice);
-	prog_rdlvl_gate_delay(slice, gate_cnt % 8);
-
-	swlvl_load();
-	wait_op_done();
-}
-
-static void set_gate_parms_resp(u32 *gate_cnt_p, u32 slice, u32 loopon)
-{
-	do {
-		(*gate_cnt_p)++;
-		set_gate_parms(*gate_cnt_p, slice);
-	} while (read_resp(slice) == loopon);
-}
-
 #if CONFIG_DDR2
 void lvl_gatetrn(void)
 {
@@ -104,6 +85,25 @@ void lvl_gatetrn(void)
 	}
 }
 #else
+static void set_gate_parms(u32 gate_cnt, u32 slice)
+{
+	u32 *phy_ctrl_reg0 = &mpmc_p->reg124;
+
+	writel_field((gate_cnt / 8) << 20, 7 << 20, phy_ctrl_reg0 + slice);
+	prog_rdlvl_gate_delay(slice, gate_cnt % 8);
+
+	swlvl_load();
+	wait_op_done();
+}
+
+static void set_gate_parms_resp(u32 *gate_cnt_p, u32 slice, u32 loopon)
+{
+	do {
+		(*gate_cnt_p)++;
+		set_gate_parms(*gate_cnt_p, slice);
+	} while (read_resp(slice) == loopon);
+}
+
 void lvl_gatetrn(void)
 {
 	u32 *phy_ctrl_reg0 = &mpmc_p->reg124;
