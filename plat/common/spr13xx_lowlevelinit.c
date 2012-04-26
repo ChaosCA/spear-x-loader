@@ -348,10 +348,6 @@ void ddr_memory_test(void)
 	result = probememory(start, start + val);
 
 	if (result) {
-#if defined(CONFIG_SPEAR1310)
-		serial_init();
-#endif
-		serial_puts("\nRAM_TEST_FAIL\n");
 		while (1) /* loop infinitly on ddr test error */
 		;
 	}

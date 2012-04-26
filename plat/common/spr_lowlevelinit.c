@@ -193,8 +193,6 @@ void ddr_memory_test(void)
 	result = probememory(start, start + val);
 
 	if (result) {
-		serial_init();
-		serial_puts("\nRAM_TEST_FAIL\n");
 		while (1) /* loop infinitly on ddr test error */
 		;
 	}
