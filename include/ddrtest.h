@@ -21,7 +21,7 @@
  * MA 02111-1307 USA
  */
 
-extern int probememory(unsigned long start_ddr, unsigned long end_ddr);
+extern int probememory(void);
 
 #define DATA_PATT_NUM			10
 #define DATA_PAT_POS			4

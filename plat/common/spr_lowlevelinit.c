@@ -186,14 +186,8 @@ static void sys_init(void)
 #ifdef CONFIG_RAM_TEST
 void ddr_memory_test(void)
 {
-	unsigned long  start = 0x00100000;
-	unsigned long  val = DDR_TEST_SIZE;
-	unsigned long  result = 0;
-
 	/* memory test trial */
-	result = probememory(start, start + val);
-
-	if (result) {
+	if (probememory()) {
 		while (1) /* loop infinitly on ddr test error */
 		;
 	}

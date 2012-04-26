@@ -24,8 +24,16 @@
 #include <common.h>
 #include <ddrtest.h>
 
+#ifndef CONFIG_RAM_TEST_START_ADDR
+#define CONFIG_RAM_TEST_START_ADDR	0x100000
+#endif
+
+#ifndef CONFIG_RAM_TEST_SIZE
+#define CONFIG_RAM_TEST_SIZE		0x100000
+#endif
+
 #ifdef CONFIG_RAM_TEST
-int probememory(unsigned long start_ddr, unsigned long end_ddr)
+int probememory(void)
 {
 	u32	*addr, *start, *end;
 	u32	readback;
@@ -46,8 +54,8 @@ int probememory(unsigned long start_ddr, unsigned long end_ddr)
 		{ 0xaaaaaaaa, 0xaaaaaaaa, 0x55555555, 0x55555555 },
 	};
 
-	start = (u32 *)start_ddr;
-	end = (u32 *)end_ddr;
+	start = (u32 *)CONFIG_RAM_TEST_START_ADDR;
+	end = (u32 *)(CONFIG_RAM_TEST_START_ADDR + CONFIG_RAM_TEST_SIZE);
 
 	errs = 0;
 
