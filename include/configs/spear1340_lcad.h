@@ -83,9 +83,11 @@
  * Machine type for SPEAr1340
  */
 #define CONFIG_MACH_TYPE		(3395)
-#define CONFIG_BOOTARGS			\
-		"console=ttyAMA0,115200 mem=256M root=/dev/mtdblock7 " \
-		"rootfstype=yaffs2"
+#define CONFIG_BOOTARGS			"console=ttyAMA0,115200 mem=960M "  \
+		"noinitrd no_console_suspend androidboot.console=ttyAMA0 " \
+		"android.checkjni=0 root=/dev/mtdblock3 rw rootfstype=yaffs2 " \
+		"rootflags=inband-tags,tags-ecc-off rootdelay=3 " \
+		"video=db9000:800x480-32@0 init=/init"
 
 /*
  * Platform specific defines (SPEAr)
