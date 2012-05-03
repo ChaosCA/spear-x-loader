@@ -71,7 +71,7 @@
  */
 #define CONFIG_MACH_TYPE		(2881)
 #define CONFIG_BOOTARGS			\
-		"console=ttyAMA0,115200 mem=1G root=/dev/mtdblock4 " \
+		"console=ttyAMA0,115200 mem=1G root=/dev/mtdblock3 " \
 		"rootfstype=jffs2"
 
 /*
