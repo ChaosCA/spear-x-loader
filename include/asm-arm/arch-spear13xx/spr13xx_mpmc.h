@@ -239,7 +239,7 @@ struct mpmc_regs {
 
 #define PHY_CTRL_DELAY			200
 
-#if DDR_ECC_ENABLE
+#ifdef CONFIG_DDR_ECC_ENABLE
 #define DATA_SLICE_MAX			5
 #else
 #define DATA_SLICE_MAX			4

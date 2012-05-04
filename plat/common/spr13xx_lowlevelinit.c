@@ -32,7 +32,7 @@ static void ddr_clock_init(void)
 {
 	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
 	u32 perip_clkcfg, perip2_clkenb, perip2_swrst;
-#if (defined(CONFIG_SPEAR1310) && (DDR_ECC_ENABLE))
+#if defined(CONFIG_SPEAR1310) && defined(CONFIG_DDR_ECC_ENABLE)
 	u32 mpmc_cfg;
 #endif
 
@@ -49,7 +49,7 @@ static void ddr_clock_init(void)
 	perip2_clkenb |= DDR_CTRL_CLKEN | DDR_CORE_CLKEN;
 	writel(perip2_clkenb, &misc_p->perip2_clk_enb);
 
-#if (defined(CONFIG_SPEAR1310) && (DDR_ECC_ENABLE))
+#if defined(CONFIG_SPEAR1310) && defined(CONFIG_DDR_ECC_ENABLE)
 	/*
 	 * Following modifies write access as non-bufferable
 	 * and read to happen word by word. Without this
@@ -123,7 +123,7 @@ static void ddr_clock_init(void)
 	perip2_swrst &= ~(DDR_CTRL_CLKEN | DDR_CORE_CLKEN);
 	writel(perip2_swrst, &misc_p->perip2_sw_rst);
 
-#if (defined(CONFIG_SPEAR1310) && (DDR_ECC_ENABLE))
+#if defined(CONFIG_SPEAR1310) && defined(CONFIG_DDR_ECC_ENABLE)
 	/* enable MPMC ECC gasket for all AXI ports */
 	writel(0x0, &misc_p->mpmc_ctr_sts);
 

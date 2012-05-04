@@ -42,7 +42,7 @@
 #include <asm/io.h>
 #include <c3.h>
 
-#if DDR_ECC_ENABLE
+#ifdef CONFIG_DDR_ECC_ENABLE
 #define ECC_MASK	(3<<8)
 #define NO_ECC		(0<<8)
 #define ECC_REPORT_ON	(1<<8)
@@ -69,7 +69,7 @@ void mpmc_config_ecc(u32 value)
 
 ulong start_armboot(void)
 {
-#if DDR_ECC_ENABLE
+#ifdef CONFIG_DDR_ECC_ENABLE
 	void *end = (void *)get_ram_size(0x00, PHYS_SDRAM_MAXSIZE);
 
 #if defined(CONFIG_C3_DEVICE) && CONFIG_C3_DDR_INIT

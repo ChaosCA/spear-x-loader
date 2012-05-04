@@ -68,7 +68,7 @@
  * DDR ECC Enable selection.
  * Select(define to 1).
  */
-#define DDR_ECC_ENABLE			0
+#undef  CONFIG_DDR_ECC_ENABLE
 #define CONFIG_C3_DDR_INIT		0
 
 /*
