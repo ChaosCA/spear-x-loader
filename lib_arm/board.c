@@ -67,6 +67,11 @@ void mpmc_config_ecc(u32 value)
 }
 #endif
 
+extern void __armv7_mmu_cache_on(void);
+extern void __v7_flush_dcache_all(void);
+extern void __disable_dcache(void);
+extern void __disable_mmu(void);
+
 ulong start_armboot(void)
 {
 #ifdef CONFIG_DDR_ECC_ENABLE
@@ -84,7 +89,7 @@ ulong start_armboot(void)
 	asm("dmb"); /* data memory barrier */
 	asm("dsb"); /* data synch barrier*/
 	asm("isb"); /* isntn synch barrier*/
-	memset_long((u32 *)(0x00), 0, end); /* Initializing DDR*/
+	memset_long((u32 *)(0x00), 0, (u32)end); /* Initializing DDR*/
 	__v7_flush_dcache_all();
 	__disable_dcache();
 	__disable_mmu();
