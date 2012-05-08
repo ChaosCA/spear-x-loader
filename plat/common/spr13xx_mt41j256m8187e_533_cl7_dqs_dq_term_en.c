@@ -26,7 +26,7 @@
 #if defined(CONFIG_SPEAR13XX) && \
 	(CONFIG_DDR_MT41J256M8) && (CONFIG_DDR_FREQ_533)
 
-#if !defined(CONFIG_SPEAR1340)
+#if !(defined(CONFIG_SPEAR1340) || defined(CONFIG_SPEAR1310))
 
 const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x00000101, /* DENALI_CTL_00 */
