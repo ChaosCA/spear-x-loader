@@ -116,7 +116,13 @@ u32 find_rdlvl_value(u32 *start, u32 *end)
 		}
 	}
 
-	return rdlvl_value;
+	/* if allowed from actual read leveling data, adjust read phase to the default centered value 8 */
+	if ((rdlvl_value == 9) && (start[0] < 9) && (start[1] < 9))
+		return --rdlvl_value;
+	else if ((rdlvl_value == 7) && (end[0] > 7) && (end[1] > 7))
+		return ++rdlvl_value;
+	else
+		return rdlvl_value;
 
 error:
 	/* loop infinitly on read levelling error else it gets un-noticed */

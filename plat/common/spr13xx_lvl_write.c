@@ -366,21 +366,38 @@ void set_dqs_parms(u32 wrlvl_start, u32 *final_wrlvl_delay)
 		dq_clk_phase_match0_pre = get_match0_pre(slice);
 		dq_clk_phase_match1_pre = get_match1_pre(slice);
 
-
 		if ((dq_clk_phase_match0_pre & 0x8) == 0)
 			dq_clk_phase_match_pre = dq_clk_phase_match0_pre & 0xF;
 		else
 			dq_clk_phase_match_pre = dq_clk_phase_match1_pre & 0xF;
 
 		phy_clk_phase_match_pre &= 0xF;
+
 		if (phy_clk_phase_match_pre > dq_clk_phase_match_pre)
 			dqs_dq_clk_phase_match_delta = phy_clk_phase_match_pre - dq_clk_phase_match_pre;
 		else
 			dqs_dq_clk_phase_match_delta = dq_clk_phase_match_pre - phy_clk_phase_match_pre;
 		dqs_dq_clk_phase_match_delta &= 0xF;
-		if (dqs_dq_clk_phase_match_delta > 3)
-			while (1)
-			;
+
+		if (dqs_dq_clk_phase_match_delta > 3) {
+			/* if delta is too high recalculate */
+			if ((dq_clk_phase_match0_pre & 0x8) == 0)
+				dq_clk_phase_match_pre = dq_clk_phase_match1_pre & 0xF;
+			else
+				dq_clk_phase_match_pre = dq_clk_phase_match0_pre & 0xF;
+
+			phy_clk_phase_match_pre &= 0xF;
+
+			if (phy_clk_phase_match_pre > dq_clk_phase_match_pre)
+				dqs_dq_clk_phase_match_delta = phy_clk_phase_match_pre - dq_clk_phase_match_pre;
+			else
+				dqs_dq_clk_phase_match_delta = dq_clk_phase_match_pre - phy_clk_phase_match_pre;
+			dqs_dq_clk_phase_match_delta &= 0xF;
+
+			if (dqs_dq_clk_phase_match_delta > 3)
+				while (1)
+				;
+		}
 
 		dqs_dq_clk_phase_match_delta_value[slice] = dqs_dq_clk_phase_match_delta;
 		start_wrlvl_delay_mod_value[slice] = start_wrlvl_delay_mod;
@@ -429,21 +446,38 @@ void set_dqs_parms(u32 wrlvl_start, u32 *final_wrlvl_delay)
 		dq_clk_phase_match0_pre = get_match0_pre(slice);
 		dq_clk_phase_match1_pre = get_match1_pre(slice);
 
-
 		if ((dq_clk_phase_match0_pre & 0x8) == 0)
 			dq_clk_phase_match_pre = dq_clk_phase_match0_pre & 0xF;
 		else
 			dq_clk_phase_match_pre = dq_clk_phase_match1_pre & 0xF;
 
 		phy_clk_phase_match_pre &= 0xF;
+
 		if (phy_clk_phase_match_pre > dq_clk_phase_match_pre)
 			dqs_dq_clk_phase_match_delta = phy_clk_phase_match_pre - dq_clk_phase_match_pre;
 		else
 			dqs_dq_clk_phase_match_delta = dq_clk_phase_match_pre - phy_clk_phase_match_pre;
 		dqs_dq_clk_phase_match_delta &= 0xF;
-		if (dqs_dq_clk_phase_match_delta > 3)
-			while (1)
-			;
+
+		if (dqs_dq_clk_phase_match_delta > 3) {
+			/* if delta is too high recalculate */
+			if ((dq_clk_phase_match0_pre & 0x8) == 0)
+				dq_clk_phase_match_pre = dq_clk_phase_match1_pre & 0xF;
+			else
+				dq_clk_phase_match_pre = dq_clk_phase_match0_pre & 0xF;
+
+			phy_clk_phase_match_pre &= 0xF;
+
+			if (phy_clk_phase_match_pre > dq_clk_phase_match_pre)
+				dqs_dq_clk_phase_match_delta = phy_clk_phase_match_pre - dq_clk_phase_match_pre;
+			else
+				dqs_dq_clk_phase_match_delta = dq_clk_phase_match_pre - phy_clk_phase_match_pre;
+			dqs_dq_clk_phase_match_delta &= 0xF;
+
+			if (dqs_dq_clk_phase_match_delta > 3)
+				while (1)
+				;
+		}
 
 		/* here we use start_wrlvl_delay_mod_offset_value[slice], phy_ctrl_reg4 and phy_ctrl_reg5 are related to DQ phase  */
 		dqtim = (start_wrlvl_delay_mod_offset_value[slice] - 2) & 0x7;
@@ -538,20 +572,41 @@ void lvl_write(void)
 void lvl_write(void)
 {
 	int wrlvl_start;
-	u32 wrlvl_base_offset_reg = 2;
+	u32 wrlvl_base_offset_reg;
 	u32 final_wrlvl_delay[DATA_SLICE_MAX];
+	u32 wrlvl_base_offset_check;
+	u32 slice;
 
-	set_swlvl_mode(WRITE_LVL);
-	swlvl_start();
-	wait_op_done();
+	wrlvl_base_offset_reg = 2; /* start from default value */
 
-	wrlvl_start = get_wrlvl_start(wrlvl_base_offset_reg);
-	swlvl_exit();
-	wait_op_done();
+	do {
+		set_swlvl_mode(WRITE_LVL);
+		swlvl_start();
+		wait_op_done();
 
-	/* Set wrlvl_delay parameters through write leveling */
-	set_wrlvldelay(wrlvl_start, final_wrlvl_delay);
+		wrlvl_start = get_wrlvl_start(wrlvl_base_offset_reg);
+		swlvl_exit();
+		wait_op_done();
+
+		/* Set wrlvl_delay parameters through write leveling */
+		set_wrlvldelay(wrlvl_start, final_wrlvl_delay);
+
+		wrlvl_base_offset_check = 0;
+
+		for (slice = 0; slice < DATA_SLICE_MAX; slice++)
+			if (final_wrlvl_delay[slice] >= 8)
+				wrlvl_base_offset_check++;
+
+		if (wrlvl_base_offset_check > 0)
+			wrlvl_base_offset_reg++;
+
+		if (wrlvl_base_offset_reg >= 8)
+			wrlvl_base_offset_reg = 0;
+
+	} while ((wrlvl_base_offset_check != 0));
 
 	set_dqs_parms(wrlvl_start, final_wrlvl_delay);
+
+
 }
 #endif
