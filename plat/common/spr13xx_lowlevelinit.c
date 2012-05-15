@@ -68,7 +68,7 @@ static void ddr_clock_init(void)
 	 * disable automatic ddr pad compensation
 	 * use fixed comzcp=0000 and comzcn=0000
 	 */
-#if (defined(CONFIG_SPEAR1340) || defined(CONFIG_SPEAR1310))
+#if defined(CONFIG_SPEAR1340)
 	u32 pad_pu_cfg_3, pad_pd_cfg_3;
 
 	/* MISC 0x710 update=0, enb=0, encomzc=0 */
@@ -248,7 +248,7 @@ static void sys_init(void)
 	writel(PLL_TIM, &misc_p->sys_clk_plltimer);
 	writel(OSCI_TIM, &misc_p->sys_clk_oscitimer);
 
-#if (defined(CONFIG_SPEAR1340) || defined(CONFIG_SPEAR1310))
+#if defined(CONFIG_SPEAR1340)
 	u32 plgpio_enb_3;
 	/*
 	 * The code below modifies  plgpio_enb_3 register
@@ -277,6 +277,18 @@ static void sys_init(void)
 	pad_pd_cfg_1 &= PAD_21_PD_CFG;
 	pad_pd_cfg_1 &= PAD_22_PD_CFG;
 	writel(pad_pd_cfg_1, &misc_p->pad_pd_cfg_1);
+#elif CONFIG_SPEAR1310
+	/*
+	 * Set the PAD function enable such that the PADs are routed to
+	 * IP
+	 */
+	writel(readl(&misc_p->pad_function_en_1) | 0x300,
+		&misc_p->pad_function_en_1);
+	/*
+	* Set up the PAD direction in control of IP's / RAS by default
+	*/
+	writel(readl(&misc_p->pad_dir_sel_1) | 0x300,
+		&misc_p->pad_dir_sel_1);
 #endif
 
 	/* Initialize PLLs */

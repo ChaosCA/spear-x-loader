@@ -321,4 +321,10 @@ struct misc_regs {
 #define PLGPIO_89_CFG				(1 << 25)
 #define PAD_DIR_SEL_1_UART			(1 << 1)
 
+/* plgpio_cfg definitions */
+#define PLGPIO3_PU_CFG				(1 << 3)
+#define PLGPIO3_PD_CFG				(~PLGPIO3_PU_CFG)
+#define PLGPIO2_PU_CFG				(1 << 2)
+#define PLGPIO2_PD_CFG				(~PLGPIO2_PU_CFG)
+
 #endif
