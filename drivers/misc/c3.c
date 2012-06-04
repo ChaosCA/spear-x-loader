@@ -41,7 +41,7 @@ static inline unsigned long c3_mem_xlate(void *addr)
 {
 
 	if (mem_internal_check_range(addr)) {
-		return addr - C3_INT_MEM_BASE_ADDR +
+		return (unsigned long)addr - C3_INT_MEM_BASE_ADDR +
 			C3_LOCAL_MEM_ADDR;
 	}
 

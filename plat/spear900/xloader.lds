@@ -1,4 +1,7 @@
 /*
+ * (C) Copyright 2012
+ * Vipin Kumar, ST Microelectronics, <vipin.kumar@st.com>
+ *
  * January 2004 - Changed to support H4 device
  * Copyright (c) 2004-2008 Texas Instruments
  *
@@ -27,31 +30,24 @@
 OUTPUT_FORMAT("elf32-littlearm", "elf32-littlearm", "elf32-littlearm")
 OUTPUT_ARCH(arm)
 ENTRY(_start)
+
+MEMORY
+{
+	xloader : ORIGIN = 0xB3801300 , LENGTH = 0x2D00
+	xloader_bss : ORIGIN = 0x00004000 , LENGTH = 0x1000
+}
+
 SECTIONS
 {
-	. = 0xB3801300;
-
-	. = ALIGN(4);
 	.text :
 	{
 		cpu/arm_cortexa8/start.o	(.text)
-		*(.text)
-	}
+		*(.text); . = ALIGN(4);
+	} > xloader
 
-	. = ALIGN(4);
-	.rodata . :
-	{ *(.rodata*) }
+	.rodata : { *(.rodata*); . = ALIGN(4); } > xloader
+	.data : { *(.data); . = ALIGN(4); } > xloader
+	.bss : { *(.bss) } > xloader_bss
 
-	. = ALIGN(4);
-	.data . :
-	{ *(.data) }
-
-	. = ALIGN(4);
-	.bss . :
-	{ *(.bss) }
-
-	. = 0xB3807FF0;
-	. = ALIGN(4);
-	.table . :
-	{*(.table); . = ALIGN(4);}
+	__TLB_TOP = 0xb3808000;
 }

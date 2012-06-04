@@ -72,7 +72,12 @@ u32 boot(void)
 
 		/* Serial NOR booting */
 		if (TRUE == snor_image_load((u8 *) CONFIG_SNOR_BOOT_ADDR,
-					&image, loader_name)) {
+					&image, loader_name)
+#ifdef CONFIG_SNOR_BOOT_ADDR_EXTRA
+		    || TRUE == snor_image_load((u8 *) CONFIG_SNOR_BOOT_ADDR_EXTRA,
+					&image, loader_name)
+#endif
+		    ) {
 			/* Platform related late initialasations */
 			plat_late_init();
 
@@ -103,13 +108,11 @@ u32 boot(void)
 	if (pnor_boot_supported() && pnor_boot_selected()) {
 
 		extern u32 get_pnor_width(void);
-		u32 width;
 
-#ifdef CONFIG_SPEAR1340
+#if (defined(CONFIG_SPEAR1340) || defined(CONFIG_SPEAR1310))
 		return CONFIG_PNOR_BOOT_ADDR;
 #else
-
-		width = get_pnor_width();
+		u32 width = get_pnor_width();
 
 		/*
 		 * Try with 8-bit initialization first.
@@ -140,10 +143,14 @@ u32 boot(void)
 	}
 
 	if (mmc_boot_supported() && mmc_boot_selected()) {
+#if (defined(CONFIG_SPEAR1340) || defined(CONFIG_SPEAR1310))
+		char *filename = (char *)MMC_UBOOT_FILE;
+#endif
+
 		/* MMC booting */
 		plat_late_init();
-#ifdef CONFIG_SPEAR1340
-		return (char *)MMC_UBOOT_FILE;
+#if (defined(CONFIG_SPEAR1340) || defined(CONFIG_SPEAR1310))
+		return (u32)filename;
 #else
 		return FALSE;
 #endif

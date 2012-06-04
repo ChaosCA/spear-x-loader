@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2000-2009
+ * (C) Copyright 2000-2012
  * Vipin Kumar, ST Microelectronics, vipin.kumar@st.com
  *
  * See file CREDITS for list of people who contributed to this
@@ -24,32 +24,22 @@
 OUTPUT_FORMAT("elf32-littlearm", "elf32-littlearm", "elf32-littlearm")
 OUTPUT_ARCH(arm)
 ENTRY(_start)
+
+MEMORY
+{
+	xloader : ORIGIN = 0xD2800B00 , LENGTH = 0x14F0
+	xloader_bss : ORIGIN = 0x00004000 , LENGTH = 0x1000
+}
+
 SECTIONS
 {
-	. = 0xD2800B00;
-
-	. = ALIGN(4);
 	.text :
 	{
 		cpu/arm926ejs/start.o	(.text)
-		*(.text)
-	}
+		*(.text); . = ALIGN(4);
+	} > xloader
 
-	. = ALIGN(4);
-	.rodata . : 
-	{ *(.rodata*) }
-
-	. = ALIGN(4);
-	.data . :
-	{ *(.data) }
-
-	. = 0xD2801FF0;
-	. = ALIGN(4);
-	.table . : 
-	{}
-
-	. = 0x4000;
-	. = ALIGN(4);
-	.bss . :
-	{ *(.bss) }
+	.rodata : { *(.rodata*); . = ALIGN(4); } > xloader
+	.data : { *(.data); . = ALIGN(4); } > xloader
+	.bss : { *(.bss) } > xloader_bss
 }

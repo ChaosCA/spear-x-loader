@@ -25,44 +25,6 @@
 #define __TABLE_H__
 
 /*
- * Xloader Table Structures
- */
-#define XLOADER_TABLE_VERSION_1_1	2
-#define XLOADER_TABLE_VERSION_1_2	3
-
-struct xloader_table_1_1 {
-	unsigned short ddrfreq;
-	unsigned char ddrsize;
-	unsigned char ddrtype;
-#define DDR2		2
-
-	unsigned char soc_rev;
-#define REV_DYNAMIC	0xFF
-
-} __attribute__ ((packed));
-
-struct xloader_table_1_2 {
-	unsigned const char * version;
-
-	unsigned short ddrfreq;
-	unsigned char ddrsize;
-	unsigned char ddrtype;
-	
-	unsigned char soc_rev;
-
-} __attribute__ ((packed));
-
-union xloader_ver_table {
-	struct xloader_table_1_1 table_1_1;
-	struct xloader_table_1_2 table_1_2;
-};
-
-struct xloader_table {
-	unsigned char table_version;
-	union xloader_ver_table table;
-} __attribute__ ((packed));
-
-/*
  * BootROM Table Structures
  */
 #define BOOTROM_TABLE_ADDRESS		0xFFFF7F00

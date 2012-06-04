@@ -116,7 +116,13 @@ u32 find_rdlvl_value(u32 *start, u32 *end)
 		}
 	}
 
-	return rdlvl_value;
+	/* if allowed from actual read leveling data, adjust read phase to the default centered value 8 */
+	if ((rdlvl_value == 9) && (start[0] < 9) && (start[1] < 9))
+		return --rdlvl_value;
+	else if ((rdlvl_value == 7) && (end[0] > 7) && (end[1] > 7))
+		return ++rdlvl_value;
+	else
+		return rdlvl_value;
 
 error:
 	/* loop infinitly on read levelling error else it gets un-noticed */
@@ -129,6 +135,25 @@ error:
 	 */
 	reset_cpu(0);
 }
+
+#if CONFIG_DDR2
+void lvl_read(void)
+{
+	u32 slice;
+	int RDLVL_DELAY_VALUE[5] = {8, 8, 8, 8, 8};
+
+	RDLVL_DELAY_VALUE[0] = RDLVL_DELAY_VALUE_0;
+	RDLVL_DELAY_VALUE[1] = RDLVL_DELAY_VALUE_1;
+	RDLVL_DELAY_VALUE[2] = RDLVL_DELAY_VALUE_2;
+	RDLVL_DELAY_VALUE[3] = RDLVL_DELAY_VALUE_3;
+	RDLVL_DELAY_VALUE[4] = RDLVL_DELAY_VALUE_4;
+
+	for (slice = 0; slice < DATA_SLICE_MAX; slice++) {
+		prog_rdlvl_delay(slice, RDLVL_DELAY_VALUE[slice]);
+	}
+}
+
+#else
 
 void lvl_read(void)
 {
@@ -202,3 +227,4 @@ void lvl_read(void)
 	swlvl_exit();
 	wait_op_done();
 }
+#endif

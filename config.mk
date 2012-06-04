@@ -108,6 +108,8 @@ CPPFLAGS += -DTEXT_BASE=$(TEXT_BASE)
 endif
 
 CPPFLAGS += -I$(TOPDIR)/include
+CPPFLAGS += -I$(TOPDIR)/drivers/pl061
+CPPFLAGS += -I$(TOPDIR)/drivers/misc
 CPPFLAGS += -fno-builtin -ffreestanding -nostdinc \
 	-isystem $(gccincdir) -pipe $(PLATFORM_CPPFLAGS)
 

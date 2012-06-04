@@ -24,7 +24,7 @@
 VERSION = 2010
 PATCHLEVEL = 06
 SUBLEVEL =
-EXTRAVERSION =-lsp-3.2.3
+EXTRAVERSION =-lsp-3.2.4-rc4
 ifneq "$(SUBLEVEL)" ""
 XLOADER_VERSION = $(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)
 else
@@ -86,6 +86,7 @@ LIBS += plat/common/libcommon.a
 LIBS += lib_$(ARCH)/lib$(ARCH).a
 LIBS += drivers/mtd/libmtd.a
 LIBS += drivers/misc/libmisc.a
+LIBS += drivers/pl061/libpl061.a
 LIBS += common/libcommon.a
 LIBS += drivers/serial/libserial.a
 
@@ -261,6 +262,13 @@ spear1310_reva_usbtty_config :
 		}
 	@$(MKCONFIG) -n $@ -a spear1310_reva arm arm_cortexa8 spear1310_reva NULL spear13xx
 
+spear1310_config \
+spear1310_usbtty_config :
+	@[ -z "$(findstring usbtty,$@)" ] || \
+		{ echo "#define CONFIG_SPEAR_USBTTY" >> $(obj)include/config.h ; \
+		}
+	@$(MKCONFIG) -n $@ -a spear1310 arm arm_cortexa8 spear1310 NULL spear13xx
+
 spear1340_config \
 spear1340_usbtty_config :
 	@[ -z "$(findstring usbtty,$@)" ] || \
@@ -268,12 +276,26 @@ spear1340_usbtty_config :
 		}
 	@$(MKCONFIG) -n $@ -a spear1340 arm arm_cortexa8 spear1340 NULL spear13xx
 
+spear1340_lcad_config \
+spear1340_lcad_usbtty_config :
+	@[ -z "$(findstring usbtty,$@)" ] || \
+		{ echo "#define CONFIG_SPEAR_USBTTY" >> $(obj)include/config.h ; \
+		}
+	@$(MKCONFIG) -n $@ -a spear1340_lcad arm arm_cortexa8 spear1340_lcad NULL spear13xx
+
 spear900_config \
 spear900_usbtty_config :
 	@[ -z "$(findstring usbtty,$@)" ] || \
 		{ echo "#define CONFIG_SPEAR_USBTTY" >> $(obj)include/config.h ; \
 		}
 	@$(MKCONFIG) -n $@ -a spear900 arm arm_cortexa8 spear900 NULL spear13xx
+
+spear900_lcad_config \
+spear900_lcad_usbtty_config :
+	@[ -z "$(findstring usbtty,$@)" ] || \
+		{ echo "#define CONFIG_SPEAR_USBTTY" >> $(obj)include/config.h ; \
+		}
+	@$(MKCONFIG) -n $@ -a spear900_lcad arm arm_cortexa8 spear900_lcad NULL spear13xx
 
 spearR1801e_config \
 spearR1801e_usbtty_config :

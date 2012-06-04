@@ -239,7 +239,7 @@ struct mpmc_regs {
 
 #define PHY_CTRL_DELAY			200
 
-#if DDR_ECC_ENABLE
+#ifdef CONFIG_DDR_ECC_ENABLE
 #define DATA_SLICE_MAX			5
 #else
 #define DATA_SLICE_MAX			4
@@ -248,6 +248,27 @@ struct mpmc_regs {
 #define WRLVL_DELAY_MAX			8
 #define RDLVL_DELAY_VALS		8
 #define RDLVL_DELAY_INIT		4
+
+/* DDR2 settings*/
+#define WRLVL_BASE_OFFSET_REG_VALUE	0
+
+#define WRLVL_DELAY_VALUE_0	2
+#define WRLVL_DELAY_VALUE_1	2
+#define WRLVL_DELAY_VALUE_2	2
+#define WRLVL_DELAY_VALUE_3	2
+#define WRLVL_DELAY_VALUE_4	2
+
+#define RDLVL_GATE_DELAY_VALUE_0	31
+#define RDLVL_GATE_DELAY_VALUE_1	26
+#define RDLVL_GATE_DELAY_VALUE_2	26
+#define RDLVL_GATE_DELAY_VALUE_3	31
+#define RDLVL_GATE_DELAY_VALUE_4	31
+
+#define RDLVL_DELAY_VALUE_0	8
+#define RDLVL_DELAY_VALUE_1	8
+#define RDLVL_DELAY_VALUE_2	8
+#define RDLVL_DELAY_VALUE_3	8
+#define RDLVL_DELAY_VALUE_4	8
 
 /* mpmc register definitions */
 #define SWLVL_MODE_MSK			(3 << 8)
@@ -259,6 +280,9 @@ struct mpmc_regs {
 #define SWLVL_LOAD			(1 << 24)
 #define SWLVL_EXIT			(1 << 16)
 #define SWLVL_OP_DONE			(1 << 0)
+#define WRLVL_REG_EN			(1 << 8)
+#define RDLVL_GATE_REG_EN		(1 << 0)
+#define RDLVL_REG_EN			(1 << 24)
 
 #define TDFI_RDLVL_RR			(0x10 << 16)
 #define TDFI_RDLVL_RR_MSK		(0x3FF << 16)

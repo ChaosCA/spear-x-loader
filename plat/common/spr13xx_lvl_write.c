@@ -366,24 +366,38 @@ void set_dqs_parms(u32 wrlvl_start, u32 *final_wrlvl_delay)
 		dq_clk_phase_match0_pre = get_match0_pre(slice);
 		dq_clk_phase_match1_pre = get_match1_pre(slice);
 
-		if (((dq_clk_phase_match0_pre == 8) && (dq_clk_phase_match1_pre == 9)) ||
-				((dq_clk_phase_match1_pre == 8) && (dq_clk_phase_match0_pre == 9)))
-			dq_clk_phase_match_pre = 0;
-		/* else if ((dq_clk_phase_match0_pre & 0x1) == 0) */
-		else if ((dq_clk_phase_match0_pre & 0x8) == 0)
-			dq_clk_phase_match_pre = dq_clk_phase_match0_pre & 7;
+		if ((dq_clk_phase_match0_pre & 0x8) == 0)
+			dq_clk_phase_match_pre = dq_clk_phase_match0_pre & 0xF;
 		else
-			dq_clk_phase_match_pre = dq_clk_phase_match1_pre & 7;
+			dq_clk_phase_match_pre = dq_clk_phase_match1_pre & 0xF;
 
-		phy_clk_phase_match_pre &= 0x7; /* only 3 bits[2:0] are significant */
+		phy_clk_phase_match_pre &= 0xF;
+
 		if (phy_clk_phase_match_pre > dq_clk_phase_match_pre)
 			dqs_dq_clk_phase_match_delta = phy_clk_phase_match_pre - dq_clk_phase_match_pre;
 		else
 			dqs_dq_clk_phase_match_delta = dq_clk_phase_match_pre - phy_clk_phase_match_pre;
 		dqs_dq_clk_phase_match_delta &= 0xF;
-		if (dqs_dq_clk_phase_match_delta > 3)
-			while (1)
-			;
+
+		if (dqs_dq_clk_phase_match_delta > 3) {
+			/* if delta is too high recalculate */
+			if ((dq_clk_phase_match0_pre & 0x8) == 0)
+				dq_clk_phase_match_pre = dq_clk_phase_match1_pre & 0xF;
+			else
+				dq_clk_phase_match_pre = dq_clk_phase_match0_pre & 0xF;
+
+			phy_clk_phase_match_pre &= 0xF;
+
+			if (phy_clk_phase_match_pre > dq_clk_phase_match_pre)
+				dqs_dq_clk_phase_match_delta = phy_clk_phase_match_pre - dq_clk_phase_match_pre;
+			else
+				dqs_dq_clk_phase_match_delta = dq_clk_phase_match_pre - phy_clk_phase_match_pre;
+			dqs_dq_clk_phase_match_delta &= 0xF;
+
+			if (dqs_dq_clk_phase_match_delta > 3)
+				while (1)
+				;
+		}
 
 		dqs_dq_clk_phase_match_delta_value[slice] = dqs_dq_clk_phase_match_delta;
 		start_wrlvl_delay_mod_value[slice] = start_wrlvl_delay_mod;
@@ -432,24 +446,38 @@ void set_dqs_parms(u32 wrlvl_start, u32 *final_wrlvl_delay)
 		dq_clk_phase_match0_pre = get_match0_pre(slice);
 		dq_clk_phase_match1_pre = get_match1_pre(slice);
 
-		if (((dq_clk_phase_match0_pre == 8) && (dq_clk_phase_match1_pre == 9)) ||
-				((dq_clk_phase_match1_pre == 8) && (dq_clk_phase_match0_pre == 9)))
-			dq_clk_phase_match_pre = 0;
-		/* else if ((dq_clk_phase_match0_pre & 0x1) == 0) */
-		else if ((dq_clk_phase_match0_pre & 0x8) == 0)
-			dq_clk_phase_match_pre = dq_clk_phase_match0_pre & 7;
+		if ((dq_clk_phase_match0_pre & 0x8) == 0)
+			dq_clk_phase_match_pre = dq_clk_phase_match0_pre & 0xF;
 		else
-			dq_clk_phase_match_pre = dq_clk_phase_match1_pre & 7;
+			dq_clk_phase_match_pre = dq_clk_phase_match1_pre & 0xF;
 
-		phy_clk_phase_match_pre &= 0x7; /* only 3 bits[2:0] are significant */
+		phy_clk_phase_match_pre &= 0xF;
+
 		if (phy_clk_phase_match_pre > dq_clk_phase_match_pre)
 			dqs_dq_clk_phase_match_delta = phy_clk_phase_match_pre - dq_clk_phase_match_pre;
 		else
 			dqs_dq_clk_phase_match_delta = dq_clk_phase_match_pre - phy_clk_phase_match_pre;
 		dqs_dq_clk_phase_match_delta &= 0xF;
-		if (dqs_dq_clk_phase_match_delta > 3)
-			while (1)
-			;
+
+		if (dqs_dq_clk_phase_match_delta > 3) {
+			/* if delta is too high recalculate */
+			if ((dq_clk_phase_match0_pre & 0x8) == 0)
+				dq_clk_phase_match_pre = dq_clk_phase_match1_pre & 0xF;
+			else
+				dq_clk_phase_match_pre = dq_clk_phase_match0_pre & 0xF;
+
+			phy_clk_phase_match_pre &= 0xF;
+
+			if (phy_clk_phase_match_pre > dq_clk_phase_match_pre)
+				dqs_dq_clk_phase_match_delta = phy_clk_phase_match_pre - dq_clk_phase_match_pre;
+			else
+				dqs_dq_clk_phase_match_delta = dq_clk_phase_match_pre - phy_clk_phase_match_pre;
+			dqs_dq_clk_phase_match_delta &= 0xF;
+
+			if (dqs_dq_clk_phase_match_delta > 3)
+				while (1)
+				;
+		}
 
 		/* here we use start_wrlvl_delay_mod_offset_value[slice], phy_ctrl_reg4 and phy_ctrl_reg5 are related to DQ phase  */
 		dqtim = (start_wrlvl_delay_mod_offset_value[slice] - 2) & 0x7;
@@ -475,22 +503,110 @@ void set_dqs_parms(u32 wrlvl_start, u32 *final_wrlvl_delay)
 	}
 }
 
+#if CONFIG_DDR2
+
+void set_wrlvldelay_ddr2(u32 wrlvl_start, u32 *final_wrlvl_delay)
+{
+	u32 *phy_ctrl_reg1 = &mpmc_p->reg130;
+	u32 *phy_ctrl_reg0 = &mpmc_p->reg124;
+	u32 slice;
+	u32 start_wrlvl_delay_mod;
+	u32 phy_ctrl_reg1_dqsgate_assertval[] = {
+		(0 << 0) | (1 << 3),
+		(0 << 0) | (2 << 3),
+		(0 << 0) | (1 << 3),
+		(0 << 0) | (2 << 3)
+	};
+	u32 phy_ctrl_reg1_dqsgate_deassertval[] = {
+		(0 << 5) | (2 << 8),
+		(0 << 5) | (1 << 8),
+		(0 << 5) | (2 << 8),
+		(0 << 5) | (1 << 8)
+	};
+	int WRLVL_DELAY_VALUE[5] = {2, 2, 2, 2, 2};
+
+	WRLVL_DELAY_VALUE[0] = WRLVL_DELAY_VALUE_0;
+	WRLVL_DELAY_VALUE[1] = WRLVL_DELAY_VALUE_1;
+	WRLVL_DELAY_VALUE[2] = WRLVL_DELAY_VALUE_2;
+	WRLVL_DELAY_VALUE[3] = WRLVL_DELAY_VALUE_3;
+	WRLVL_DELAY_VALUE[4] = WRLVL_DELAY_VALUE_4;
+
+	for (slice = 0; slice < DATA_SLICE_MAX; slice++) {
+
+		reset_phy_ctrl_reg(phy_ctrl_reg0 + slice);
+
+		final_wrlvl_delay[slice] = WRLVL_DELAY_VALUE[slice];
+
+		prog_wrlvl_delay(slice, final_wrlvl_delay[slice]);
+		start_wrlvl_delay_mod = wrlvl_start + final_wrlvl_delay[slice];
+
+		writel_field(phy_ctrl_reg1_dqsgate_assertval[start_wrlvl_delay_mod/4],
+				DQSGATE_ASSERT_MSK, phy_ctrl_reg1 + slice);
+		writel_field(phy_ctrl_reg1_dqsgate_deassertval[start_wrlvl_delay_mod/4],
+				DQSGATE_DEASSERT_MSK, phy_ctrl_reg1 + slice);
+	}
+}
+
 void lvl_write(void)
 {
-	int wrlvl_start;
-	u32 wrlvl_base_offset_reg = 2;
-	u32 final_wrlvl_delay[DATA_SLICE_MAX];
 
-	set_swlvl_mode(WRITE_LVL);
-	swlvl_start();
-	wait_op_done();
+	int wrlvl_start;
+	u32 final_wrlvl_delay[DATA_SLICE_MAX];
+	u32 wrlvl_base_offset_reg = 0;
+	static struct mpmc_regs *mpmc_p = (struct mpmc_regs *)CONFIG_SPEAR_MPMCBASE;
+
+	wrlvl_base_offset_reg = WRLVL_BASE_OFFSET_REG_VALUE;
+
+	/* enable also wrlvl_reg_en, rdlvl_gate_reg_en, rdlvl_reg_en when START MPMC parameter is enabled  */
+	writel(readl(&mpmc_p->reg15) | WRLVL_REG_EN, &mpmc_p->reg15);
+	writel(readl(&mpmc_p->reg8) | RDLVL_GATE_REG_EN, &mpmc_p->reg8);
+	writel(readl(&mpmc_p->reg9) | RDLVL_REG_EN, &mpmc_p->reg9);
 
 	wrlvl_start = get_wrlvl_start(wrlvl_base_offset_reg);
-	swlvl_exit();
-	wait_op_done();
 
-	/* Set wrlvl_delay parameters through write leveling */
-	set_wrlvldelay(wrlvl_start, final_wrlvl_delay);
+	set_wrlvldelay_ddr2(wrlvl_start, final_wrlvl_delay);
 
 	set_dqs_parms(wrlvl_start, final_wrlvl_delay);
 }
+#else
+void lvl_write(void)
+{
+	int wrlvl_start;
+	u32 wrlvl_base_offset_reg;
+	u32 final_wrlvl_delay[DATA_SLICE_MAX];
+	u32 wrlvl_base_offset_check;
+	u32 slice;
+
+	wrlvl_base_offset_reg = 2; /* start from default value */
+
+	do {
+		set_swlvl_mode(WRITE_LVL);
+		swlvl_start();
+		wait_op_done();
+
+		wrlvl_start = get_wrlvl_start(wrlvl_base_offset_reg);
+		swlvl_exit();
+		wait_op_done();
+
+		/* Set wrlvl_delay parameters through write leveling */
+		set_wrlvldelay(wrlvl_start, final_wrlvl_delay);
+
+		wrlvl_base_offset_check = 0;
+
+		for (slice = 0; slice < DATA_SLICE_MAX; slice++)
+			if (final_wrlvl_delay[slice] >= 8)
+				wrlvl_base_offset_check++;
+
+		if (wrlvl_base_offset_check > 0)
+			wrlvl_base_offset_reg++;
+
+		if (wrlvl_base_offset_reg >= 8)
+			wrlvl_base_offset_reg = 0;
+
+	} while ((wrlvl_base_offset_check != 0));
+
+	set_dqs_parms(wrlvl_start, final_wrlvl_delay);
+
+
+}
+#endif

@@ -27,6 +27,7 @@
 #include <asm/arch/spr_sysctrl.h>
 #include <asm/arch/spr_defs.h>
 #include <asm/arch/spr_socrev.h>
+#include <ddrtest.h>
 
 static void ddr_clock_init(void)
 {
@@ -182,6 +183,17 @@ static void sys_init(void)
 		!= NORMAL);
 }
 
+#ifdef CONFIG_RAM_TEST
+void ddr_memory_test(void)
+{
+	/* memory test trial */
+	if (probememory()) {
+		while (1) /* loop infinitly on ddr test error */
+		;
+	}
+}
+#endif
+
 void lowlevel_init(void)
 {
 	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
@@ -199,6 +211,10 @@ void lowlevel_init(void)
 
 	/* Initialize MPMC */
 	mpmc_init();
+
+#ifdef CONFIG_RAM_TEST
+	ddr_memory_test(); /* ddr memory test */
+#endif
 
 	/* SoC specific initialization */
 	soc_init();

@@ -25,11 +25,16 @@
 #include <asm/io.h>
 #include <asm/arch/spr13xx_misc.h>
 #include <asm/arch/spr13xx_defs.h>
+#include <pl061.h>
+#include <ddrtest.h>
 
 static void ddr_clock_init(void)
 {
 	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
 	u32 perip_clkcfg, perip2_clkenb, perip2_swrst;
+#if defined(CONFIG_SPEAR1310) && defined(CONFIG_DDR_ECC_ENABLE)
+	u32 mpmc_cfg;
+#endif
 
 	perip_clkcfg = readl(&misc_p->perip_clk_cfg);
 
@@ -44,12 +49,26 @@ static void ddr_clock_init(void)
 	perip2_clkenb |= DDR_CTRL_CLKEN | DDR_CORE_CLKEN;
 	writel(perip2_clkenb, &misc_p->perip2_clk_enb);
 
+#if defined(CONFIG_SPEAR1310) && defined(CONFIG_DDR_ECC_ENABLE)
+	/*
+	 * Following modifies write access as non-bufferable
+	 * and read to happen word by word. Without this
+	 * dependent write-read are happening out of order
+	 * resulting in Linux crash.
+	 */
+	mpmc_cfg = readl(&misc_p->mpmc_cfg);
+	mpmc_cfg |= 0x05000000;
+	mpmc_cfg &= ~0xf0f;
+	mpmc_cfg |= 0x101;
+	writel(mpmc_cfg, &misc_p->mpmc_cfg);
+#endif
+
 	/*
 	 * MISC compensation_ddr_cfg before mpmc reset
 	 * disable automatic ddr pad compensation
 	 * use fixed comzcp=0000 and comzcn=0000
 	 */
-#ifdef CONFIG_SPEAR1340
+#if defined(CONFIG_SPEAR1340)
 	u32 pad_pu_cfg_3, pad_pd_cfg_3;
 
 	/* MISC 0x710 update=0, enb=0, encomzc=0 */
@@ -73,11 +92,11 @@ static void ddr_clock_init(void)
 
 #else
 
-#define PLGPIO_2_3_DIR_SEL		(void *)(CONFIG_SPEAR_GPIOA + 0x400)
-#define PLGPIO_2_3_RW_DATA		(void *)(CONFIG_SPEAR_GPIOA + 0x3FC)
+#define PLGPIO_2_3_DIR_SEL		(void *)(CONFIG_SPEAR_GPIO0_BASE + 0x400)
+#define PLGPIO_2_3_RW_DATA		(void *)(CONFIG_SPEAR_GPIO0_BASE + 0x3FC)
 
 	/* Enable the GPIO Clock Enable */
-	writel(readl(&misc_p->perip1_clk_enb) | GPIOA_CLKEN,
+	writel(readl(&misc_p->perip1_clk_enb) | GPIO0_CLKEN,
 			&misc_p->perip1_clk_enb);
 	/*
 	 * The code below modifies plgpio2 and plgpio3
@@ -103,6 +122,16 @@ static void ddr_clock_init(void)
 	perip2_swrst = readl(&misc_p->perip2_sw_rst);
 	perip2_swrst &= ~(DDR_CTRL_CLKEN | DDR_CORE_CLKEN);
 	writel(perip2_swrst, &misc_p->perip2_sw_rst);
+
+#if defined(CONFIG_SPEAR1310) && defined(CONFIG_DDR_ECC_ENABLE)
+	/* enable MPMC ECC gasket for all AXI ports */
+	writel(0x0, &misc_p->mpmc_ctr_sts);
+
+	/* wait for turn-on */
+	while ((readl(&misc_p->mpmc_ctr_sts) & 0xFFF))
+		;
+#endif
+
 }
 
 static void mpmc_init_values(void)
@@ -121,7 +150,7 @@ static void mpmc_init_values(void)
 	 */
 	writel(0x03070700, &mpmc_reg_p[25]);
 	writel(0x01000101, &mpmc_reg_p[11]);
-#ifdef CONFIG_SPEAR1340
+#if (defined(CONFIG_SPEAR1340) || defined(CONFIG_SPEAR1310))
 	while (!(readl(&mpmc_reg_p[105]) & 0x200))
 #else
 	while (!(readl(&mpmc_reg_p[105]) & 0x100))
@@ -185,7 +214,7 @@ static void pll_init(void)
 
 	usbphycfg |= AUTOPPD_ON_OVRCURR | UTMI_XFER_RST0 | UTMI_XFER_RST1 |
 		UTMI_XFER_RST2;
-#ifndef CONFIG_SPEAR1340
+#if (!defined(CONFIG_SPEAR1340) && !defined(CONFIG_SPEAR1310))
 	usbphycfg |= USB_BURST_INCR16;
 #endif
 	writel(usbphycfg, &misc_p->usbphy_gen_cfg);
@@ -219,7 +248,7 @@ static void sys_init(void)
 	writel(PLL_TIM, &misc_p->sys_clk_plltimer);
 	writel(OSCI_TIM, &misc_p->sys_clk_oscitimer);
 
-#ifdef CONFIG_SPEAR1340
+#if defined(CONFIG_SPEAR1340)
 	u32 plgpio_enb_3;
 	/*
 	 * The code below modifies  plgpio_enb_3 register
@@ -248,6 +277,18 @@ static void sys_init(void)
 	pad_pd_cfg_1 &= PAD_21_PD_CFG;
 	pad_pd_cfg_1 &= PAD_22_PD_CFG;
 	writel(pad_pd_cfg_1, &misc_p->pad_pd_cfg_1);
+#elif CONFIG_SPEAR1310
+	/*
+	 * Set the PAD function enable such that the PADs are routed to
+	 * IP
+	 */
+	writel(readl(&misc_p->pad_function_en_1) | 0x300,
+		&misc_p->pad_function_en_1);
+	/*
+	* Set up the PAD direction in control of IP's / RAS by default
+	*/
+	writel(readl(&misc_p->pad_dir_sel_1) | 0x300,
+		&misc_p->pad_dir_sel_1);
 #endif
 
 	/* Initialize PLLs */
@@ -266,10 +307,65 @@ static void sys_init(void)
 			SYS_STATE_NORMAL);
 }
 
-void lowlevel_init(void)
+#ifdef CONFIG_SPEAR900_LCAD
+static void pl061_init(void)
 {
 	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
 
+	writel(readl(&misc_p->perip1_clk_enb) | GPIO1_CLKEN,
+			&misc_p->perip1_clk_enb);
+}
+
+/*
+ * SPEAr900 LCAD board requires a GPIO to be set in order to
+ * power on...
+ */
+static void set_lcad_power_on(void)
+{
+	pl061_set_value(CONFIG_SPEAR_GPIO1_BASE, GPIO1_1, 1);
+	pl061_set_out(CONFIG_SPEAR_GPIO1_BASE, GPIO1_1);
+	pl061_set_value(CONFIG_SPEAR_GPIO1_BASE, GPIO1_1, 1);
+}
+#endif
+
+#ifdef CONFIG_SPEAR1340_LCAD
+static void pl061_init(void)
+{
+	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
+
+	writel(readl(&misc_p->perip1_clk_enb) | GPIO0_CLKEN,
+			&misc_p->perip1_clk_enb);
+}
+
+/*
+ * SPEAr1340 LCAD board requires a GPIO to be set in order to
+ * power on...
+ */
+static void set_lcad_power_on(void)
+{
+	pl061_set_value(CONFIG_SPEAR_GPIO0_BASE, GPIO0_3, 1);
+	pl061_set_out(CONFIG_SPEAR_GPIO0_BASE, GPIO0_3);
+	pl061_set_value(CONFIG_SPEAR_GPIO0_BASE, GPIO0_3, 1);
+}
+#endif
+
+#ifdef CONFIG_RAM_TEST
+void ddr_memory_test(void)
+{
+	/* memory test trial */
+	if (probememory()) {
+		while (1) /* loop infinitly on ddr test error */
+		;
+	}
+}
+#endif
+
+void lowlevel_init(void)
+{
+	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
+#if defined(CONFIG_SPEAR1310)
+	u32 pad_dir_sel1_reg;
+#endif
 	/* Initialize PLLs */
 	sys_init();
 
@@ -282,14 +378,31 @@ void lowlevel_init(void)
 	writel(PERIPH1_RST_ALL, &misc_p->perip1_sw_rst);
 	writel(PERIPH2_RST_ALL, &misc_p->perip2_sw_rst);
 
-#ifdef CONFIG_SPEAR1340
+#if defined(CONFIG_SPEAR900_LCAD) || defined(CONFIG_SPEAR1340_LCAD)
+	pl061_init();
+
+	/* Power on complete */
+	set_lcad_power_on();
+#endif
+
+#if defined(CONFIG_SPEAR1340)
 	writel(PERIPH3_RST_ALL, &misc_p->perip3_sw_rst);
 #else
 	writel(RAS_RST_ALL, &misc_p->ras_sw_rst);
 #endif
 
+#if defined(CONFIG_SPEAR1310)
+	pad_dir_sel1_reg = readl(&misc_p->pad_dir_sel_1);
+	pad_dir_sel1_reg |= PAD_DIR_SEL_1_UART;
+	writel(pad_dir_sel1_reg, &misc_p->pad_dir_sel_1);
+#endif
+
 	/* Initialize MPMC */
 	mpmc_init();
+
+#ifdef CONFIG_RAM_TEST
+	ddr_memory_test(); /* ddr memory test */
+#endif
 
 	/* SoC specific initialization */
 	soc_init();
