@@ -46,6 +46,7 @@
 #define CONFIG_DDR_MT41J128M16		0
 #define CONFIG_DDR_MT41J256M8		0
 #define CONFIG_DDR_K4B2G1646CK0		0
+#define CONFIG_DDR_H5TQ2G63BFRPBC	0
 
 /*
  * DDR frequency selection
