@@ -27,6 +27,7 @@
 #include <asm/arch/spr_sysctrl.h>
 #include <asm/arch/spr_defs.h>
 #include <asm/arch/spr_socrev.h>
+#include <asm/system.h>
 #include <ddrtest.h>
 
 static void ddr_clock_init(void)
@@ -80,6 +81,30 @@ static void mpmc_init_values(void)
 
 }
 
+/* Reset mpmc to restart Tinit counter */
+static void mpmc_sw_reset(void)
+{
+	struct misc_regs *misc_p = (struct misc_regs *)CONFIG_SPEAR_MISCBASE;
+	int i;
+	u32 rstenb;
+
+	rstenb = readl(&misc_p->periph1_rst);
+	rstenb |= PERIPH_RST_MPMCMSK;
+	/* Intentionally done twice */
+	writel(rstenb, &misc_p->periph1_rst);
+	writel(rstenb, &misc_p->periph1_rst);
+
+	/*
+	 * Reset signal is synchronized to DDR clock.
+	 * Wait to be sure it is propagated.
+	 */
+	for (i = 0 ; i < 20 ; i++)
+		nop();
+
+	rstenb &= ~PERIPH_RST_MPMC_EN;
+	writel(rstenb, &misc_p->periph1_rst);
+}
+
 static void mpmc_init(void)
 {
 	/* Clock related settings for DDR */
@@ -90,6 +115,8 @@ static void mpmc_init(void)
 	 * Compensation values are also handled separately
 	 */
 	plat_ddr_init();
+
+	mpmc_sw_reset();
 
 	/* Initialize mpmc register values */
 	mpmc_init_values();
