@@ -144,6 +144,15 @@ static void mpmc_init_values(void)
 		writel(*mpmc_val_p, mpmc_reg_p);
 
 	mpmc_reg_p = (u32 *)CONFIG_SPEAR_MPMCBASE;
+
+	/*
+	 * Enable default DDR pad termination settings during read operations
+	 * Modify MPMC registers 160-164
+	 */
+	for (i = 160; i <= 164; i++)
+		writel((readl(&mpmc_reg_p[i]) & ~0x3FFFF) | 0x03219,
+				&mpmc_reg_p[i]);
+
 	/*
 	 * MPMC register25 rewrite
 	 * MPMC controller start
