@@ -29,6 +29,14 @@
 
 extern void snor_init(void);
 
+void wait_time(void)
+{
+	u32 count;
+
+	for (count = 0; count < 1000000; count++)
+		__asm__ __volatile__ ("nop");
+}
+
 /**
  * plat_ddr_init:
  */
@@ -53,11 +61,15 @@ void plat_ddr_init(void)
 
 #if CONFIG_DDR2
 	lvl_write();
+	wait_time();
 	lvl_read();
+	wait_time();
 	lvl_gatetrn();
 #else
 	lvl_write();
+	wait_time();
 	lvl_gatetrn();
+	wait_time();
 	lvl_read();
 #endif
 
