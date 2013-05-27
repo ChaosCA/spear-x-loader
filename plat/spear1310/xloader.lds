@@ -33,7 +33,7 @@ ENTRY(_start)
 
 MEMORY
 {
-	xloader : ORIGIN = 0xB3801504 , LENGTH = 0x2AFC
+	xloader : ORIGIN = 0xB3801504 , LENGTH = 0x2FFF
 	xloader_bss : ORIGIN = 0x00004000 , LENGTH = 0x1000
 }
 
