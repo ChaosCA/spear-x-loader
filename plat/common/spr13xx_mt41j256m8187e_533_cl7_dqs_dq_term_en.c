@@ -112,9 +112,9 @@ const u32 mpmc_conf_vals[CONFIG_SPEAR_MPMCREGS] = {
 	0x00460046, /* DENALI_CTL_72 */
 	0x00080008, /* DENALI_CTL_73 */
 	0x00000000, /* DENALI_CTL_74 */
-	0xff005555, /* DENALI_CTL_75 */
-	0xaaaa00ff, /* DENALI_CTL_76 */
-	0xff005555, /* DENALI_CTL_77 */
+	0xffffffff, /* DENALI_CTL_75 */
+	0xffffffff, /* DENALI_CTL_76 */
+	0xffffffff, /* DENALI_CTL_77 */
 	0x00000007, /* DENALI_CTL_78 */
 	0x00000000, /* DENALI_CTL_79 */
 	0x00000000, /* DENALI_CTL_80 */
