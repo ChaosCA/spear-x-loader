@@ -41,6 +41,12 @@
 #define CONFIG_DDR_MT41J256M8		1
 
 /*
+ * DDR2 selection
+ * Please select (define to 1) CONFIG_DDR2 for DDR2 support
+ */
+#define CONFIG_DDR2			0
+
+/*
  * DDR frequency selection
  *
  * Select CONFIG_DDR_PLL1 for synchronous operation
